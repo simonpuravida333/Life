@@ -1,0 +1,399 @@
+/* DOCUMENT-WIDE DEFAULT ATTRIBUTES */
+html {
+  scroll-behavior: smooth;
+  
+}
+body
+{
+	font-family: "Montserrat"; /* it actually looks different than to putting it in html{  } */
+}
+
+input, select, input[type=submit]:focus
+{
+	outline:none;
+}
+select
+{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+/* Track */ 
+::-webkit-scrollbar-track {
+  /*box-shadow: inset 0 0 5px grey; */ 
+  border-radius:14px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 14px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #bbbbbb;
+  cursor: pointer;
+}
+
+::-webkit-resizer
+{
+	background-color: white;
+	border-radius: 5px;
+}
+
+/* CLASSES */
+.resultImage
+{
+	height: 500px;
+	outline: 5px solid;
+	outline-offset: -9px;
+	border: 6px solid;
+	border-radius: 10px;
+	margin: 10px;
+	margin-right: 20px;
+}
+
+.resizable-content
+{
+  min-height: 30px;
+  min-width: 30px;
+  resize: both;
+  overflow: auto;
+  max-height: fit-content;
+  max-width: fit-content;
+}
+
+.arrow
+{
+	font-size: 40px;
+	color: #82D5EA;
+	transform: translateY(-5%);
+	cursor: pointer;
+	margin: 20px;
+	
+	&:hover
+	{
+		color: #15BFEA;
+		font-size: 50px;
+	}
+
+}
+
+.fullWindowImageNavigationArrow
+{
+	font-size: 50px;
+	font-weight: bold;
+	color: white;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.rankClassification
+{
+	font-weight: bold;
+}
+
+.blockRow
+{
+	align-items: center;
+	margin: 40px;
+	border-radius: 20px;
+	padding: 10px;
+	background-color: white;
+}
+
+.flexPart
+{
+	display: flex;
+	flex-wrap: wrap;
+	/*align-items: flex-start;
+	align-content: flex-start;*/
+	align-items: center;
+    justify-content: left;
+    
+    &.description
+    {
+		align-items: normal;
+    }
+}
+
+.rankDescription
+{
+	display: block;
+}
+
+.hidden
+{
+	display: none;
+}
+
+.flexPartImages
+{
+	overflow-x: auto;
+	white-space: nowrap;
+	margin: 10px;
+}
+.flexPartImages::-webkit-scrollbar-thumb
+{
+  background: lightgray;
+  border-radius: 14px;
+}
+
+.resultObjectLine
+{
+	margin: 10px;
+  	border: 3px solid white;
+	border-radius: 3px;
+}
+
+.baseBlock
+{
+	font-size: 20px;
+	border-radius: 20px;
+	cursor: pointer;
+	margin: 10px;
+	padding: 20px;
+	color: white;
+
+	&.summery
+	{
+		background-color: #409CB5;
+		&:hover
+		{
+			background-color: #86DBEF;
+			color: #684B33;
+		}
+	}
+}
+
+.imageDescription
+{
+	font-size: 15px;
+	border-radius: 20px;
+	padding: 20px;
+	color: white;
+	max-width: 450px;
+}
+
+.select
+{	
+	color: white;
+	background-color: #409CB5; /*#5852A3; #66547F;*/
+	height: 50px;
+	text-align: center;
+	font-weight: 600;
+	border-radius: 40px;
+	width: 140px;
+	margin: 10px;
+	letter-spacing: 0.2em;
+	border: none;
+	cursor: pointer;
+	
+	& *
+	{
+		color: #684B33;
+		font-weight: 500;
+		font-size: 17px;
+	}
+	&:hover
+	{
+		background-color: #8FE2FF; /*#4EC662; /*#C9B9E0;*/
+	}
+	&:focus
+	{
+		background-color: #8FE2FF; /* #78FF8E; /*#6AC7E8;*/
+		color: #684B33;
+	}
+	&.filter
+	{
+		background-color: #2BAF60;
+		&:hover
+		{
+			background-color: #8AED97;
+		}
+		&:focus
+		{
+			background-color: #8AED97;
+			color: #684B33;
+			
+		}
+	}
+}
+
+.selectTitle
+{
+	font-weight: bold;
+	text-align: center;
+	color: #2BAF60;
+}
+
+.newGroup
+{
+	justify-content: center;
+	width: 100%;
+}
+
+.circle
+{
+	border: 5px solid white;
+	background-color: white;
+	border-radius: 10px;
+	height: 20px;
+	width: 20px;
+	margin: 40px;
+}
+
+.horizontalLine
+{
+	border: 5px solid white;
+	flex: 1;
+	border-radius: 10px;
+}
+
+.groupTitle
+{
+	color: white;
+	font-size: 20px;
+	font-weight: 600;
+	letter-spacing: 0.2em;
+	cursor: pointer;
+}
+
+#plusSign
+{
+	text-align: center;
+	width: 140px;
+	margin: 10px;
+}
+
+/* IDs */
+#searchSection
+{
+	background-color: white; /* #9FF1FF; /* #093C48 */
+	border-radius: 40px;
+	margin: 40px;
+	padding: 10px;
+	display: flex;
+	flex-wrap: 	wrap;
+}
+
+#textareaNameSearch
+{
+	color: white;
+	background-color: #409CB5; /*#45B6DD; /* #66547F; */
+	font-family: 'Gaegu';
+	font-size: 25px;
+	font-weight: bold;
+	height: 50px;
+	width: 350px;
+	border-radius: 40px;
+	margin: 10px;
+	text-align: left;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: none;
+	
+	&:hover
+	{
+		background-color: #8FE2FF;
+	}
+	&:focus
+	{
+		background-color:#8FE2FF;
+		color: #684B33;
+	}
+}
+
+
+#searchGo
+{
+	background-color: #2BAF60; /*#45B6DD; /*#66547F;*/
+	border-radius: 10px;
+	width: 75px;
+	height: 50px;
+	margin: 10px;
+	border: none;
+	color: white;
+	font-weight: bold;
+	font-style: italic;
+	border: none;
+	outline: none;
+	
+	&:hover
+	{
+		background-color: #8AED97; /*#5FD6FF;*/
+		border:none;
+	}
+	&:focus
+	{
+		background-color: #8AED97; /*#8FE2FF;*/
+		font-size: 25px;
+	}
+}
+
+#howTo
+{
+	border: 3px solid white;
+	border-radius: 20px;
+	color: white;
+	font-size: 25px;
+	font-weight: 500;
+	height: 40px;
+	width: 40px;
+	margin: 17.5px;
+	padding-left: 11px;
+	
+	&:hover
+	{
+		box-shadow: 0px 0px 10px white;
+		cursor: pointer;
+	}
+}
+
+#howToText
+{
+	color: white;
+	margin: 10px;
+	text-align: justify;
+}
+
+#escape
+{
+	position : absolute;
+	left : 95%;
+	top : 5%;
+	color : white;
+	font-size : 40px;
+	font-family: 'Arial';
+	transform : translate(-50%,-50%);
+	text-align: center;
+	
+	&:hover
+	{
+		/*font-weight: bold;*/
+		color: orange;
+		font-size: 50px;
+		cursor: pointer;
+	}	
+}
+
+
+#escapeBorder
+{
+	position : absolute;
+	/*left : 95%;*/
+	top : 5%;
+	width: 45px;
+	height: 45px;
+	border: 2px solid white;
+	border-radius: 100px;
+	transform : translate(-50%,-50%);
+}
