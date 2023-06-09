@@ -3,7 +3,7 @@ import {svg, fadeIn, fadeOut, timing, fadeTime, fontOpacityZeroToFull} from './a
 import {fullWindow, displayImageFullWindow} from './fullWindowImage.js';
 
 const body = document.querySelector('body');
-
+// add comment
 function displayImages(allImageSources, GBIFResult, originOfCall, y)
 {
 	console.log(allImageSources);
