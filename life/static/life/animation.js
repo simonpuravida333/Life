@@ -13,7 +13,7 @@ dropShadow.setAttribute('dx',0);
 dropShadow.setAttribute('dy',0);
 dropShadow.setAttribute('stdDeviation','2');
 dropShadow.setAttribute('flood-color', 'deepskyblue');
-filter.appendChild(dropShadow);
+filter.append(dropShadow);
 
 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 svg.style.width = '100px';
@@ -23,14 +23,13 @@ svg.style.position = 'relative';
 // svg.style.top = '100px';
 // svg.setAttribute('viewBox','0 0 100 100'); // we don't need scaling. https://css-tricks.com/scale-svg/
 // svg.style.transform = 'translate(-50%,-50%)';
-svg.appendChild(shape);
-svg.appendChild(filter);
+svg.append(shape, filter);
 // shape.setAttribute("filter","url(#filterId)"); // uncomment this to have a weak glow.
 
 const svg2 = svg.cloneNode(true);
 svg2.style.transform = 'translate(-50%,-50%)';
 const shape2 = shape.cloneNode(true);
-svg2.appendChild(shape2);
+svg2.append(shape2);
 
 // ANIMATION
 // stroke length unit is the CIRCUMFERENCE calculated from the r dimension units, in this case pixels: 2*pi*r

@@ -34,15 +34,9 @@ function create(data, querySubmit, rankSubmit)
 	circle1.classList.add('circle');
 	const circle2 = circle1.cloneNode(true);
 
-	newGroup.appendChild(circle1);
-	newGroup.appendChild(line1);
-	newGroup.appendChild(groupTitle);
-	newGroup.appendChild(line2);
-	newGroup.appendChild(circle2);
-	body.appendChild(newGroup);
-	
+	newGroup.append(circle1, line1, groupTitle, line2, circle2);
 	const groupResults = document.createElement('div');
-	body.appendChild(groupResults);
+	body.append(newGroup, groupResults);
 			
 	groupTitle.addEventListener('click', () =>
 	{
@@ -130,7 +124,7 @@ function create(data, querySubmit, rankSubmit)
 		const blockRow = document.createElement('div');
 		blockRow.classList.add('blockRow');
 		//body.append(blockRow);
-		groupResults.appendChild(blockRow);
+		groupResults.append(blockRow);
 		
 		// THE COMPONENTS ON THE BASIC AREA - MADE UP OF THREE PARTS (ROWS)
 		
@@ -154,11 +148,7 @@ function create(data, querySubmit, rankSubmit)
 		flexPartDescription.style.display = 'none';
 		flexPartImages.style.display = 'none';
 		
-		blockRow.appendChild(flexPartRanks);
-		blockRow.appendChild(line1);
-		blockRow.appendChild(flexPartDescription);
-		blockRow.appendChild(line2);
-		blockRow.appendChild(flexPartImages);
+		blockRow.append(flexPartRanks, line1, flexPartDescription, line2, flexPartImages);
 		
 		let color = getRndInteger(0,360);
 		
@@ -262,12 +252,11 @@ function create(data, querySubmit, rankSubmit)
 				rankClassification.innerHTML = taxaKeys[y].toUpperCase();
 				rankName.innerHTML = data[x][taxaKeys[y]];
 				rankClassification.classList.add('rankClassification');
-				taxaBlocks[y].appendChild(rankClassification);
-				taxaBlocks[y].appendChild(rankName);
+				taxaBlocks[y].append(rankClassification, rankName);
 				
 				const rankDescriptionContent = document.createElement('div');
 				rankDescriptionContent.classList.add('rankDescription');
-				flexPartDescription.appendChild(rankDescriptionContent);
+				flexPartDescription.append(rankDescriptionContent);
 
 				GBIFResult[taxaKeys[y]].keyID = keyID;
 				GBIFResult[taxaKeys[y]].canonicalName = data[x][taxaKeys[y]];
@@ -311,7 +300,7 @@ function create(data, querySubmit, rankSubmit)
 				})
 			}
 			
-			flexPartRanks.appendChild(taxaBlocks[y]);
+			flexPartRanks.append(taxaBlocks[y]);
 			if (taxaKeys[y] !== rankSubmit)
 			{
 				taxaBlocks[y].style.display = "none";
@@ -322,7 +311,7 @@ function create(data, querySubmit, rankSubmit)
 		}
 		
 		const arrow = document.createElement('div');
-		flexPartRanks.appendChild(arrow);
+		flexPartRanks.append(arrow);
 		arrow.classList.add('arrow');
 		arrow.innerHTML = '⦿'; // ⪡ ⪢ ⋖ ⋗⩹⩺ ≪≫ ⦾⦿⊙ ⧀⧁ ⧏⧐ ⩹⩺⪢ ⪦⪧ ⪻⪼ ⫷⫸ ▢▣ ⋘⋙  ᗞ ᗡ ᗧ
 		arrow.addEventListener('click', ()=> {GBIFResultOpenClose(GBIFResult, true)});
@@ -345,7 +334,7 @@ function createSummary()
 		//rankClassification.classList.add('rankClassification');
 		info.innerHTML = group.GBIFResults.length+" results for <i><strong>"+group.name+"</i></strong><br>("+group.searchParameter.toUpperCase()+" search)";
 		statBlock.classList.add('baseBlock', 'summery');
-		statBlock.appendChild(info);
+		statBlock.append(info);
 		let moment = 0;
 		let backgroundColorAni;
 		let fontColorAni;
@@ -404,7 +393,7 @@ function createSummary()
 				window.scrollBy(0, group.head.getBoundingClientRect().top);
 			}
 		});
-		resultOverview.appendChild(statBlock);
+		resultOverview.append(statBlock);
 	}
 }
 

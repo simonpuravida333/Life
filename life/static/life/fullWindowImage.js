@@ -13,11 +13,11 @@ fullWindow.addEventListener('wheel', (event)=>
 	if (event.deltaY > 0) goRight();
 	else goLeft();
 });
-body.appendChild(fullWindow);
+body.append(fullWindow);
 
 // THE FULL-WINDOW IMAGE
 const fullWindowImage = document.createElement('IMG');
-fullWindow.appendChild(fullWindowImage);
+fullWindow.append(fullWindowImage);
 
 // NAVIGATION INTERACTION
 const arrow = document.createElement('div');
@@ -67,11 +67,8 @@ escape.onmouseout = ()=>
 };*/
 escape.onclick = ()=> leaveFullWindow();
 
-fullWindow.appendChild(arrowRight);
-fullWindow.appendChild(arrowLeft);
-fullWindow.appendChild(svg2);
-//fullWindow.appendChild(escapeBorder);
-fullWindow.appendChild(escape);
+fullWindow.append(arrowRight, arrowLeft, svg2, escape);
+//fullWindow.append(escapeBorder);
 
 // KEY LISTENER FOR FULL WINDOW 
 window.addEventListener('keydown', (event)=>

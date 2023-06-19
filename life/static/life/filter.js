@@ -50,7 +50,7 @@ function constructFilter()
 			const opt = document.createElement('option');
 			opt.value = option;
 			opt.innerHTML = option;
-			allRankFilters[rank].appendChild(opt);
+			allRankFilters[rank].append(opt);
 		}
 	}
 			
@@ -59,12 +59,12 @@ function constructFilter()
 		const opt = document.createElement('option');
 		opt.value = '...'
 		opt.innerHTML = '...'
-		allRankFilters[rank].appendChild(opt);
+		allRankFilters[rank].append(opt);
 		if (rank === 0 || rank === 6) continue;
 		const opt2 = document.createElement('option');
 		opt2.value = 'No rank.';
 		opt2.innerHTML = '<i>No rank.</i>';
-		allRankFilters[rank].appendChild(opt2);
+		allRankFilters[rank].append(opt2);
 	}
 	selectRank(-1); // initialize filter selection after having queried new results
 }

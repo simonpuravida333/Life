@@ -56,7 +56,7 @@ for (const key of taxaKeys)
 	opt.value = key;
 	opt.innerHTML = key.toUpperCase();
 	if(key == 'species') opt.selected=true;
-	rankCondition.appendChild(opt);
+	rankCondition.append(opt);
 }
 const seperation = document.createElement('option');
 seperation.value = 'seperation';
@@ -77,12 +77,7 @@ const canonicalName = document.createElement('option');
 canonicalName.value = 'canonicalName';
 canonicalName.innerHTML= 'CANONICAL NAME';
 
-rankCondition.appendChild(seperation);
-rankCondition.appendChild(any);
-rankCondition.appendChild(highestRank);
-rankCondition.appendChild(allRanks);
-rankCondition.appendChild(seperation2);
-rankCondition.appendChild(canonicalName);
+rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canonicalName);
 
 searchSection.id = 'searchSection';
 textareaNameSearch.id = 'textareaNameSearch';
@@ -101,11 +96,7 @@ howTo.addEventListener('click', ()=>
 	else howToText.style.display = 'none';
 });
 
-searchSection.appendChild(textareaNameSearch);
-searchSection.appendChild(rankCondition);
-searchSection.appendChild(searchGo);
-searchSection.appendChild(howTo);
-searchSection.appendChild(howToText);
+searchSection.append(textareaNameSearch, rankCondition, searchGo, howTo, howToText);
 body.append(searchSection);
 
 textareaNameSearch.addEventListener('mouseover',()=>{if (textareaNameSearch !== document.activeElement) textareaNameSearch.animate([{backgroundColor: '#409CB5' },{backgroundColor: '#8FE2FF' }],fadeTime)});
@@ -129,7 +120,7 @@ const filterArea = document.createElement('div');
 filterArea.classList.add('blockRow', 'flexPart');
 // filterArea.style.display = 'none';
 filterArea.style.opacity = 0;
-body.appendChild(filterArea);
+body.append(filterArea);
 const allRankFilters = [];
 
 for (const rank of taxaKeys)
@@ -142,9 +133,8 @@ for (const rank of taxaKeys)
 	rankFilter.classList.add('select', 'filter');
 	rankFilter.addEventListener('change', ()=> selectRank(taxaKeys.indexOf(rank)));
 	allRankFilters.push(rankFilter);
-	container.appendChild(selectTitle);
-	container.appendChild(rankFilter);
-	filterArea.appendChild(container);
+	container.append(selectTitle, rankFilter);
+	filterArea.append(container);
 	
 	rankFilter.addEventListener('mouseover',()=>{if (rankFilter !== document.activeElement) rankFilter.animate([{backgroundColor: '#2BAF60' },{backgroundColor: '#8AED97' }],fadeTime)});
 	rankFilter.addEventListener('mouseout',()=>{if (rankFilter !== document.activeElement) rankFilter.animate([{backgroundColor: '#8AED97' },{backgroundColor: '#2BAF60' }],fadeTime)});

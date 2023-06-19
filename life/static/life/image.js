@@ -70,7 +70,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		let moment = new Date().getTime();
 		if (Array.prototype.indexOf.call(r.images.children, svg) === -1)
 		{
-			r.images.appendChild(svg);
+			r.images.append(svg);
 			svg.animate(fadeIn, timing);
 		} // if not -1, it means it didn't fetch an image in the previous getImage() call, so is still in the addNextImage() loop (animation fades out and gets removed when theImage is an image (is not false). If it wasn't for this if-check, the animation would slightly flicker, as for every 404 when it runs through here, it's (re)appending and fading in the animation that is alreaedy there. Intention: while addNextImage loops through  404s, the animation stays a continuous loading animation until it finds an image.
 		r.images.scrollLeft = r.images.scrollWidth-r.images.offsetWidth-2; // makes the loading animation visible.
@@ -115,7 +115,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 			{
 				r.imagesObject.images.push(clonedImage);
 				r.imagesObject.occurrencesCount++;
-				r.images.appendChild(theImage);
+				r.images.append(theImage);
 			}
 			
 			theImage.classList.add('resultImage');
@@ -195,7 +195,7 @@ function renderImageText(theImage, theText, frameColor)
 	renderedText.style['user-select'] = 'none';
 	renderedText.style.opacity = 0;
 	renderedText.style.display = 'none';
-	body.appendChild(renderedText);
+	body.append(renderedText);
 	
 	let isHovering = false;
 	

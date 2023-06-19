@@ -14,4 +14,3 @@ distribution = document.createElement('input');
 distribution.id = 'textareaNameSearch';
 description = document.createElement('input');
 description.id = 'textareaNameSearch';
-// NEXT UP: RANK F I L T E R
