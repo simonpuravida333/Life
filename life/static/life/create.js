@@ -116,8 +116,6 @@ function create(data, querySubmit, rankSubmit)
 	for (const eachArr of twoDArray) data.push(eachArr[1]);
 	// END SORT
 	
-	// CAUTION for python-thinkers: in for-in loop x is a stringified number ('2' instead of 2) ...for-in works most of the time, the interpreter always recognizes it as a number when it needs to. At least most of the time: of course it gets iffy if you want sth like array[x+2] as index. Concerning loops with a lot of content like this one, staying with integers ('number' type in js) is probably safest, meaning: classical for or while loop.
-	// In the for-of loop, x would become every individual object (e.g. if you have a list of div-elements, x becomes each div-element).
 	for (let x = 0; x < data.length; x++)
 	{	
 		console.log(data[x]);
@@ -130,8 +128,6 @@ function create(data, querySubmit, rankSubmit)
 		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, when user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
 		// also called 'targetRank' in the GBIFResult object (below), it is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden).
 		console.log(rankSubmit);
-		
-		
 		
 		// THE BASIC AREA FOR EACH RESULT
 		const blockRow = document.createElement('div');
@@ -596,10 +592,6 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 							}
 						}
 						r.arrow.animate(fadeIn, fadeTime).onfinish = ()=>{r.arrow.style.opacity = 1}
-						// (earlier I used for-in loop and wrote this): it's unexpected to me how 'y' is not undefined, but is literally saved in the setTimeouts for every cycle. The loop has long finished when the first animations start. The interpreter doesn't wait for .animation, .onfinish or setTimeout. So the peripheral y should be gone, but it's not. Anyways, more convenient this way. I can only explain it that the interpreter literally takes a snapshot of the setTimeout arrow function on every cycle, and replaces y with the value. Usually you get errors from functions only once they get executed, not just execution errors but also errors like undeclared varaibles are only realized on function execution, meaning the interpreter never looked at the function body before. But in this case it does apparently read the arrow functions before execution.
-						// a moment later and I know now why. Having scrolled up after writing the upper line, I see the for-in loop and have a hunch, so I replace it with a classical for-loop and get undefineds as expected. Next stop is the MDN doc and everything becomes clear. It was a mistake to assume JS for...ins are like the ones in Python, they're very different. The intention of the JS for...in is to BECOME the key, in this case it's the indeces of the array. Because it reads keys as strings, it places the stringified indeces all over the loop-content aka setTimeout content, the interpreter then takes the string-number as a number and it works. JS for...ins have been designed to iterate through objects, hence the ability for y to become the key to access the values; so it iterates through the array-objects ("Array indexes are just enumerable properties with integer names and are otherwise identical to general object properties."), which makes them slower. They'll skip empty values, will yield added prototype properties, and are not guaranteed to keep order of array-elements, though I never had problems. That's why, while not considered bad practice, for-ins are generally not recommended for arrays outside of development.
-						// But ironically, the fact that I didn't know about this before made everything work conveniently. ... it's sad, for-ins are so much more comfortable to write, I assumed originally this was their design purpose. Because it's literally a silly thing to write x<something.length, and also the something++ every time. Most of the time you just want to iterate from beginning, slot by slot, throw in a break if you want to get out earlier. for...of traverses the elements themselves, so for-in was literally the only one that would generate indeces from arrays with objects like taxaBlocks. I'm now annoyed that JS doesn't provide a lookable syntax for a loop that just automatically produces indeces and automatically iterates to end, like Python for...ins. for-of loops don't deliver as soon as you have various things going on that depend on the indeces.
-						// Because of that I simply created an array 'ranks' (in startup.js) with integers of taxaKeys.length and use it to swap the for-ins with for-ofs.
 					}
 				},fadeTime);
 			},fadeTime);
