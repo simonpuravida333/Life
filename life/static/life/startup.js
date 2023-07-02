@@ -46,9 +46,12 @@ const ranks = [0,1,2,3,4,5,6]; // allows me to use for-of loops in JS as if it w
 const searchSection = document.createElement('div');
 const textareaNameSearch = document.createElement('input');
 const rankCondition = document.createElement('select');
+const withinSearch = document.createElement('div');
+const searchFrameCore = document.createElement('div');
 const searchGo = document.createElement('button');
 const howTo = document.createElement('div');
 const howToText = document.createElement('div');
+let withinSearchActivated = false;
 
 for (const key of taxaKeys)
 {
@@ -77,11 +80,13 @@ const canonicalName = document.createElement('option');
 canonicalName.value = 'canonicalName';
 canonicalName.innerHTML= 'CANONICAL NAME';
 
-rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canonicalName);
+rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canonicalName)
 
 searchSection.id = 'searchSection';
 textareaNameSearch.id = 'textareaNameSearch';
 rankCondition.classList.add('select');
+withinSearch.id = 'withinSearch';
+searchFrameCore.id = 'searchFrameCore';
 searchGo.id = 'searchGo';
 howTo.id = 'howTo';
 howToText.id = 'howToText';
@@ -96,15 +101,99 @@ howTo.addEventListener('click', ()=>
 	else howToText.style.display = 'none';
 });
 
-searchSection.append(textareaNameSearch, rankCondition, searchGo, howTo, howToText);
+withinSearch.append(searchFrameCore);
+searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, howTo, howToText);
 body.append(searchSection);
 
-textareaNameSearch.addEventListener('mouseover',()=>{if (textareaNameSearch !== document.activeElement) textareaNameSearch.animate([{backgroundColor: '#409CB5' },{backgroundColor: '#8FE2FF' }],fadeTime)});
-textareaNameSearch.addEventListener('mouseout',()=>{if (textareaNameSearch !== document.activeElement) textareaNameSearch.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#409CB5' }],fadeTime)});
-rankCondition.addEventListener('mouseover',()=>{if (rankCondition !== document.activeElement) rankCondition.animate([{backgroundColor: '#409CB5' },{backgroundColor: '#8FE2FF' }],fadeTime)});
-rankCondition.addEventListener('mouseout',()=>{if (rankCondition !== document.activeElement) rankCondition.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#409CB5' }],fadeTime)});
+textareaNameSearch.addEventListener('mouseover',()=>
+{
+	if (textareaNameSearch !== document.activeElement) 
+	{
+		if (!withinSearchActivated) textareaNameSearch.animate([{backgroundColor: '#409CB5' },{backgroundColor: '#8FE2FF' }],fadeTime);
+		else textareaNameSearch.animate({backgroundColor: ['orange','white']},fadeTime);
+	}
+});
+textareaNameSearch.addEventListener('mouseout',()=>
+{
+	if (textareaNameSearch !== document.activeElement)
+	{
+		if (!withinSearchActivated) textareaNameSearch.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#409CB5' }],fadeTime);
+		else textareaNameSearch.animate({backgroundColor: ['white','orange']},fadeTime);
+	}
+});
+rankCondition.addEventListener('mouseover',()=>
+{
+	if (rankCondition !== document.activeElement)
+	{
+		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#409CB5','#8FE2FF']},fadeTime);
+		else rankCondition.animate({backgroundColor: ['orange','white']},fadeTime);
+	}
+});
+rankCondition.addEventListener('mouseout',()=>
+{
+	if (rankCondition !== document.activeElement)
+	{
+		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#8FE2FF','#409CB5']},fadeTime);
+		else rankCondition.animate({backgroundColor: ['white','orange']},fadeTime);
+	}
+});
 searchGo.addEventListener('mouseover', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
 searchGo.addEventListener('mouseout', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
+withinSearch.addEventListener('mouseover', ()=>
+{ 
+	if (!withinSearchActivated) withinSearch.animate({borderColor: ['#409CB5','orange']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = 'orange';
+});
+withinSearch.addEventListener('mouseout', ()=>
+{ 
+	if (!withinSearchActivated) withinSearch.animate({borderColor: ['orange','#409CB5']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = '#409CB5';
+});
+withinSearch.addEventListener('click', ()=>
+{
+	withinSearchActivated ^= true;
+	if (withinSearchActivated)
+	{
+		limitOptions(true);
+		searchFrameCore.style.display = 'block';
+		searchFrameCore.animate({opacity: [0,1], width: ['0px','22px'],height: ['0px','22px'], margin: ['18px','5px']},fadeTime/2);
+		rankCondition.classList.add('withinOptions');
+		textareaNameSearch.classList.add('textareaWithinSearch');
+		withinSearch.style['border-color'] = 'orange';
+	}
+	else
+	{
+		limitOptions(false);
+		searchFrameCore.animate({opacity: [1,0],width: ['22px','0px'],height:['22px','0px'], margin: ['5px','18px']},fadeTime/2).onfinish=()=> searchFrameCore.style.display = 'none';
+		rankCondition.classList.remove('withinOptions');
+		textareaNameSearch.classList.remove('textareaWithinSearch');
+		withinSearch.style['border-color'] = '#409CB5';
+	}
+});
+
+function limitOptions(limit)
+{
+	if (limit) for (const option of rankCondition.options)
+	{
+		let foundOne = false;
+		for (const key of taxaKeys) if (option.value === key && option.value !== 'species')
+		{
+			foundOne = true;
+			option.innerHTML = "within "+ option.innerHTML;
+		}
+		if (!foundOne) option.style.display = 'none';
+		let reset = true;
+		for (const key of taxaKeys) if (rankCondition.value === key && rankCondition.value !== 'species') reset = false;
+		if (reset) rankCondition.value = 'genus';
+	}
+	else
+	{
+		for (const option of rankCondition.options)
+		{
+			option.innerHTML = option.innerHTML.replace('within ','');
+			option.style.display = null;
+		}
+	}
+}
+
 // END SEARCH SECTION
 
 // RESULT OVERVIEW SECTION
@@ -149,17 +238,17 @@ searchSection.addEventListener('change', ()=>
 	}
 	if (rankCondition.value === 'highestRank')
 	{
-		rankCondition.style['width'] = '200px';
+		rankCondition.style.width = '200px';
 	}
 	else if (rankCondition.value === 'allRanks')
 	{
-		rankCondition.style['width'] = '160px';
+		rankCondition.style.width = '160px';
 	}
 	else if (rankCondition.value === 'canonicalName')
 	{
-		rankCondition.style['width'] = '240px';
+		rankCondition.style.width = '240px';
 	}
-	else rankCondition.style['width'] = '140px';
+	else if (searchFrameCore.style.display === 'none') rankCondition.style = null;
 });
 
 searchGo.addEventListener('click',()=>
@@ -193,13 +282,15 @@ searchGo.addEventListener('click',()=>
 //search('Brassica oleracea', 'canonicalName');
 //search('Heliconia platystachys','canonicalName');
 //search(2760726,'species');
-search('bird of paradise','species');
+//search('bird of paradise','species');
 //search('loboparadisea sericea','canonicalName'); // closed when still fetching initial images
 //search('semioptera wallacii','canonicalName');
 //search('Paradisaea decora','canonicalName');
 //search('whale','family');
+//withinSearchActivated = true;
+//search('ParadisaeiDAE','family');
 
-export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters};
+export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
 // Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.

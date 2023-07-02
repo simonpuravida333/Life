@@ -3,7 +3,7 @@ import {svg, fadeIn, fadeOut, timing, fadeTime, fontOpacityZeroToFull} from './a
 import {fullWindow, displayImageFullWindow} from './fullWindowImage.js';
 
 const body = document.querySelector('body');
-// add comment
+
 function displayImages(allImageSources, GBIFResult, originOfCall, y)
 {
 	console.log(allImageSources);
@@ -35,7 +35,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		// console.log("offsetWidth "+r.images.offsetWidth);
 		// console.log("scrollLeft: "+Math.round(r.images.scrollLeft));
 		
-		if (unlockPushRight && r.images.offsetWidth + r.images.scrollLeft +1 >= r.images.scrollWidth && counter < allImageSources.links.length) // unlockPushRight is a necessity because whenever you scroll to the right border (and keep pressing against it), this listener fires a addNextImage() call, which stacks up to many concurrent calls within split seconds. Await wouldn't work as it would still be mutliple addNextImage() calls (all awaiting the promise return). ... the +1 pixel is probably a necessity as the numbers may not always perfectly add up (scrollLeft produces wild floating points).
+		if (unlockPushRight && r.images.offsetWidth + r.images.scrollLeft +1 >= r.images.scrollWidth && counter < allImageSources.links.length) // unlockPushRight is a necessity because whenever you scroll to the right border (and keep pressing against it), this listener fires a addNextImage() call, which stacks up to many concurrent calls within split seconds. ...the +1 pixel is probably a necessity as the numbers may not always perfectly add up (scrollLeft produces wild floating points).
 		{
 			unlockPushRight = false;
 			addNextImage();
@@ -60,6 +60,12 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 			return true;
 		}
 		return false;
+	}
+	
+	async function checkCurrentlyFetching()
+	{
+		await new Promise(resolve => setTimeout(resolve,100));
+		return unlockAddImage;
 	}
 	
 	async function getImage()
@@ -158,7 +164,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 				{
 					if (new Date().getTime() - start > 15000)
 					{
-						resolve(); // this is for slow servers that neither send an error nor (seemingly) an image. The image may be pre/appended half-loaded (half visible) to r.images after 15 secs and will keep loading until finished, but at least the app moves on to the next one already.
+						resolve(); // this is for slow servers that neither send an error nor (seemingly) an image. The image may be pre/appended half-loaded (and half visible) to r.images after 15 secs and will keep loading until finished, but at least the app moves on to the next one already.
 						console.log('TIMEOUT after 15 sec');
 						clearInterval(timeout);
 					}
@@ -173,7 +179,11 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		else return image;
 	}
 	
-	if (originOfCall === 'OCCURRENCE' && allImageSources.links.length > 0) r.imagesObject.functionAddNextOccurrence = addNextImage;
+	if (originOfCall === 'OCCURRENCE' && allImageSources.links.length > 0)
+	{
+		r.imagesObject.functionAddNextOccurrence = addNextImage;
+		r.imagesObject.functionCheckCurrentlyFetching = checkCurrentlyFetching;
+	}
 	if (originOfCall === 'OCCURRENCE' && allImageSources.links.length === 0)
 	{
 		r.imagesObject.downloadedAllOccurrences = true;
@@ -216,7 +226,7 @@ function renderImageText(theImage, theText, frameColor)
 		renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
 		renderedText.style.left = mouse.clientX+50+'px';
 	}
-	renderedText.onmousemove= (mouse)=> // it is possible to move the mouse quicker than rendering sometimes, causing the mouse to hover over the text-div, esp from quick left-to-right movements. The runtime then thinks the mouse is not hovering over the image anymore and triggers an image-mouseout. So this listener will set the div next to the mouse should the mouse touch it.
+	renderedText.onmousemove = (mouse)=> // it is possible to move the mouse quicker than rendering sometimes, causing the mouse to hover over the rendered text-div, esp from quick left-to-right movements (as the div appears right of the mouse). The runtime then thinks the mouse is not hovering over the image anymore and triggers an image-mouseout. So this listener will set the div next to the mouse should the mouse touch it.
 	{
 		renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
 		renderedText.style.left = mouse.clientX+50+'px';

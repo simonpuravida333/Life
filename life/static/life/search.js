@@ -1,5 +1,5 @@
 import {create} from './create.js';
-import {taxaKeys} from './startup.js';
+import {taxaKeys, withinSearchActivated} from './startup.js';
 
 var goThroughRanks = 0;
 
@@ -29,6 +29,12 @@ export default function search(querySubmit, rankSubmit)
 	{
 		console.log(taxaKeys[goThroughRanks]);
 		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+"&rank="+taxaKeys[goThroughRanks]+'&qField=VERNACULAR&limit=500&status=ACCEPTED&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
+	}
+	else if (withinSearchActivated)
+	{
+		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+'&rank=species&limit=1000&status=ACCEPTED&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
+		rankSubmit = 'within '+rankSubmit;
+		console.log('within-rank query');
 	}
 	else
 	{

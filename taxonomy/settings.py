@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+    #'livereload.middleware.LiveReloadScript', # doesn't work (refreshing the (browser-cached) front-end) and slows down page reloading considerably.
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

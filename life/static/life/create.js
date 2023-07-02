@@ -16,7 +16,17 @@ function create(data, querySubmit, rankSubmit)
 {
 	if (resultOverview.style.opacity < 0.9) resultOverview.animate(fadeIn, fadeTime).onfinish = ()=>{resultOverview.style.opacity = 1;};
 	if (filterArea.style.opacity < 0.9) filterArea.animate(fadeIn, fadeTime).onfinish = ()=>{filterArea.style.opacity = 1;}; // why 0.9? becuase maybe the user is so fast and hits enter on a pre-typed text just after having deleted a group. It's highly unlikely though.
-	console.log(data);
+	
+	let withinRank = false;
+	let withinThisRank = '';
+	if (rankSubmit.search('within') !== -1)
+	{
+		querySubmit = querySubmit.slice(0,1).toUpperCase()+querySubmit.slice(1).toLowerCase();
+		withinThisRank = rankSubmit.replace('within ','');
+		withinRank = true;
+	}
+	
+	//console.log(data);
 	
 	// CREATE GROUP TITLE SECTION / BEGINNING OF GROUP (OF RESULTS)
 	const newGroup = document.createElement('div');
@@ -72,20 +82,19 @@ function create(data, querySubmit, rankSubmit)
 			}
 		}
 	});
-	const theAni = groupTitle.animate([{letterSpacing: '0.2em'},{letterSpacing: '0.5em'}],fadeTime);
+	const theAni = groupTitle.animate({letterSpacing: ['0.2em','0.35em']},{duration: fadeTime, easing: 'ease-in-out'});
 	theAni.pause();
 	groupTitle.addEventListener('mouseover', () =>
 	{
 		if (theAni.playbackRate === -1) theAni.playbackRate = 1; // reverse() function mulitplies playbackRate with -1. So once the mouseout is triggered, it will be reversed here in the second mouseover use. Meaning every second usage of mouse over / out it would be inverted without this check.
 		theAni.play();
-		theAni.onfinish = ()=> groupTitle.style['letter-spacing'] = '0.5em';
+		theAni.onfinish = ()=> groupTitle.style['letter-spacing'] = '0.35em';
 	});
 	groupTitle.addEventListener('mouseout', () =>
 	{
 		theAni.reverse();
 		theAni.onfinish = ()=> groupTitle.style['letter-spacing'] = '0.2em';
 	});
-	
 	// END GROUP TITLE SECTION
 	
 	// OBJECT THAT SAVES THE GROUP + SOME DATA
@@ -100,7 +109,7 @@ function create(data, querySubmit, rankSubmit)
 	allQueriesGroups.push(queryGroup); // ...AND ARRAY THAT HOLDS ALL THE GROUP OBJECTS
 	
 	// ALPHABETICALLY SORT DATA
-	const twoDArray = []; // in JS you can't directly insantiate multiple-dimension arrays like "array = [][]", instead have to construct them like objects, because that's what arrays are in JS.
+	const twoDArray = []; // in JS you can't directly insantiate multiple-dimension arrays like "array = [][]", instead you have to construct them like objects, because that's what arrays are in JS.
 	for (const eachResult of data) twoDArray.push([eachResult.canonicalName, eachResult]);
 	twoDArray.sort(); // will automatically sort the array by reading the first slot of each sub-array.
 	data = [];
@@ -111,14 +120,18 @@ function create(data, querySubmit, rankSubmit)
 	// In the for-of loop, x would become every individual object (e.g. if you have a list of div-elements, x becomes each div-element).
 	for (let x = 0; x < data.length; x++)
 	{	
+		console.log(data[x]);
 		// FILTER
 		if(data[x].synonym === true) continue;
-		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank) continue;
+		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank && !withinRank) continue;
+		if (withinRank) if (data[x][withinThisRank] !== querySubmit) continue;
 		// ENDFILTER
 		
 		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, when user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
 		// also called 'targetRank' in the GBIFResult object (below), it is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden).
 		console.log(rankSubmit);
+		
+		
 		
 		// THE BASIC AREA FOR EACH RESULT
 		const blockRow = document.createElement('div');
@@ -170,6 +183,7 @@ function create(data, querySubmit, rankSubmit)
 			occurrencesCount: 0,
 			functionAddNextOccurrence: null,
 			downloadedAllOccurrences: false,
+			functionCheckCurrentlyFetching: null,
 		};
 		
 		const rankProperties =
@@ -552,7 +566,7 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 					}
 				}
 			}
-			if (r.imagesObject.functionAddNextOccurrence !== null && r.images.scrollWidth === r.images.offsetWidth) {console.log('REMOTE FETCH CALL + continuing trying to fill white space with images'); r.imagesObject.functionAddNextOccurrence()}; // this is for the rather rare case when the user closes the GBIFResult BEFORE it had fetched enough images to fill the horizontal space. The checkWidth() function fires only once when the user opens a result for the first time, but it would get aborted (by a check in addNextImage()) if the user would close GBIFResult before it would fill the horizontal r.images.
+			if (r.imagesObject.functionAddNextOccurrence !== null && r.images.scrollWidth === r.images.offsetWidth) {console.log('REMOTE FETCH CALL + continuing trying to fill white space with images'); r.imagesObject.functionAddNextOccurrence()}; // this is for the rather rare case when the user closes the GBIFResult BEFORE it had fetched enough images to fill the horizontal space. The checkWidth() function fires only once when the user opens a result for the first time, but it would get aborted (by a check in addNextImage()) if the user would close GBIFResult before it would fill the horizontal r.images. Hence this if-check;
 		}
 	}
 	else
@@ -616,8 +630,9 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 	calledFromArrow = false;
 }
 
-function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) ) + min;
+function getRndInteger(min, max)
+{
+	return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
 export {create, allGBIFResults};

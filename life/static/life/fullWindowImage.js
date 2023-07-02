@@ -108,7 +108,7 @@ function goFullWindow()
 	svg2.style.top = '50%';
 	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // First I use the percentage to the place it, and then relocate it a few pixels. The purpose of this is to move the loading ring a little bit to place it perfectly center on the arrow. Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
 	svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
-	// console.log("SCROLL HEIGHT: "+window.scrollY);
+	//console.log("SCROLL HEIGHT: "+window.scrollY);
 	//escapeBorder.style.left = '95%';
 	//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';
 }
@@ -168,7 +168,8 @@ async function goRight()
 			presentImageIndex = presentImgObject.images.length-1; 
 			fullWindowNavigationStates('atEndDownloadMore');
 			svg2.animate(fadeIn, timing).onfinish = ()=>{svg2.style.opacity = 1;}
-			await presentImgObject.functionAddNextOccurrence();
+			const theReturn = await presentImgObject.functionAddNextOccurrence();
+			if (!theReturn) while(!(await presentImgObject.functionCheckCurrentlyFetching())) console.log('addNextImage() IS IN LOCK!');
 			svg2.animate(fadeOut, timing).onfinish = ()=>{svg2.style.opacity = 0;}
 			lockedFetchNext = false;
 			if (presentImageIndex === presentImgObject.images.length-2) // if user has not gone off leftwards to look at the already loaded images while the next one is being fetched.
@@ -208,12 +209,12 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 	if (GBIFResult !== undefined)
 	{
 		presentObject = GBIFResult;
-		presentImgObject = GBIFResult.imagesObject;
+		presentImgObject = GBIFResult.imagesObject; // for convenience :)
 	}
+	
 	if (fullWindow.style.display === 'none') goFullWindow();
 	
 	fullWindowImage.src = presentImgObject.images[presentImageIndex].src;
-
 	fullWindowImage.onload = () =>
 	{
 		if (rerender) fullWindowImage.style.opacity = 1/3;
@@ -247,7 +248,7 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 		fullWindowImage.style.left = '50%';
 		fullWindowImage.style.top = '50%';
 		fullWindowImage.style.transform = 'translate(-50%,-50%)';
-		if (rerender) fullWindowImage.animate(imageFadeIn, fadeTime).onfinish = ()=> {fullWindowImage.style.opacity = 1};
+		if (rerender) fullWindowImage.animate(imageFadeIn, fadeTime).onfinish = ()=> fullWindowImage.style.opacity = 1;
 		
 		if (presentImageIndex === 0 && !presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('atBeginning'); // the second if-check is necessary in case there's only one occurrence image coming from the fetch.js.
 		else if (presentImageIndex === 0 && presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('onlyOneImage');
