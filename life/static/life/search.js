@@ -28,7 +28,7 @@ export default function search(querySubmit, rankSubmit)
 	else if (rankSubmit === 'highestRank')
 	{
 		console.log(taxaKeys[goThroughRanks]);
-		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+"&rank="+taxaKeys[goThroughRanks]+'&qField=VERNACULAR&limit=500&status=ACCEPTED&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
+		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+"&rank="+taxaKeys[goThroughRanks]+'&qField=VERNACULAR&limit=500&status=ACCEPTED&isExtinct=false&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
 	}
 	else if (withinSearchActivated)
 	{
@@ -48,7 +48,7 @@ export default function search(querySubmit, rankSubmit)
 				}
 				else
 				{
-					fetchThis = 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED';
+					fetchThis = 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED&isExtinct=false';
 					checkResponse(fetchThis, querySubmit, 'every '+rankSubmit+' within');
 				}
 			});
@@ -59,7 +59,7 @@ export default function search(querySubmit, rankSubmit)
 		let rankConditionFetchParam;
 		if (rankSubmit === 'any') rankConditionFetchParam = "";
 		else rankConditionFetchParam = "&rank="+rankSubmit;
-		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
+		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&isExtinct=false&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
 		console.log('vernacular name query');
 	}
 	if (!withinSearchActivated) checkResponse(fetchThis, querySubmit, rankSubmit);

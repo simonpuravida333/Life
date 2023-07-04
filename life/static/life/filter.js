@@ -153,15 +153,24 @@ function checkAlreadyThere(optionsArray, newOpt)
 function highlightOptionsLowerRanks(rankIndex)
 {
 	for (const filter of allRankFilters) for (const option of filter.options) option.classList.remove('highlightFilterOption');
-	if (rankIndex === 6) return;
+	if (rankIndex === 6 || allRankFilters[0].value === '...') return;
 	const selectedArrays = [];
+	
+	if (allRankFilters[rankIndex].value === '...') rankIndex--; // if a rank is reset ('...') move a rank higher to make array selections on the higher rank
 	for (const array in allRanksOfAllResults) if (allRankFilters[rankIndex].value === allRanksOfAllResults[array][rankIndex]) selectedArrays.push(allRanksOfAllResults[array]);
 	
-	for (let index = rankIndex+1; index < ranks.length; index++)
+	if (allRankFilters[rankIndex].value === '...') rankIndex += 2;
+	else rankIndex++; // move a rank lower to make highlighting in the options from the rank one lower and onwards of user filter choice
+
+	for (let index = rankIndex; index < ranks.length; index++)
 	{
 		for (const option of allRankFilters[index].options)
 		{
-			for (const array of selectedArrays) if(option.value === array[index]) option.classList.add('highlightFilterOption');
+			for (const array of selectedArrays) if(option.value === array[index])
+			{
+				option.classList.add('highlightFilterOption');
+				console.log('HAPPENING');
+			}
 		}
 	}
 }
