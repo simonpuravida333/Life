@@ -151,6 +151,7 @@ withinSearch.addEventListener('mouseout', ()=>
 withinSearch.addEventListener('click', ()=>
 {
 	withinSearchActivated ^= true;
+	
 	if (withinSearchActivated)
 	{
 		limitOptions(true);
@@ -159,6 +160,9 @@ withinSearch.addEventListener('click', ()=>
 		rankCondition.classList.add('withinOptions');
 		textareaNameSearch.classList.add('textareaWithinSearch');
 		withinSearch.style['border-color'] = 'orange';
+		rankCondition.style.width = '280px';
+		rankCondition.animate({opacity: [1,0]},333).onfinish = ()=> rankCondition.animate({opacity: [0,1]},333);
+		textareaNameSearch.animate({opacity: [1,0]},333).onfinish = ()=> {textareaNameSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(rankCondition, textareaNameSearch)}
 	}
 	else
 	{
@@ -167,6 +171,9 @@ withinSearch.addEventListener('click', ()=>
 		rankCondition.classList.remove('withinOptions');
 		textareaNameSearch.classList.remove('textareaWithinSearch');
 		withinSearch.style['border-color'] = '#409CB5';
+		rankCondition.style.width = '140px';
+		rankCondition.animate({opacity: [1,0]},333).onfinish = ()=> rankCondition.animate({opacity: [0,1]},333);
+		textareaNameSearch.animate({opacity: [1,0]},333).onfinish = ()=> {textareaNameSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(textareaNameSearch, rankCondition)}
 	}
 });
 
@@ -175,21 +182,22 @@ function limitOptions(limit)
 	if (limit) for (const option of rankCondition.options)
 	{
 		let foundOne = false;
-		for (const key of taxaKeys) if (option.value === key && option.value !== 'species')
+		for (const key of taxaKeys) if (option.value === key && key !== 'kingdom')
 		{
 			foundOne = true;
-			option.innerHTML = "within "+ option.innerHTML;
+			option.innerHTML = "every "+ option.innerHTML+ " within";
 		}
 		if (!foundOne) option.style.display = 'none';
 		let reset = true;
-		for (const key of taxaKeys) if (rankCondition.value === key && rankCondition.value !== 'species') reset = false;
+		for (const key of taxaKeys) if (rankCondition.value === key && key !== 'kingdom') reset = false;
 		if (reset) rankCondition.value = 'genus';
 	}
 	else
 	{
 		for (const option of rankCondition.options)
 		{
-			option.innerHTML = option.innerHTML.replace('within ','');
+			option.innerHTML = option.innerHTML.replace('every ','');
+			option.innerHTML = option.innerHTML.replace(' within','');
 			option.style.display = null;
 		}
 	}
@@ -249,7 +257,7 @@ searchSection.addEventListener('change', ()=>
 	{
 		rankCondition.style.width = '240px';
 	}
-	else if (withinSearchCore.style.display === 'none') rankCondition.style = null;
+	else if (!withinSearchActivated) rankCondition.style = null;
 });
 
 searchGo.addEventListener('click',()=>

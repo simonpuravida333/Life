@@ -32,9 +32,27 @@ export default function search(querySubmit, rankSubmit)
 	}
 	else if (withinSearchActivated)
 	{
-		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+'&rank=species&limit=1000&status=ACCEPTED&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
-		rankSubmit = 'within '+rankSubmit;
-		console.log('within-rank query');
+		if (isNaN(querySubmit) === false) checkResponse('https://api.gbif.org/v1/species/search?higherTaxonKey='+querySubmit+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED', querySubmit, 'within '+rankSubmit);
+		else 
+		{
+			querySubmit = querySubmit.slice(0,1).toUpperCase()+querySubmit.slice(1).toLowerCase();
+			fetch('https://api.gbif.org/v1/species/match?verbose=true&name='+querySubmit)
+			.then(response => response.json())
+			.then(incoming =>
+			{
+				//console.log(incoming);
+				if (incoming.matchType === "NONE")
+				{
+					console.log('taxa ' +querySubmit+' does not exist');
+					return;
+				}
+				else
+				{
+					fetchThis = 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED';
+					checkResponse(fetchThis, querySubmit, 'every '+rankSubmit+' within');
+				}
+			});
+		}
 	}
 	else
 	{
@@ -44,7 +62,7 @@ export default function search(querySubmit, rankSubmit)
 		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
 		console.log('vernacular name query');
 	}
-	checkResponse(fetchThis, querySubmit, rankSubmit);
+	if (!withinSearchActivated) checkResponse(fetchThis, querySubmit, rankSubmit);
 }
 
 function checkResponse(fetchThis, querySubmit, rankSubmit)
@@ -56,7 +74,6 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 		// console.log(Object.prototype.toString.call(incoming));
 		// console.log(Object.prototype.toString.call(incoming.results));
 		// console.log(incoming.results)
-		console.log(incoming);
 		
 		if (rankSubmit === 'keyID' && incoming.key === undefined)
 		{

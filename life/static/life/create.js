@@ -17,14 +17,9 @@ function create(data, querySubmit, rankSubmit)
 	if (resultOverview.style.opacity < 0.9) resultOverview.animate(fadeIn, fadeTime).onfinish = ()=>{resultOverview.style.opacity = 1;};
 	if (filterArea.style.opacity < 0.9) filterArea.animate(fadeIn, fadeTime).onfinish = ()=>{filterArea.style.opacity = 1;}; // why 0.9? becuase maybe the user is so fast and hits enter on a pre-typed text just after having deleted a group. It's highly unlikely though.
 	
-	let withinRank = false;
-	let withinThisRank = '';
-	if (rankSubmit.search('within') !== -1)
-	{
-		querySubmit = querySubmit.slice(0,1).toUpperCase()+querySubmit.slice(1).toLowerCase();
-		withinThisRank = rankSubmit.replace('within ','');
-		withinRank = true;
-	}
+	console.log(querySubmit, rankSubmit, data);
+	let withinHigherTaxa = false;
+	if (rankSubmit.search('within') !== -1) withinHigherTaxa = true;
 	
 	//console.log(data);
 	
@@ -118,16 +113,15 @@ function create(data, querySubmit, rankSubmit)
 	
 	for (let x = 0; x < data.length; x++)
 	{	
-		console.log(data[x]);
+		console.log(rankSubmit+':\n'+data[x]);
+		
 		// FILTER
 		if(data[x].synonym === true) continue;
-		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank && !withinRank) continue;
-		if (withinRank) if (data[x][withinThisRank] !== querySubmit) continue;
+		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank && !withinHigherTaxa) continue;
 		// ENDFILTER
 		
 		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, when user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
 		// also called 'targetRank' in the GBIFResult object (below), it is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden).
-		console.log(rankSubmit);
 		
 		// THE BASIC AREA FOR EACH RESULT
 		const blockRow = document.createElement('div');
@@ -342,7 +336,11 @@ function createSummary()
 		//const rankClassification = document.createElement('div');
 		//rankClassification.innerHTML = 
 		//rankClassification.classList.add('rankClassification');
-		info.innerHTML = group.GBIFResults.length+" results for <i><strong>"+group.name+"</i></strong><br>("+group.searchParameter.toUpperCase()+" search)";
+		let corrected = '';
+		if (group.searchParameter === 'canonicalName') corrected = 'canonical name';
+		else if (group.searchParameter === 'highestRank') corrected = 'highest rank';
+		else corrected = group.searchParameter;
+		info.innerHTML = "<i><strong>"+group.GBIFResults.length+"</i></strong> results for <i><strong>"+group.name+"</i></strong><br>(<i><strong>"+corrected.toUpperCase()+"</strong></i> search)";
 		statBlock.classList.add('baseBlock', 'summery');
 		statBlock.append(info);
 		let moment = 0;

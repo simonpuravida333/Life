@@ -104,7 +104,7 @@ function selectRank(rankIndex) // this function is called every time the user se
 		if (allRankFilters[index].value.length < 10) moreLetters -= 10-allRankFilters[index].value.length;
 		else moreLetters += allRankFilters[index].value.length-10;
 		if (moreLetters < 0) moreLetters = 0;
-		allRankFilters[index].style.width = (140+15*moreLetters)+'px';
+		allRankFilters[index].style.width = (150+15*moreLetters)+'px';
 		
 	}
 	if (rankIndex > -1) filterResults();
