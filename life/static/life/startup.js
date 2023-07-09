@@ -297,11 +297,15 @@ searchGo.addEventListener('click',()=>
 //search('semioptera wallacii','canonicalName');
 //search('Paradisaea decora','canonicalName');
 //search('whale','family');
+//search('toucan','species');
+
+// +++ within search +++
 //withinSearchActivated = true;
-//search('Paradisaeidae','family');
+//search('Psittaciformes', 'species');
+//search('Paradisaeidae', 'species');
 
 export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
 // Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.
-// For this app I solved it by simply exporting JS objects, rather than primitive types variables.
+// For this app I solved it (cross-module variables) mostly by simply exporting JS objects, rather than primitive types variables.
