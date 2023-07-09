@@ -249,6 +249,6 @@ function imagePlacement()
 	// ... fullWindowImage.style['aspect-ratio'] = aspectRatio ...doesn't work really (maybe only with div containers?). That's why I had to come up with my own full-screen logic upper. For displaying full-screen, it all comes down to knowing the aspect ratios of the window and the image.
 }
 
-window.addEventListener('resize', ()=> {imagePlacement(); fullWindowPlacements()});
+window.addEventListener('resize', ()=> {if (fullWindow.style.display === 'block') {imagePlacement(); fullWindowPlacements()}});
 
 export {fullWindow, displayImageFullWindow, goLeft, goRight};
