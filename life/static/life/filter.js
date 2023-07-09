@@ -169,7 +169,6 @@ function highlightOptionsLowerRanks(rankIndex)
 			for (const array of selectedArrays) if(option.value === array[index])
 			{
 				option.classList.add('highlightFilterOption');
-				console.log('HAPPENING');
 			}
 		}
 	}

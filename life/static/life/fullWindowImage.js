@@ -1,13 +1,10 @@
-import {svg2, fadeIn, fadeOut, imageFadeIn, imageFadeOut, timing, fadeTime} from './animation.js';
+import {svg2, fadeIn, fadeOut, imageFadeIn, imageFadeOut, fadeTime} from './animation.js';
 
 const body = document.querySelector('body');
 
 // AN OVERLAY-BACKGROUND FOR DISPLAYING IMAGES FULL WINDOW
 const fullWindow = document.createElement('div');
-fullWindow.style['background-color'] = 'rgba(0,25,50,0.8)';
-fullWindow.style.position = 'absolute';
-fullWindow.style.left = '0px';
-fullWindow.style.display = 'none';
+fullWindow.id = 'fullWindow';
 fullWindow.addEventListener('wheel', (event)=>
 {
 	if (event.deltaY > 0) goRight();
@@ -16,7 +13,8 @@ fullWindow.addEventListener('wheel', (event)=>
 body.append(fullWindow);
 
 // THE FULL-WINDOW IMAGE
-const fullWindowImage = document.createElement('IMG');
+const fullWindowImage = document.createElement('IMG'); // the fullWindow mode only has one image, of which the src gets changed on changing the image.
+fullWindowImage.id = 'fullWindowImage';
 fullWindow.append(fullWindowImage);
 
 // NAVIGATION INTERACTION
@@ -26,6 +24,8 @@ const arrowLeft = arrow.cloneNode();
 const arrowRight = arrow.cloneNode();
 arrowLeft.style.left = '5%';
 arrowRight.style.left = '95%';
+arrowLeft.style['z-index'] = 3; 
+arrowRight.style['z-index'] = 4; 
 arrowLeft.innerHTML = '⪡';
 arrowLeft.onmouseover = () => {arrowLeft.style.cursor = 'pointer'; arrowLeft.style.color = 'deepskyblue';}
 arrowRight.onmouseout = () =>
@@ -38,12 +38,10 @@ arrowLeft.onmouseout = () =>
 	arrowLeft.style.color = 'white';
 	arrowLeft.style.cursor = 'default';
 };
-arrowLeft.addEventListener('click', ()=>{goLeft()});
-arrowRight.addEventListener('click', ()=>{goRight()});
+arrowLeft.addEventListener('click', ()=> goLeft());
+arrowRight.addEventListener('click', ()=> goRight());
 
-svg2.style['z-index'] = 3;
-svg2.style.position = 'absolute';
-svg2.style.opacity = 0;
+svg2.id = 'svg2';
 /*
 const escapeBorder = document.createElement('div');
 escapeBorder.id = 'escapeBorder';
@@ -51,7 +49,6 @@ escapeBorder.style['z-index'] = 3;*/
 const escape = document.createElement('div');
 escape.id = 'escape';
 escape.innerHTML = '⊙';
-escape.style['z-index'] = 3;
 /*
 escape.onmouseover = ()=>
 {
@@ -92,23 +89,15 @@ function goFullWindow()
 {
 	body.style.overflow = 'hidden';
 	presentObject.images.style.overflow = 'hidden';
-	// if body overflow = hidden comes somewhere after fullWindow style = block , fullWindow may end up being placed somewhat vertically off, like 40 or 100px (further down). That happened when clicking on images of multiple GBIF results.
+	// if body overflow = hidden comes somewhere after fullWindow style = block , fullWindow may end up being placed somewhat vertically off, like 40 or 100px (further down). That happened when clicking on images of multiple GBIF results. ... this bug was hard to track down.
 	fullWindow.style.display = 'block';
 	fullWindow.animate(fadeIn, fadeTime);
 	fullWindow.style.top = window.scrollY+'px'; 
-	fullWindow.style.width = '100%'; 
-	fullWindow.style.height = '100%';
 	
-	fullWindow.style['z-index'] = 1; 
-	fullWindowImage.style['z-index'] = 2;
-	arrowLeft.style['z-index'] = 3; 
-	arrowRight.style['z-index'] = 4; 
-	
-	svg2.style.left = '95%';
+	svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
 	svg2.style.top = '50%';
-	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // First I use the percentage to the place it, and then relocate it a few pixels. The purpose of this is to move the loading ring a little bit to place it perfectly center on the arrow. Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
+	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
 	svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
-	//console.log("SCROLL HEIGHT: "+window.scrollY);
 	//escapeBorder.style.left = '95%';
 	//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';
 }
@@ -162,27 +151,24 @@ async function goRight()
 {
 	if (presentImageIndex >= presentImgObject.images.length-1 && !presentImgObject.downloadedAllOccurrences)
 	{
-		if (!lockedFetchNext) // why is lockedFetchNext === false not part of the parent if condition? Because the interpreter must be prohibited to move over to the else-ifs while lockedFetchNext is true (fetching image) WHILE ALSO presentImageIndex is at right end. So it should just return from this function at the child-if condition not being met. Earlier, while the child if was part of the parent-if, it may have happened that this function is called repeatedly within a fraction of a moment with the last else-if (almost) at the same time is this if-statement, causing a mix-up and allowing presentImageIndex === presentImgObject.images.length; out of bounds in displayImageFullWindow / img.src is undefined. It was an  error difficult to track and probably had to do with the timing of the update of GBIFResult.imagesObject, allowing the last else if-condition to be met sometimes while this one was still in lock. Back then I also used presentImageIndex++ in this if statement instead of just setting it to the end of length, which is safer. So there may have been two concurrent presentImageIndex++s from here and the last else-if. ... It was pretty stable, it would never go beyond index === length, and the user wouldn't even have noticed the error, as the object update (and index update) would soon follow and you could just keep on moving through the images. But the src-undefined error appeared in the log, I wanted to understand it and now it's even more watertight.
+		if (!lockedFetchNext) // why is lockedFetchNext === false not part of the parent if condition? Because the interpreter must be prohibited to move over to the else-ifs while lockedFetchNext is true (fetching image) WHILE ALSO presentImageIndex is at right end. So it should just return from this function at the child-if condition not being met. Earlier, while the child if was part of the parent-if, it may have happened that this function is called repeatedly within a fraction of a moment with the last else-if (almost) at the same time is this if-statement, causing a mix-up and allowing presentImageIndex === presentImgObject.images.length; out of bounds in displayImageFullWindow: img.src is undefined. It was an error difficult to track and probably had to do with the timing of the update of GBIFResult.imagesObject, allowing the last else if-condition to be met sometimes while this one was still in lock. Back then I also used presentImageIndex++ in this if statement instead of just setting it to the end of length, which is safer. So there may have been two concurrent presentImageIndex++s from here and the last else-if. ... It was pretty stable, it would never go beyond index === length, and the user wouldn't even have noticed the error, as the object update (and index update) would soon follow and you could just keep on moving through the images. But the src-undefined error appeared in the log, I wanted to understand it and now it's even more watertight.
 		{
 			lockedFetchNext = true;
 			presentImageIndex = presentImgObject.images.length-1; 
 			fullWindowNavigationStates('atEndDownloadMore');
-			svg2.animate(fadeIn, timing).onfinish = ()=>{svg2.style.opacity = 1;}
+			svg2.animate(fadeIn, fadeTime).onfinish = ()=> svg2.style.opacity = 1;
 			const theReturn = await presentImgObject.functionAddNextOccurrence();
-			if (!theReturn) while(!(await presentImgObject.functionCheckCurrentlyFetching())) console.log('addNextImage() IS IN LOCK!');
-			svg2.animate(fadeOut, timing).onfinish = ()=>{svg2.style.opacity = 0;}
+			if (!theReturn) while(!(await presentImgObject.functionCheckCurrentlyFetching())) console.log('addNextImage() IS IN LOCK!'); // this check-loop alls the svg2 to keep animating while the new image is being fetched. This case happens if it is triggered by scrolling right in the opened GBIFResult, and then clicking on the latest image (opening fullWindow) trying to go right in fullWindow. If it wasn't for this check, svg2 would just appear for a short flicker moment and then disappear as theReturn is a false. In other words: both, svg and svg2 are synchronized and appear for the same time.
+			svg2.animate(fadeOut, fadeTime).onfinish = ()=> svg2.style.opacity = 0;
 			lockedFetchNext = false;
-			if (presentImageIndex === presentImgObject.images.length-2) // if user has not gone off leftwards to look at the already loaded images while the next one is being fetched.
+			if (presentImageIndex === presentImgObject.images.length-2) // if user has not gone off leftwards to look at the already loaded images while the next one is being fetched: it will set the new images to be displayed.
 			{
 				presentImageIndex = presentImgObject.images.length-1;
 				displayImageFullWindow(true);
 			}
 		}
 	}
-	else if (presentImageIndex === presentImgObject.images.length-1 && presentImgObject.downloadedAllOccurrences)
-	{
-		fullWindowNavigationStates('atEndNoMoreDownloads');
-	}
+	else if (presentImageIndex === presentImgObject.images.length-1 && presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('atEndNoMoreDownloads');
 	else if (presentImageIndex < presentImgObject.images.length-1)
 	{
 		presentImageIndex++;
@@ -212,19 +198,18 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 		presentImgObject = GBIFResult.imagesObject; // for convenience :)
 	}
 	
-	if (fullWindow.style.display === 'none') goFullWindow();
-	
-	fullWindowImage.src = presentImgObject.images[presentImageIndex].src;
+	if (fullWindow.style.display !== 'block') goFullWindow();
+	fullWindowImage.src = presentImgObject.images[presentImageIndex];
 	fullWindowImage.onload = () =>
 	{
 		if (rerender) fullWindowImage.style.opacity = 1/3;
 		const windowAspectRatio = fullWindow.clientWidth / fullWindow.clientHeight;
 		const imageAspectRatio = fullWindowImage.naturalWidth / fullWindowImage.naturalHeight;
 		
-		//console.log("Image Resolution: "+fullWindowImage.naturalWidth+" * "+fullWindowImage.naturalHeight);
-		//console.log("Image Aspect Ratio: "+imageAspectRatio);
-		//console.log("Window Resolution: "+fullWindow.clientWidth+" * "+fullWindow.clientHeight);
-		//console.log("Window Aspect Ratio: "+windowAspectRatio);
+		console.log("Image Resolution: "+fullWindowImage.naturalWidth+" * "+fullWindowImage.naturalHeight);
+		console.log("Image Aspect Ratio: "+imageAspectRatio);
+		console.log("Window Resolution: "+fullWindow.clientWidth+" * "+fullWindow.clientHeight);
+		console.log("Window Aspect Ratio: "+windowAspectRatio);
 		
 		if (fullWindowImage.naturalWidth < fullWindow.clientWidth && fullWindowImage.naturalHeight < fullWindow.clientHeight)
 		{
@@ -244,13 +229,9 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 			console.log("RENDERED Image Aspect Ratio: "+(fullWindow.clientHeight*imageAspectRatio)/fullWindow.clientHeight);
 		}
 		// ... fullWindowImage.style['aspect-ratio'] = aspectRatio ...doesn't work really (maybe only with div containers?). That's why I had to come up with my own full-screen logic upper. For displaying full-screen, it all comes down to knowing the aspect ratios of the window and the image.
-		fullWindowImage.style.position = 'absolute';
-		fullWindowImage.style.left = '50%';
-		fullWindowImage.style.top = '50%';
-		fullWindowImage.style.transform = 'translate(-50%,-50%)';
 		if (rerender) fullWindowImage.animate(imageFadeIn, fadeTime).onfinish = ()=> fullWindowImage.style.opacity = 1;
 		
-		if (presentImageIndex === 0 && !presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('atBeginning'); // the second if-check is necessary in case there's only one occurrence image coming from the fetch.js.
+		if (presentImageIndex === 0 && !presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('atBeginning'); // the second if-check is necessary in case there's only one occurrence image in total.
 		else if (presentImageIndex === 0 && presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('onlyOneImage');
 		else if (presentImgObject.downloadedAllOccurrences && presentImageIndex >= presentImgObject.images.length-1) fullWindowNavigationStates('atEndNoMoreDownloads');
 		else fullWindowNavigationStates();
