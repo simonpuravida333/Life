@@ -92,14 +92,8 @@ function goFullWindow()
 	// if body overflow = hidden comes somewhere after fullWindow style = block , fullWindow may end up being placed somewhat vertically off, like 40 or 100px (further down). That happened when clicking on images of multiple GBIF results. ... this bug was hard to track down.
 	fullWindow.style.display = 'block';
 	fullWindow.animate(fadeIn, fadeTime);
-	fullWindow.style.top = window.scrollY+'px'; 
 	
-	svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
-	svg2.style.top = '50%';
-	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
-	svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
-	//escapeBorder.style.left = '95%';
-	//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';
+	fullWindowPlacements();
 }
 
 function leaveFullWindow()
@@ -203,32 +197,7 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 	fullWindowImage.onload = () =>
 	{
 		if (rerender) fullWindowImage.style.opacity = 1/3;
-		const windowAspectRatio = fullWindow.clientWidth / fullWindow.clientHeight;
-		const imageAspectRatio = fullWindowImage.naturalWidth / fullWindowImage.naturalHeight;
-		
-		console.log("Image Resolution: "+fullWindowImage.naturalWidth+" * "+fullWindowImage.naturalHeight);
-		console.log("Image Aspect Ratio: "+imageAspectRatio);
-		console.log("Window Resolution: "+fullWindow.clientWidth+" * "+fullWindow.clientHeight);
-		console.log("Window Aspect Ratio: "+windowAspectRatio);
-		
-		if (fullWindowImage.naturalWidth < fullWindow.clientWidth && fullWindowImage.naturalHeight < fullWindow.clientHeight)
-		{
-			fullWindowImage.style.width = fullWindowImage.naturalWidth+'px';
-			fullWindowImage.style.height = fullWindowImage.naturalHeight+'px';
-		}
-		else if (imageAspectRatio >= windowAspectRatio)
-		{
-			fullWindowImage.style.width = '100%';
-			fullWindowImage.style.height = fullWindow.clientWidth/imageAspectRatio+'px';
-			console.log("RENDERED Image Aspect Ratio: "+fullWindow.clientWidth/(fullWindow.clientWidth/imageAspectRatio));
-		}
-		else
-		{
-			fullWindowImage.style.height = '100%';
-			fullWindowImage.style.width = fullWindow.clientHeight*imageAspectRatio+'px';
-			console.log("RENDERED Image Aspect Ratio: "+(fullWindow.clientHeight*imageAspectRatio)/fullWindow.clientHeight);
-		}
-		// ... fullWindowImage.style['aspect-ratio'] = aspectRatio ...doesn't work really (maybe only with div containers?). That's why I had to come up with my own full-screen logic upper. For displaying full-screen, it all comes down to knowing the aspect ratios of the window and the image.
+		imagePlacement();
 		if (rerender) fullWindowImage.animate(imageFadeIn, fadeTime).onfinish = ()=> fullWindowImage.style.opacity = 1;
 		
 		if (presentImageIndex === 0 && !presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('atBeginning'); // the second if-check is necessary in case there's only one occurrence image in total.
@@ -237,5 +206,49 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 		else fullWindowNavigationStates();
 	};
 }
+
+function fullWindowPlacements()
+{
+	fullWindow.style.top = window.scrollY+'px'; 
+	
+	svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
+	svg2.style.top = '50%';
+	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
+	svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
+	//escapeBorder.style.left = '95%';
+	//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';
+}
+
+function imagePlacement()
+{
+	const windowAspectRatio = fullWindow.clientWidth / fullWindow.clientHeight;
+	const imageAspectRatio = fullWindowImage.naturalWidth / fullWindowImage.naturalHeight;
+	
+	//console.log("Image Resolution: "+fullWindowImage.naturalWidth+" * "+fullWindowImage.naturalHeight);
+	//console.log("Image Aspect Ratio: "+imageAspectRatio);
+	//console.log("Window Resolution: "+fullWindow.clientWidth+" * "+fullWindow.clientHeight);
+	//console.log("Window Aspect Ratio: "+windowAspectRatio);
+	
+	if (fullWindowImage.naturalWidth < fullWindow.clientWidth && fullWindowImage.naturalHeight < fullWindow.clientHeight)
+	{
+		fullWindowImage.style.width = fullWindowImage.naturalWidth+'px';
+		fullWindowImage.style.height = fullWindowImage.naturalHeight+'px';
+	}
+	else if (imageAspectRatio >= windowAspectRatio)
+	{
+		fullWindowImage.style.width = '100%';
+		fullWindowImage.style.height = fullWindow.clientWidth/imageAspectRatio+'px';
+		console.log("RENDERED Image Aspect Ratio: "+fullWindow.clientWidth/(fullWindow.clientWidth/imageAspectRatio));
+	}
+	else
+	{
+		fullWindowImage.style.height = '100%';
+		fullWindowImage.style.width = fullWindow.clientHeight*imageAspectRatio+'px';
+		console.log("RENDERED Image Aspect Ratio: "+(fullWindow.clientHeight*imageAspectRatio)/fullWindow.clientHeight);
+	}
+	// ... fullWindowImage.style['aspect-ratio'] = aspectRatio ...doesn't work really (maybe only with div containers?). That's why I had to come up with my own full-screen logic upper. For displaying full-screen, it all comes down to knowing the aspect ratios of the window and the image.
+}
+
+window.addEventListener('resize', ()=> {imagePlacement(); fullWindowPlacements()});
 
 export {fullWindow, displayImageFullWindow, goLeft, goRight};
