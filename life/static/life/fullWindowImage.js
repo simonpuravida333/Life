@@ -1,16 +1,18 @@
 import {svg2, fadeIn, fadeOut, imageFadeIn, imageFadeOut, fadeTime} from './animation.js';
+import {touch, isMobile} from './startup.js';
+import touchResponse from './mobileResponsiveness.js';
 
 const body = document.querySelector('body');
 
 // AN OVERLAY-BACKGROUND FOR DISPLAYING IMAGES FULL WINDOW
 const fullWindow = document.createElement('div');
 fullWindow.id = 'fullWindow';
+body.append(fullWindow);
 fullWindow.addEventListener('wheel', (event)=>
 {
 	if (event.deltaY > 0) goRight();
 	else goLeft();
 });
-body.append(fullWindow);
 
 // THE FULL-WINDOW IMAGE
 const fullWindowImage = document.createElement('IMG'); // the fullWindow mode only has one image, of which the src gets changed on changing the image.
@@ -22,26 +24,43 @@ const arrow = document.createElement('div');
 arrow.classList.add('fullWindowImageNavigationArrow');
 const arrowLeft = arrow.cloneNode();
 const arrowRight = arrow.cloneNode();
-arrowLeft.style.left = '5%';
-arrowRight.style.left = '95%';
 arrowLeft.style['z-index'] = 3; 
 arrowRight.style['z-index'] = 4; 
 arrowLeft.innerHTML = '⪡';
-arrowLeft.onmouseover = () => {arrowLeft.style.cursor = 'pointer'; arrowLeft.style.color = 'deepskyblue';}
-arrowRight.onmouseout = () =>
-{
-	arrowRight.style.color = 'white';
-	arrowRight.style.cursor = 'default';
-};
-arrowLeft.onmouseout = () =>
-{
-	arrowLeft.style.color = 'white';
-	arrowLeft.style.cursor = 'default';
-};
-arrowLeft.addEventListener('click', ()=> goLeft());
-arrowRight.addEventListener('click', ()=> goRight());
 
-svg2.id = 'svg2';
+//if (!touch && touch !== undefined) // because of module hoisting this if check will be executed before it'll know about 'touch' which is in the module that is executed last on page-load: the origin module where the script starts (startup.js).
+//{
+	arrowLeft.style.left = '5%';
+	arrowRight.style.left = '95%';
+
+	arrowLeft.onmouseover = ()=> {arrowLeft.style.cursor = 'pointer'; arrowLeft.style.color = 'deepskyblue';}
+	arrowRight.onmouseout = ()=>
+	{
+		arrowRight.style.color = 'white';
+		arrowRight.style.cursor = 'default';
+	};
+	arrowLeft.onmouseout = ()=>
+	{
+		arrowLeft.style.color = 'white';
+		arrowLeft.style.cursor = 'default';
+	};
+	arrowLeft.addEventListener('click', ()=> goLeft());
+	arrowRight.addEventListener('click', ()=> goRight());
+/*}
+else
+{
+	touchResponse([arrowLeft,arrowRight], goLeft, goRight);
+	arrowPlacements();
+}
+
+function arrowPlacements()
+{
+	arrowLeft.style.left = '100px';
+	arrowRight.style.left = window.screen.width-100+'px';
+}
+*/
+fullWindow.append(arrowRight, arrowLeft)
+
 /*
 const escapeBorder = document.createElement('div');
 escapeBorder.id = 'escapeBorder';
@@ -49,7 +68,6 @@ escapeBorder.style['z-index'] = 3;*/
 const escape = document.createElement('div');
 escape.id = 'escape';
 escape.innerHTML = '⊙';
-/*
 escape.onmouseover = ()=>
 {
 	escapeBorder.style.border = '3px solid orange';
@@ -61,11 +79,10 @@ escape.onmouseout = ()=>
 	escapeBorder.style.border = '2px solid white';
 	escapeBorder.style.width = '45px';
 	escapeBorder.style.height = '45px';
-};*/
+};
 escape.onclick = ()=> leaveFullWindow();
-
-fullWindow.append(arrowRight, arrowLeft, svg2, escape);
-//fullWindow.append(escapeBorder);
+svg2.id = 'svg2';
+fullWindow.append(svg2, escape/*,escapeBorder*/);
 
 // KEY LISTENER FOR FULL WINDOW 
 window.addEventListener('keydown', (event)=>
@@ -92,7 +109,6 @@ function goFullWindow()
 	// if body overflow = hidden comes somewhere after fullWindow style = block , fullWindow may end up being placed somewhat vertically off, like 40 or 100px (further down). That happened when clicking on images of multiple GBIF results. ... this bug was hard to track down.
 	fullWindow.style.display = 'block';
 	fullWindow.animate(fadeIn, fadeTime);
-	
 	fullWindowPlacements();
 }
 
@@ -103,12 +119,44 @@ function leaveFullWindow()
 		fullWindow.style.display = 'none';
 		body.style.overflow = 'auto';
 		presentObject.images.style.overflow = 'auto';
+		/*if (isMobile)
+		{
+			if (window.innerHeight > window.innerWidth) body.style.zoom = 2;
+			else body.style.zoom = 1.2;
+		}*/
 	};
+}
+
+function fullWindowPlacements()
+{
+	/*if (isMobile)
+	{
+		body.style.zoom = 1;
+		fullWindow.style.width = window.innerWidth+'px';
+		fullWindow.style.height = window.innerHeight+'px';
+		svg2.style.left = '50%';
+		fullWindow.style.top = window.pageYOffset+'px';
+		let thereYouGo = window.pageYOffset;
+		alert(fullWindow.style.top);
+		window.scrollTo(0, thereYouGo);
+		setTimeout(()=>window.scrollTo(0, thereYouGo),500);
+	}
+	else
+	{*/
+		fullWindow.style.top = window.scrollY+'px';
+		svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
+		svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
+		svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
+		//escapeBorder.style.left = '95%';
+		//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';	
+	//}
+	svg2.style.top = '50%';
 }
 
 fullWindowNavigationStates(); // to initialize, to trigger the first four styling attributes
 function fullWindowNavigationStates(state)
 {
+	if (touch) return;
 	// initially it always sets this state: not at end, not at beginning of images
 	arrowRight.style.opacity = 1;
 	arrowLeft.style.display = 'block';
@@ -166,7 +214,6 @@ async function goRight()
 	else if (presentImageIndex < presentImgObject.images.length-1)
 	{
 		presentImageIndex++;
-		fullWindowNavigationStates();
 		displayImageFullWindow(true);
 	}
 }
@@ -177,7 +224,6 @@ function goLeft()
 	else
 	{
 		presentImageIndex--;
-		fullWindowNavigationStates();
 		displayImageFullWindow(true);
 	}
 }
@@ -200,23 +246,11 @@ function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
 		imagePlacement();
 		if (rerender) fullWindowImage.animate(imageFadeIn, fadeTime).onfinish = ()=> fullWindowImage.style.opacity = 1;
 		
-		if (presentImageIndex === 0 && !presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('atBeginning'); // the second if-check is necessary in case there's only one occurrence image in total.
-		else if (presentImageIndex === 0 && presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('onlyOneImage');
+		if (presentImageIndex === 0 && presentImgObject.occurrencesCount + presentImgObject.mediaCount > 1) fullWindowNavigationStates('atBeginning'); // the second if-check is necessary in case there's only one occurrence image in total.
+		else if (presentImageIndex === 0 && presentImgObject.occurrencesCount + presentImgObject.mediaCount === 1 && presentImgObject.downloadedAllOccurrences) fullWindowNavigationStates('onlyOneImage');
 		else if (presentImgObject.downloadedAllOccurrences && presentImageIndex >= presentImgObject.images.length-1) fullWindowNavigationStates('atEndNoMoreDownloads');
 		else fullWindowNavigationStates();
 	};
-}
-
-function fullWindowPlacements()
-{
-	fullWindow.style.top = window.scrollY+'px'; 
-	
-	svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
-	svg2.style.top = '50%';
-	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
-	svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
-	//escapeBorder.style.left = '95%';
-	//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';
 }
 
 function imagePlacement()
@@ -249,6 +283,21 @@ function imagePlacement()
 	// ... fullWindowImage.style['aspect-ratio'] = aspectRatio ...doesn't work really (maybe only with div containers?). That's why I had to come up with my own full-screen logic upper. For displaying full-screen, it all comes down to knowing the aspect ratios of the window and the image.
 }
 
-window.addEventListener('resize', ()=> {if (fullWindow.style.display === 'block') {imagePlacement(); fullWindowPlacements()}});
-
+window.addEventListener('resize', ()=>
+{
+	if (fullWindow.style.display === 'block')
+	{
+		fullWindowPlacements();
+		imagePlacement();
+		//if (isMobile) arrowPlacements();
+	}
+});
+/*
+function preventDef(e)
+{
+	if((isMobile || isTablet) && fullWindow.style.display === 'block') e.preventDefault();
+}
+fullWindow.addEventListener('touchstart', preventDef)
+fullWindow.addEventListener('touchmove', preventDef)
+*/
 export {fullWindow, displayImageFullWindow, goLeft, goRight};

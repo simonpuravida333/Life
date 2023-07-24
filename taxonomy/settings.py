@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*@y44pp$y8ogzg224z+$&e@ib*kftub2x5fhk$kst%eo2uppm5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.235','127.0.0.1']
 
 
 # Application definition
@@ -146,6 +146,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if DEBUG:
-    import mimetypes
-    mimetypes.add_type("application/javascript", ".js", True)
+import mimetypes
+mimetypes.add_type("application/javascript", ".js", True)
+mimetypes.add_type("text/css", ".css", True)

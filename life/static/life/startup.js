@@ -2,9 +2,63 @@ import search from './search.js';
 import {fullWindow, goLeft, goRight} from './fullWindowImage.js';
 import {fadeOut, fadeTime} from './animation.js';
 import {selectRank} from './filter.js';
+import startup from './mobileResponsiveness.js';
 
 const body = document.querySelector('body');
 body.style['background-color'] = '#325D77' //'#3C7185';
+
+let isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
+console.log ("Runs on WebKit / Blink: "+isWebKit);
+if (!isWebKit) window.alert("Dear user,\nSome of the styling of Life is only supported in browsers that run on WebKit / Blink.\n(Safari, Google Chrome, Microsoft Edge, Opera...)"); // ...nested CSS description that is.
+
+var globalWindowWidth = window.screen.width;
+var globalWindowHeight = window.screen.height;
+var userAgent = navigator.userAgent.toLowerCase();
+var isMobile = userAgent.search(/mobile/i) !== -1;
+var isTablet = userAgent.search(/tablet/i) !== -1;
+var isAndroid = userAgent.search(/android/i) !== -1;
+var isiPhone = userAgent.search(/iPhone/i) !== -1;
+var touch = isMobile || isTablet;
+var lowRes = false;
+if (globalWindowHeight < 720 || globalWindowWidth < 720) lowRes = true;
+
+for (const sheet of document.styleSheets)
+{
+	if (sheet.href.indexOf('mobile.css') !== -1 && !isMobile) sheet.disabled = true;
+	else if (sheet.href.indexOf('styles.css') !== -1 && isMobile) sheet.disabled = true;
+}
+
+if (isMobile) adjustZoom();
+function adjustZoom()
+{
+	if (window.innerHeight > window.innerWidth) body.style.zoom = 2;
+	else body.style.zoom = 1.2;
+}
+if (isMobile) window.addEventListener('resize', adjustZoom); // when tilting smartphone
+
+// The minimum widths elements can have (baseBlock) is 486px. I looked at youtube.com as a guideline: It only is responsive down to a width of 486px. Below that you'd have to do 2D navigation. And it makes sense nowadays: smartphones that are well under 100 $/€ come with resolutions of 720 * 1600 and more.
+// But in the end what we need to know is simply whether it's a small screen, not the resolution, since even cheap smartphone go often beyond the HD (720p) resolution.
+// so we check whether it's mobile (tap interactions + style mobile adjustments), and if not, whether it's tablet (tap interactions, desktop / unchanged styling). // Edit after testing: the app works perfectly fine on touch and doesn't need adjustments really for tablets.
+// isMobile === true swaps the CSS file for a modified one to accomodate smaller screens.
+//if (isMobile) document.getElementById('styles').href= "{% static 'life/mobile.css' %}";
+//getStyleSheet();
+
+// + + +
+
+// MOBILE TO DO
+// when flipping screen > must fill width
+// add swipe gestures
+// make escape bigger
+// give full window images a big frame
+// center loading svg ani
+// refractor arrows and navigation states
+// MAYBE: still add arrows
+//Andigena nigrirostris
+//
+
+// ok enter and backspace are really small, that's gonna be interesting
+
+// + + +
 
 window.addEventListener('keydown', (event)=>
 {
@@ -40,7 +94,7 @@ window.addEventListener('keydown', (event)=>
 
 // GLOBAL TAXA NAMES
 const taxaKeys = ["kingdom", "phylum", "class", "order", "family", "genus", "species"];
-const ranks = [0,1,2,3,4,5,6]; // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize, condition, afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
+const ranks = [0,1,2,3,4,5,6]; // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
 
 // SEARCH SECTION
 const searchSection = document.createElement('div');
@@ -298,13 +352,14 @@ searchGo.addEventListener('click',()=>
 //search('Paradisaea decora','canonicalName');
 //search('whale','family');
 //search('toucan','species');
+search('macaw','species');
 
 // +++ within search +++
 //withinSearchActivated = true;
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated};
+export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile, isTablet, touch};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
 // Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.

@@ -1,5 +1,5 @@
 import {iucnRedList, months, imageFileTypes, countryCodes} from './officialDesignations.js';
-import {taxaKeys} from './startup.js';
+import {taxaKeys, isMobile, isTablet} from './startup.js';
 import {displayImages} from './image.js';
 import search from './search.js';
 import {fadeIn, fadeTime} from './animation.js';
@@ -51,6 +51,7 @@ export default function fetchEverything(GBIFResult, y)
 			}
 			const superElement = document.createElement('div');
 			superElement.classList.add('baseBlock');
+			
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
 			const elementTitle = document.createElement('div');
@@ -66,7 +67,7 @@ export default function fetchEverything(GBIFResult, y)
 			theInfo.append(superElement);
 			superElement.animate(fadeIn, fadeTime);
 			allSuperElements.push(superElement);
-			if (superElement.getBoundingClientRect().width > 600) superElement.style.width = '600px';
+			if (superElement.getBoundingClientRect().width > 600 && !isMobile) superElement.style.width = '600px';
 		}
 		childrenLoaded = true;
 	})
@@ -93,6 +94,7 @@ export default function fetchEverything(GBIFResult, y)
 			}
 			const superElement = document.createElement('div');
 			superElement.classList.add('baseBlock');
+					
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
 			const elementTitle = document.createElement('div');
@@ -108,7 +110,7 @@ export default function fetchEverything(GBIFResult, y)
 			theInfo.append(superElement);
 			superElement.animate(fadeIn, fadeTime);
 			allSuperElements.push(superElement);
-			if (superElement.getBoundingClientRect().width > 600) superElement.style.width = '600px';
+			if (superElement.getBoundingClientRect().width > 600 && !isMobile) superElement.style.width = '600px';
 		}
 		synonymsLoaded = true;
 	})
@@ -158,12 +160,12 @@ export default function fetchEverything(GBIFResult, y)
 						allDescriptions.style.height = "260px";
 						allDescriptions.style["overflow-y"] = "auto";
 					}
-					if (superElement.getBoundingClientRect().width >= 600) superElement.style.width = "600px";
+					if (superElement.getBoundingClientRect().width >= 600 && !isMobile) superElement.style.width = "600px";
 					if (superElement.getBoundingClientRect().height >= 300)
 					{
 						superElement.style.height = "300px";
-						superElement.classList.add('resizable-content');
-						resizeObserver.observe(superElement); // adjusts the text-div (allDescriptions) to the parent div (superElement) when resizing the parent.
+						if (!isMobile && !isTablet) superElement.classList.add('resizable-content');
+						if (!isMobile && !isTablet) resizeObserver.observe(superElement); // adjusts the text-div (allDescriptions) to the parent div (superElement) when resizing the parent.
 					}
 					superElement.animate(fadeIn, fadeTime);
 				}
@@ -227,6 +229,26 @@ export default function fetchEverything(GBIFResult, y)
 						}
 					}
 				}
+				if (isMobile) // some server somewhere (that feed the GBIF) seem to be uploading texts without white spaces, which then don't get line breaks (as they're "one word") and throw apart the styling of the div as the div expands over the body space. on mobile devices that's a real interaction and visual problem.
+				{
+					let allWords = theLocality.innerHTML.split(' ');
+					let correctedWords = "";
+					for (const word of allWords)
+					{	
+						if (word.length > 20)
+						{
+							let twenty = 0;
+							while(true)
+							{
+								correctedWords += word.slice(twenty,twenty+20)+"-";
+								twenty += 20;
+								if (twenty > word.length) break;
+							}
+						}
+						else correctedWords += word+' ';
+					}
+					theLocality.innerHTML = correctedWords;
+				}
 				allDistributions.append(theLocality);
 			}
 			const superElement = document.createElement('div');
@@ -247,7 +269,8 @@ export default function fetchEverything(GBIFResult, y)
 			theInfo.append(superElement);
 			superElement.animate(fadeIn, fadeTime);
 			allSuperElements.push(superElement);
-			if (superElement.getBoundingClientRect().width > 600) superElement.style.width = '600px';
+			if (superElement.getBoundingClientRect().width > 600 && !isMobile) superElement.style.width = '600px';
+			
 		}
 		distributionsLoaded = true;
 	})
@@ -289,6 +312,7 @@ export default function fetchEverything(GBIFResult, y)
 			}
 			const superElement = document.createElement('div');
 			superElement.classList.add('baseBlock');
+					
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
 			const elementTitle = document.createElement('div');
@@ -303,7 +327,7 @@ export default function fetchEverything(GBIFResult, y)
 			theInfo.append(superElement);
 			superElement.animate(fadeIn, fadeTime);
 			allSuperElements.push(superElement);
-			if (superElement.getBoundingClientRect().width > 600) superElement.style.width = '600px';
+			if (superElement.getBoundingClientRect().width > 600 && !isMobile) superElement.style.width = '600px';
 		}
 		vernacularNamesLoaded = true;
 	})

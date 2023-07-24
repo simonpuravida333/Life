@@ -1,4 +1,4 @@
-import {taxaKeys, ranks, resultOverview, filterArea} from './startup.js';
+import {taxaKeys, ranks, resultOverview, filterArea, isMobile} from './startup.js';
 import {svg, svg2, fadeTime, fadeIn, fadeOut, contractXToCenter, expandXFromCenter, fontOpacityZeroToFull, brightenHover, removeAni} from './animation.js';
 import {constructFilter} from './filter.js';
 import {displayRank, GBIFResultOpenClose} from './navigate.js';
@@ -139,10 +139,15 @@ function create(data, querySubmit, rankSubmit)
 		const line2 = document.createElement('div');
 		// the LOWER PART that shows images
 		const flexPartImages = document.createElement('div');
+		const mobileFullWidthImageDiv = document.createElement('div');
+		const mobileFullWidthImage = document.createElement('IMG');
+		mobileFullWidthImageDiv.append(mobileFullWidthImage);
 		
 		flexPartRanks.classList.add('flexPart');
 		flexPartDescription.classList.add('flexPart', 'description');
 		flexPartImages.classList.add('flexPartImages');
+		mobileFullWidthImageDiv.classList.add('mobileFullWidthImageDiv');
+		mobileFullWidthImage.classList.add('mobileFullWidthImage');
 		line1.classList.add('resultObjectLine');
 		line2.classList.add('resultObjectLine');
 		
@@ -150,8 +155,9 @@ function create(data, querySubmit, rankSubmit)
 		line2.style.display = 'none';
 		flexPartDescription.style.display = 'none';
 		flexPartImages.style.display = 'none';
+		mobileFullWidthImageDiv.style.display = 'none';
 		
-		blockRow.append(flexPartRanks, line1, flexPartDescription, line2, flexPartImages);
+		blockRow.append(flexPartRanks, line1, flexPartDescription, line2, flexPartImages, mobileFullWidthImageDiv);
 		
 		let color = getRndInteger(0,360);
 		
@@ -203,7 +209,9 @@ function create(data, querySubmit, rankSubmit)
 			description: flexPartDescription, // holds everything that fetch.js yields, except MEDIA and OCCURRENCEs
 			line2: line2,
 			// BOTTOM
-			images: flexPartImages, // this is the div that holds the IMG elements. NOT TO BE CONFUSED WITH 'imageObject.images', which holds the array of the same IMG elements.
+			images: flexPartImages, // this is the div that holds the IMG elements. NOT TO BE CONFUSED WITH 'imagesObject.images', which holds the array of the same IMG elements.
+			mobileFullWidthImageDiv: mobileFullWidthImageDiv,
+			mobileFullWidthImage: mobileFullWidthImage,
 			// END HTML ELEMENTS //
 			
 			// JS DATA //
@@ -347,15 +355,26 @@ function createSummary()
 		let fontColorAni;
 		statBlock.addEventListener('mouseover', ()=> statBlock.animate([{backgroundColor: '#409CB5'},{backgroundColor: '#86DBEF'}],fadeTime));
 		statBlock.addEventListener('mouseout', ()=> statBlock.animate([{backgroundColor: '#86DBEF'},{backgroundColor: '#409CB5'}],fadeTime));
-		statBlock.addEventListener('mousedown', ()=>
+		
+		if (isMobile)
+		{
+			statBlock.addEventListener('touchstart', holdDown);
+			statBlock.addEventListener('touchend', holdEnd);
+		}
+		else
+		{
+			statBlock.addEventListener('mousedown', holdDown);
+			statBlock.addEventListener('mouseup', holdEnd);
+		}
+		function holdDown()
 		{
 			moment = new Date().getTime();
 			statBlock.style['background-color'] = 'orange';
 			statBlock.style.color = 'rgba(104, 75, 51, 0)';
 			backgroundColorAni = statBlock.animate(removeAni('#86DBEF','orange'), 1000);
 			fontColorAni = statBlock.animate(fontOpacityZeroToFull(104,75,51,false), 1000);
-		});
-		statBlock.addEventListener('mouseup', ()=>
+		}
+		function holdEnd()
 		{
 			if(new Date().getTime() - moment > 1000)
 			{
@@ -396,9 +415,11 @@ function createSummary()
 				fontColorAni.cancel();
 				statBlock.style.color = null;
 				statBlock.style['background-color'] = null; // removes the added styling from mousedown. As I explain in displayRank() below: the styling attributes from classlist.add are seperate from directly-set styling attributes in JS (element.style.something...). Testing reveals that directly set-styling in JS ALWAYS has precedence over the classList styling; even if the classList is added later, it does not overwrite JS-coded styling. So here I remove the attributes again, instead of manually setting the same attributes of the classList attributes in JS directly, to reverse it to the original (classList / CSS) style. This allows the hover style to be back in place. If I would here manually set the attributes from classList (like statBlock.style.color = 'white') it would look alright, but the hover would be gone. Also it's cleaner to remove it by setting it null, or you'd have to deal with two concurrent stylings.
-				window.scrollBy(0, group.head.getBoundingClientRect().top);
+				let zoom = 1;
+				if (isMobile) zoom = body.style.zoom;
+				window.scrollTo(0, group.head.getBoundingClientRect().top*zoom);
 			}
-		});
+		}
 		resultOverview.append(statBlock);
 	}
 }

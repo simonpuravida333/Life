@@ -1,0 +1,419 @@
+/* THIS FILE IS A COPY OF styles.css WITH SOME ADJUSTMENTS TO MAKE UX-FRIENDLY ON MOBILE PHONES */
+html {
+  scroll-behavior: smooth;
+  
+}
+body
+{
+	font-family: "Montserrat"; /* it actually looks different than to putting it in html{  } */
+	zoom: 2;
+}
+
+input, select, input[type=submit]:focus
+{
+	outline:none;
+}
+select
+{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* CLASSES */
+.resultImage
+{
+	height: 200px;
+	outline: 3px solid;
+	outline-offset: -4px;
+	border: 3px solid;
+	border-radius: 3px;
+	margin: 5px;
+}
+
+.resizable-content
+{
+  min-height: 30px;
+  min-width: 30px;
+  resize: both;
+  overflow: auto;
+  max-height: fit-content;
+  max-width: fit-content;
+}
+
+.rankClassification
+{
+	font-weight: bold;
+}
+
+.blockRow
+{
+	min-width: 100%;
+	align-items: center;
+	border-radius: 20px;
+	padding: 10px;
+	background-color: white;
+	margin-bottom: 7px;
+	margin-top: 7px;
+}
+
+.flexPart
+{
+	display: flex;
+	flex-wrap: wrap;
+	/*align-items: flex-start;
+	align-content: flex-start;*/
+	align-items: center;
+    justify-content: left;
+    
+    &.description
+    {
+		align-items: stretch;	
+    }
+}
+
+.rankDescription
+{
+	display: block;
+}
+
+.hidden
+{
+	display: none;
+}
+
+.flexPartImages
+{
+	overflow-x: auto;
+	white-space: nowrap;
+	margin: 10px;
+}
+
+.flexPartImages::-webkit-scrollbar-thumb
+{
+  background: lightgray;
+  border-radius: 14px;
+}
+
+.resultObjectLine
+{
+	margin: 10px;
+  	border: 3px solid white;
+	border-radius: 3px;
+}
+
+.baseBlock
+{
+	font-size: 18px;
+	border-radius: 20px;
+	cursor: pointer;
+	margin: 5px;
+	padding: 20px;
+	color: white;
+
+	&.summery
+	{
+		user-select: none;
+		background-color: #409CB5;
+		&:hover
+		{
+			background-color: #86DBEF;
+			color: #684B33;
+		}
+	}
+}
+
+.imageDescription
+{
+	position: absolute;
+	font-size: 15px;
+	border-radius: 20px;
+	padding: 20px;
+	color: white;
+	max-width: 450px;
+	user-select: none;
+	opacity: 0;
+	display: none;
+}
+
+.select
+{	
+	color: white;
+	background-color: #409CB5; /*#5852A3; #66547F;*/
+	height: 50px;
+	text-align: center;
+	font-weight: 600;
+	border-radius: 40px;
+	width: 140px;
+	margin: 10px;
+	letter-spacing: 0.2em;
+	border: none;
+	cursor: pointer;
+	
+	& *
+	{
+		color: #684B33;
+		font-weight: 500;
+		font-size: 17px;
+	}
+	&:hover
+	{
+		background-color: #8FE2FF; /*#4EC662; /*#C9B9E0;*/
+	}
+	&:focus
+	{
+		background-color: #8FE2FF; /* #78FF8E; /*#6AC7E8;*/
+		color: #684B33;
+	}
+	&.filter
+	{
+		transform: scale(0.9);
+		background-color: #2BAF60;
+		&:hover
+		{
+			background-color: #8AED97;
+		}
+		&:focus
+		{
+			background-color: #8AED97;
+			color: #684B33;	
+		}
+	}
+	&.withinOptions
+	{
+		font-style: italic;
+		background-color: orange;
+		width: 220px;
+		&:hover
+		{
+			background-color: white;
+			color: #684B33;
+		}
+		&:focus
+		{
+			background-color: white;
+		}
+	}
+}
+
+.selectTitle
+{
+	font-weight: bold;
+	text-align: center;
+	color: #2BAF60;
+}
+
+.newGroup
+{
+	justify-content: center;
+	width: 100%;
+}
+
+.horizontalLine
+{
+	border: 5px solid white;
+	flex: 1;
+	border-radius: 10px;
+}
+
+.groupTitle
+{
+	color: white;
+	font-size: 20px;
+	font-weight: 600;
+	letter-spacing: 0.2em;
+	cursor: pointer;
+}
+
+.highlightFilterOption
+{
+	font-weight: bold;
+	color: orange; /*deepskyblue; /*#26669A;*/
+}
+
+.mobileFullWidthImageDiv
+{
+	margin: 10px;
+	/*width: 100%;*/
+}
+
+.mobileFullWidthImage
+{
+	object-fit: cover;
+	outline: 5px solid;
+	outline-offset: -6px;
+	border: 5px solid;
+	border-radius: 4px;
+	outline-color: black;
+	border-color: black;
+}
+
+.arrow
+{
+	font-size: 40px;
+	color: #82D5EA;
+	transform: translateY(-5%);
+	cursor: pointer;
+	margin: 20px;
+	
+	&:hover
+	{
+		color: #15BFEA;
+		font-size: 50px;
+	}
+}
+
+/* IDs */
+#plusSign
+{
+	text-align: center;
+	width: 140px;
+	margin: 10px;
+}
+
+#searchSection
+{
+	width: 100%;
+	background-color: white; /* #9FF1FF; /* #093C48 */
+	border-radius: 40px;
+	padding: 10px;
+	display: flex;
+	flex-wrap: 	wrap;
+}
+
+#textareaNameSearch
+{
+	color: white;
+	background-color: #409CB5; /*#45B6DD; /* #66547F; */
+	font-family: 'Gaegu';
+	font-size: 25px;
+	font-weight: bold;
+	height: 50px;
+	width: 100%;
+	border-radius: 40px;
+	margin: 10px;
+	text-align: left;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: none;
+	
+	&:hover
+	{
+		background-color: #8FE2FF;
+	}
+	&:focus
+	{
+		background-color:#8FE2FF;
+		color: #684B33;
+	}
+	&.textareaWithinSearch
+	{
+		background-color: orange;
+		&:hover
+		{
+			background-color: white;
+			color: #684B33;
+		}
+		&:focus
+		{
+			background-color: white;
+		}
+	}
+	
+}
+
+#withinSearch
+{
+	width: 40px;
+	height: 40px;
+	border-radius: 12px;
+	border: 4px solid #409CB5;
+	background-color: rgba(0,0,0,0);
+	margin: 15px;
+	cursor: pointer;
+	z-index: 1;
+}
+
+#withinSearchCore
+{
+	width: 22px;
+	height: 22px;
+	border-radius: 8px;
+	background-color: orange;
+	z-index: 0;
+	margin: 5px;
+	display: none;
+}
+
+#searchGo
+{
+	background-color: #2BAF60; /*#45B6DD; /*#66547F;*/
+	border-radius: 10px;
+	width: 75px;
+	height: 50px;
+	margin: 10px;
+	border: none;
+	color: white;
+	font-weight: bold;
+	font-style: italic;
+	border: none;
+	outline: none;
+	
+	&:hover
+	{
+		background-color: #8AED97; /*#5FD6FF;*/
+		border:none;
+	}
+	&:focus
+	{
+		background-color: #8AED97; /*#8FE2FF;*/
+		font-size: 25px;
+	}
+}
+
+#howTo
+{
+	border: 4px solid #409CB5;
+	border-radius: 20px;
+	color: #409CB5;
+	font-size: 25px;
+	font-weight: 500;
+	height: 40px;
+	width: 40px;
+	margin: 15px;
+	padding-left: 9px;
+	
+	&:hover
+	{
+		box-shadow: 0px 0px 10px deepskyblue;
+		cursor: pointer;
+	}
+}
+
+#howToText
+{
+	color: #684B33;
+	margin: 10px;
+	text-align: justify;
+	font-weight: 500;
+}
+
+#svg2
+{
+	z-index: 3;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	opacity: 0;
+}
+
+/* MOBILE ADJUSTMENT */
+#fullWindow{display: none}
+#fullWindowImage{display: none}
+.fullWindowImageNavigationArrow{display: none}
+#escape{display: none}

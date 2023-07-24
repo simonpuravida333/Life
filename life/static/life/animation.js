@@ -78,6 +78,7 @@ const expandFromLeft =
 	{ transform: 'scale(0.1)', marginLeft: '0px',marginRight:'0px', paddingLeft: '0px', paddingRight: '0px'},
 	{ transform: 'scale(1)', marginLeft: '10px',marginRight:'10px', paddingLeft: '20px', paddingRight: '20px'}
 ]
+const grow ={transform: ['scale(0.1)','scale(1)']}
 
 function fontOpacityZeroToFull(r,g,b,zeroToFull)
 {
@@ -108,7 +109,6 @@ function brightenHover (colorDegree)
 	return {backgroundColor: ['hsl('+colorDegree+', 50%, 50%)', 'hsl('+colorDegree+', 70%, 70%)']}
 }
 
-
 function removeAni (initialColor, deleteSignalColor)
 {
 	return {backgroundColor: [initialColor, initialColor, initialColor, deleteSignalColor]}
@@ -116,4 +116,4 @@ function removeAni (initialColor, deleteSignalColor)
 
 const fadeTime = 333;
 
-export {svg, svg2, fadeTime, fadeIn, fadeOut, imageFadeIn, imageFadeOut, contractToLeft, expandFromLeft, contractXToCenter, expandXFromCenter, fontOpacityZeroToFull, brighten, brightenHover, removeAni};
+export {svg, svg2, fadeTime, fadeIn, fadeOut, imageFadeIn, imageFadeOut, contractToLeft, expandFromLeft, contractXToCenter, expandXFromCenter, grow, fontOpacityZeroToFull, brighten, brightenHover, removeAni};
