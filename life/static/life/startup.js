@@ -19,8 +19,6 @@ var isTablet = userAgent.search(/tablet/i) !== -1;
 var isAndroid = userAgent.search(/android/i) !== -1;
 var isiPhone = userAgent.search(/iPhone/i) !== -1;
 var touch = isMobile || isTablet;
-var lowRes = false;
-if (globalWindowHeight < 720 || globalWindowWidth < 720) lowRes = true;
 
 for (const sheet of document.styleSheets)
 {
@@ -59,11 +57,16 @@ if (isMobile) window.addEventListener('resize', adjustZoom); // when tilting sma
 // ok enter and backspace are really small, that's gonna be interesting
 
 // + + +
+window.addEventListener('keypress', (event)=>
+{
+	let key = event.keyCode || event.which;
+	alert(key);
+})
 
 window.addEventListener('keydown', (event)=>
 {
 	let key = event.keyCode || event.which;
-	
+	alert(key);
 	const enterKey = 13;
 	const arrowUp = 38;
 	const arrowDown = 40;
@@ -352,14 +355,14 @@ searchGo.addEventListener('click',()=>
 //search('Paradisaea decora','canonicalName');
 //search('whale','family');
 //search('toucan','species');
-search('macaw','species');
+//search('macaw','species');
 
 // +++ within search +++
 //withinSearchActivated = true;
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile, isTablet, touch};
+export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
 // Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.

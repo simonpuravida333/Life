@@ -118,11 +118,6 @@ select
 	{
 		user-select: none;
 		background-color: #409CB5;
-		&:hover
-		{
-			background-color: #86DBEF;
-			color: #684B33;
-		}
 	}
 }
 
@@ -159,10 +154,6 @@ select
 		font-weight: 500;
 		font-size: 17px;
 	}
-	&:hover
-	{
-		background-color: #8FE2FF; /*#4EC662; /*#C9B9E0;*/
-	}
 	&:focus
 	{
 		background-color: #8FE2FF; /* #78FF8E; /*#6AC7E8;*/
@@ -172,10 +163,6 @@ select
 	{
 		transform: scale(0.9);
 		background-color: #2BAF60;
-		&:hover
-		{
-			background-color: #8AED97;
-		}
 		&:focus
 		{
 			background-color: #8AED97;
@@ -187,11 +174,6 @@ select
 		font-style: italic;
 		background-color: orange;
 		width: 220px;
-		&:hover
-		{
-			background-color: white;
-			color: #684B33;
-		}
 		&:focus
 		{
 			background-color: white;
@@ -253,17 +235,11 @@ select
 
 .arrow
 {
-	font-size: 40px;
+	font-size: 60px;
 	color: #82D5EA;
 	transform: translateY(-5%);
 	cursor: pointer;
-	margin: 20px;
-	
-	&:hover
-	{
-		color: #15BFEA;
-		font-size: 50px;
-	}
+	margin-left: 20px;
 }
 
 /* IDs */
@@ -302,10 +278,6 @@ select
 	padding-right: 20px;
 	border: none;
 	
-	&:hover
-	{
-		background-color: #8FE2FF;
-	}
 	&:focus
 	{
 		background-color:#8FE2FF;
@@ -314,11 +286,6 @@ select
 	&.textareaWithinSearch
 	{
 		background-color: orange;
-		&:hover
-		{
-			background-color: white;
-			color: #684B33;
-		}
 		&:focus
 		{
 			background-color: white;
@@ -363,12 +330,7 @@ select
 	font-style: italic;
 	border: none;
 	outline: none;
-	
-	&:hover
-	{
-		background-color: #8AED97; /*#5FD6FF;*/
-		border:none;
-	}
+
 	&:focus
 	{
 		background-color: #8AED97; /*#8FE2FF;*/
@@ -387,12 +349,6 @@ select
 	width: 40px;
 	margin: 15px;
 	padding-left: 9px;
-	
-	&:hover
-	{
-		box-shadow: 0px 0px 10px deepskyblue;
-		cursor: pointer;
-	}
 }
 
 #howToText
@@ -401,6 +357,7 @@ select
 	margin: 10px;
 	text-align: justify;
 	font-weight: 500;
+	font-size: 20px;
 }
 
 #svg2

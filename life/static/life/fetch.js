@@ -1,5 +1,5 @@
 import {iucnRedList, months, imageFileTypes, countryCodes} from './officialDesignations.js';
-import {taxaKeys, isMobile, isTablet} from './startup.js';
+import {taxaKeys, isMobile} from './startup.js';
 import {displayImages} from './image.js';
 import search from './search.js';
 import {fadeIn, fadeTime} from './animation.js';
@@ -164,8 +164,8 @@ export default function fetchEverything(GBIFResult, y)
 					if (superElement.getBoundingClientRect().height >= 300)
 					{
 						superElement.style.height = "300px";
-						if (!isMobile && !isTablet) superElement.classList.add('resizable-content');
-						if (!isMobile && !isTablet) resizeObserver.observe(superElement); // adjusts the text-div (allDescriptions) to the parent div (superElement) when resizing the parent.
+						if (!isMobile) superElement.classList.add('resizable-content');
+						if (!isMobile) resizeObserver.observe(superElement); // adjusts the text-div (allDescriptions) to the parent div (superElement) when resizing the parent.
 					}
 					superElement.animate(fadeIn, fadeTime);
 				}

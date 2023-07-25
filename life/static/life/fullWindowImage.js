@@ -1,5 +1,5 @@
 import {svg2, fadeIn, fadeOut, imageFadeIn, imageFadeOut, fadeTime} from './animation.js';
-import {touch, isMobile} from './startup.js';
+import {isMobile} from './startup.js';
 import touchResponse from './mobileResponsiveness.js';
 
 const body = document.querySelector('body');
@@ -64,10 +64,12 @@ fullWindow.append(arrowRight, arrowLeft)
 /*
 const escapeBorder = document.createElement('div');
 escapeBorder.id = 'escapeBorder';
-escapeBorder.style['z-index'] = 3;*/
+escapeBorder.style['z-index'] = 3;
+*/
 const escape = document.createElement('div');
 escape.id = 'escape';
 escape.innerHTML = '⊙';
+/*
 escape.onmouseover = ()=>
 {
 	escapeBorder.style.border = '3px solid orange';
@@ -79,7 +81,7 @@ escape.onmouseout = ()=>
 	escapeBorder.style.border = '2px solid white';
 	escapeBorder.style.width = '45px';
 	escapeBorder.style.height = '45px';
-};
+};*/
 escape.onclick = ()=> leaveFullWindow();
 svg2.id = 'svg2';
 fullWindow.append(svg2, escape/*,escapeBorder*/);
@@ -156,7 +158,6 @@ function fullWindowPlacements()
 fullWindowNavigationStates(); // to initialize, to trigger the first four styling attributes
 function fullWindowNavigationStates(state)
 {
-	if (touch) return;
 	// initially it always sets this state: not at end, not at beginning of images
 	arrowRight.style.opacity = 1;
 	arrowLeft.style.display = 'block';

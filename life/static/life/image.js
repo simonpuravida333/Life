@@ -121,10 +121,10 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 			theImage.classList.add('resultImage');
 			theImage.style['border-color'] = allImageSources.colors[counter];
 			theImage.style['outline-color'] = allImageSources.colors[counter];
-			renderImageText(theImage, allImageSources.descriptions[counter], allImageSources.colors[counter]);
+			if (!isMobile) renderImageText(theImage, allImageSources.descriptions[counter], allImageSources.colors[counter]);
 			clickOnImage(theImage, GBIFResult, originOfCall);
 			
-			theImage.animate({transform: ['scale(0.7)','scale(1)'], opacity: [0,1]}, fadeTime).onfinish = ()=> theImage.style.opacity = 1;
+			theImage.animate({transform: ['scale(0.9)','scale(1)'], opacity: [0,1]}, fadeTime).onfinish = ()=> theImage.style.opacity = 1;
 			r.images.scrollLeft = r.images.scrollWidth-r.images.offsetWidth-2; // automatically moves the scrollbar to the right end minues 2px (or it would trigger the next download).
 			return true;
 		}
@@ -200,51 +200,48 @@ function renderImageText(theImage, theText, frameColor)
 	if (renderedText.innerHTML !== "" ) renderedText.innerHTML += "<br><br>";
 	renderedText.innerHTML += "<strong>Image</strong><br>Dimensions: "+theImage.naturalWidth+"px "+theImage.naturalHeight+"px<br>Aspect Ratio: "+(theImage.naturalWidth/theImage.naturalHeight).toFixed(2);
 	
-	if (!isMobile && !isTablet)
+	let isHovering = false;
+	
+	/*window.onmousemove = (mouse)=>
 	{
-		let isHovering = false;
-		
-		/*window.onmousemove = (mouse)=>
-		{
-			//console.log("Mouse Y: "+(mouse.clientY+window.scrollY));
-			//console.log("Mouse X: "+mouse.clientX);
-		}*/
-		// body.onclick = ()=>{ showCoordinates(event);}
-		/* function showCoordinates(event)
-		{
-			console.log("MOUSE X: " + event.clientX + ", Y: " + (event.clientY+window.scrollY));
-		}*/
-		
-		theImage.onmousemove = (mouse)=>
-		{
-			// console.log("mouse position:", mouse.clientX, mouse.clientY);
-			renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
-			renderedText.style.left = mouse.clientX+50+'px';
-		}
-		renderedText.onmousemove = (mouse)=> // it is possible to move the mouse quicker than rendering happens sometimes, causing the mouse to hover over the rendered text-div, esp from quick left-to-right movements (as the div appears right of the mouse). The runtime then thinks the mouse is not hovering over the image anymore and triggers an image-mouseout. This will start a loop of mouseover-mouseout which will result in an endless flicker-effect (element on/off loop). So this listener will set the div next to the mouse should the mouse touch it.
-		{
-			renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
-			renderedText.style.left = mouse.clientX+50+'px';
-		}
-		theImage.addEventListener('mouseover',()=>
-		{
-			isHovering = true;
-			renderedText.style.display = 'block';
-			theImage.style['cursor'] = 'cell';
-			renderedText.style.color = 'rgba(255, 255, 255, 0)';
-			renderedText.animate(fadeIn, 200).onfinish = ()=> {renderedText.style.opacity = 1; renderedText.animate(fontOpacityZeroToFull(255,255,255,true), 200).onfinish= ()=> renderedText.style.color = 'rgba(255, 255, 255, 1)';};
-		});
-		theImage.addEventListener('mouseout',()=>
-		{
-			isHovering = false;
-			theImage.style['cursor'] = 'auto';
-			renderedText.animate(fadeOut, 200).onfinish = () =>
-			{
-				renderedText.style.opacity = 0;
-				if (!isHovering) renderedText.style.display = 'none'; // if you make quick movements leaving the image surface and going over it again, you may be back on the image surface under 200ms. So if it wasn't for this if-check it would then make display= none, even if you were hovering again.
-			}
-		});	
+		//console.log("Mouse Y: "+(mouse.clientY+window.scrollY));
+		//console.log("Mouse X: "+mouse.clientX);
+	}*/
+	// body.onclick = ()=>{ showCoordinates(event);}
+	/* function showCoordinates(event)
+	{
+		console.log("MOUSE X: " + event.clientX + ", Y: " + (event.clientY+window.scrollY));
+	}*/
+	
+	theImage.onmousemove = (mouse)=>
+	{
+		// console.log("mouse position:", mouse.clientX, mouse.clientY);
+		renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
+		renderedText.style.left = mouse.clientX+50+'px';
 	}
+	renderedText.onmousemove = (mouse)=> // it is possible to move the mouse quicker than rendering happens sometimes, causing the mouse to hover over the rendered text-div, esp from quick left-to-right movements (as the div appears right of the mouse). The runtime then thinks the mouse is not hovering over the image anymore and triggers an image-mouseout. This will start a loop of mouseover-mouseout which will result in an endless flicker-effect (element on/off loop). So this listener will set the div next to the mouse should the mouse touch it.
+	{
+		renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
+		renderedText.style.left = mouse.clientX+50+'px';
+	}
+	theImage.addEventListener('mouseover',()=>
+	{
+		isHovering = true;
+		renderedText.style.display = 'block';
+		theImage.style['cursor'] = 'cell';
+		renderedText.style.color = 'rgba(255, 255, 255, 0)';
+		renderedText.animate(fadeIn, 200).onfinish = ()=> {renderedText.style.opacity = 1; renderedText.animate(fontOpacityZeroToFull(255,255,255,true), 200).onfinish= ()=> renderedText.style.color = 'rgba(255, 255, 255, 1)';};
+	});
+	theImage.addEventListener('mouseout',()=>
+	{
+		isHovering = false;
+		theImage.style['cursor'] = 'auto';
+		renderedText.animate(fadeOut, 200).onfinish = () =>
+		{
+			renderedText.style.opacity = 0;
+			if (!isHovering) renderedText.style.display = 'none'; // if you make quick movements leaving the image surface and going over it again, you may be back on the image surface under 200ms. So if it wasn't for this if-check it would then make display= none, even if you were hovering again.
+		}
+	});
 }
 
 function clickOnImage(theImage, GBIFResult, originOfCall)
@@ -267,7 +264,7 @@ function clickOnImage(theImage, GBIFResult, originOfCall)
 			
 			GBIFResult.mobileFullWidthImageDiv.style.display = 'block';
 			GBIFResult.mobileFullWidthImage.src = theImage.src;
-			GBIFResult.mobileFullWidthImage.animate({opacity:[0,1],scale:[0.8,1]},1000);
+			GBIFResult.mobileFullWidthImage.animate({opacity:[0,1],scale:[0.85,1]},500);
 			if (theImage.naturalWidth > GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width) GBIFResult.mobileFullWidthImage.style.width = GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width+'px'; // there didn't seem to be a CSS way to contain the image neatly within the parent div.
 			else GBIFResult.mobileFullWidthImage.style.width = theImage.naturalWidth;
 			GBIFResult.mobileFullWidthImage.style['border-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
