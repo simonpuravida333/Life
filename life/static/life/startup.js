@@ -57,16 +57,9 @@ if (isMobile) window.addEventListener('resize', adjustZoom); // when tilting sma
 // ok enter and backspace are really small, that's gonna be interesting
 
 // + + +
-window.addEventListener('keypress', (event)=>
-{
-	let key = event.keyCode || event.which;
-	alert(key);
-})
-
 window.addEventListener('keydown', (event)=>
 {
 	let key = event.keyCode || event.which;
-	alert(key);
 	const enterKey = 13;
 	const arrowUp = 38;
 	const arrowDown = 40;
