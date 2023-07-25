@@ -113,8 +113,6 @@ function create(data, querySubmit, rankSubmit)
 	
 	for (let x = 0; x < data.length; x++)
 	{	
-		console.log(rankSubmit+':\n'+data[x]);
-		
 		// FILTER
 		if(data[x].synonym === true) continue;
 		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank && !withinHigherTaxa) continue;

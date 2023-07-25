@@ -28,48 +28,34 @@ arrowLeft.style['z-index'] = 3;
 arrowRight.style['z-index'] = 4; 
 arrowLeft.innerHTML = '⪡';
 
-//if (!touch && touch !== undefined) // because of module hoisting this if check will be executed before it'll know about 'touch' which is in the module that is executed last on page-load: the origin module where the script starts (startup.js).
-//{
-	arrowLeft.style.left = '5%';
-	arrowRight.style.left = '95%';
+arrowLeft.style.left = '5%';
+arrowRight.style.left = '95%';
 
-	arrowLeft.onmouseover = ()=> {arrowLeft.style.cursor = 'pointer'; arrowLeft.style.color = 'deepskyblue';}
-	arrowRight.onmouseout = ()=>
-	{
-		arrowRight.style.color = 'white';
-		arrowRight.style.cursor = 'default';
-	};
-	arrowLeft.onmouseout = ()=>
-	{
-		arrowLeft.style.color = 'white';
-		arrowLeft.style.cursor = 'default';
-	};
-	arrowLeft.addEventListener('click', ()=> goLeft());
-	arrowRight.addEventListener('click', ()=> goRight());
-/*}
-else
+arrowLeft.onmouseover = ()=> {arrowLeft.style.cursor = 'pointer'; arrowLeft.style.color = 'deepskyblue';}
+arrowRight.onmouseout = ()=>
 {
-	touchResponse([arrowLeft,arrowRight], goLeft, goRight);
-	arrowPlacements();
-}
-
-function arrowPlacements()
+	arrowRight.style.color = 'white';
+	arrowRight.style.cursor = 'default';
+};
+arrowLeft.onmouseout = ()=>
 {
-	arrowLeft.style.left = '100px';
-	arrowRight.style.left = window.screen.width-100+'px';
-}
-*/
+	arrowLeft.style.color = 'white';
+	arrowLeft.style.cursor = 'default';
+};
+arrowLeft.addEventListener('click', ()=> goLeft());
+arrowRight.addEventListener('click', ()=> goRight());
 fullWindow.append(arrowRight, arrowLeft)
+
+const escape = document.createElement('div');
+escape.id = 'escape';
+escape.innerHTML = '⊙';
+escape.onclick = ()=> leaveFullWindow();
+svg2.id = 'svg2';
 
 /*
 const escapeBorder = document.createElement('div');
 escapeBorder.id = 'escapeBorder';
 escapeBorder.style['z-index'] = 3;
-*/
-const escape = document.createElement('div');
-escape.id = 'escape';
-escape.innerHTML = '⊙';
-/*
 escape.onmouseover = ()=>
 {
 	escapeBorder.style.border = '3px solid orange';
@@ -82,8 +68,6 @@ escape.onmouseout = ()=>
 	escapeBorder.style.width = '45px';
 	escapeBorder.style.height = '45px';
 };*/
-escape.onclick = ()=> leaveFullWindow();
-svg2.id = 'svg2';
 fullWindow.append(svg2, escape/*,escapeBorder*/);
 
 // KEY LISTENER FOR FULL WINDOW 
@@ -121,38 +105,18 @@ function leaveFullWindow()
 		fullWindow.style.display = 'none';
 		body.style.overflow = 'auto';
 		presentObject.images.style.overflow = 'auto';
-		/*if (isMobile)
-		{
-			if (window.innerHeight > window.innerWidth) body.style.zoom = 2;
-			else body.style.zoom = 1.2;
-		}*/
 	};
 }
 
 function fullWindowPlacements()
 {
-	/*if (isMobile)
-	{
-		body.style.zoom = 1;
-		fullWindow.style.width = window.innerWidth+'px';
-		fullWindow.style.height = window.innerHeight+'px';
-		svg2.style.left = '50%';
-		fullWindow.style.top = window.pageYOffset+'px';
-		let thereYouGo = window.pageYOffset;
-		alert(fullWindow.style.top);
-		window.scrollTo(0, thereYouGo);
-		setTimeout(()=>window.scrollTo(0, thereYouGo),500);
-	}
-	else
-	{*/
-		fullWindow.style.top = window.scrollY+'px';
-		svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
-		svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
-		svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
-		//escapeBorder.style.left = '95%';
-		//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';	
-	//}
+	fullWindow.style.top = window.scrollY+'px';
+	svg2.style.left = '95%'; // replacing it every time is necessary as otherwise it would keep drifting away every time the user opens fullWindow due to the extra pixels I add in the lines below (at end of line).
 	svg2.style.top = '50%';
+	svg2.style.top = svg2.getBoundingClientRect().y+svg2.getBoundingClientRect().height/2+4+'px'; // Depending on the font you use, the arrow will be located a few pixels elsewhere. The 'height/2' is to counter-act the translate -50%.
+	svg2.style.left = svg2.getBoundingClientRect().x+svg2.getBoundingClientRect().width/2-4+'px';
+	//escapeBorder.style.left = '95%';
+	//escapeBorder.style.left = escapeBorder.getBoundingClientRect().x+escapeBorder.getBoundingClientRect().width/2-0.5+'px';
 }
 
 fullWindowNavigationStates(); // to initialize, to trigger the first four styling attributes
@@ -194,7 +158,7 @@ async function goRight()
 {
 	if (presentImageIndex >= presentImgObject.images.length-1 && !presentImgObject.downloadedAllOccurrences)
 	{
-		if (!lockedFetchNext) // why is lockedFetchNext === false not part of the parent if condition? Because the interpreter must be prohibited to move over to the else-ifs while lockedFetchNext is true (fetching image) WHILE ALSO presentImageIndex is at right end. So it should just return from this function at the child-if condition not being met. Earlier, while the child if was part of the parent-if, it may have happened that this function is called repeatedly within a fraction of a moment with the last else-if (almost) at the same time is this if-statement, causing a mix-up and allowing presentImageIndex === presentImgObject.images.length; out of bounds in displayImageFullWindow: img.src is undefined. It was an error difficult to track and probably had to do with the timing of the update of GBIFResult.imagesObject, allowing the last else if-condition to be met sometimes while this one was still in lock. Back then I also used presentImageIndex++ in this if statement instead of just setting it to the end of length, which is safer. So there may have been two concurrent presentImageIndex++s from here and the last else-if. ... It was pretty stable, it would never go beyond index === length, and the user wouldn't even have noticed the error, as the object update (and index update) would soon follow and you could just keep on moving through the images. But the src-undefined error appeared in the log, I wanted to understand it and now it's even more watertight.
+		if (!lockedFetchNext) // why is lockedFetchNext === false not part of the parent if condition? Because the interpreter must be prohibited to move over to the else-ifs while lockedFetchNext is true (fetching image) WHILE ALSO presentImageIndex is at right end. So it should just return from this function at the child-if condition not being met. Earlier, while the child if was part of the parent-if, it may have happened that this function is called repeatedly within a fraction of a moment with the last else-if (almost) at the same time is this if-statement, causing a mix-up and allowing presentImageIndex === presentImgObject.images.length; out of bounds in nextimaGefulLwinDow: img.src is undefined. It was an error difficult to track and probably had to do with the timing of the update of GBIFResult.imagesObject, allowing the last else if-condition to be met sometimes while this one was still in lock. Back then I also used presentImageIndex++ in this if statement instead of just setting it to the end of length, which is safer. So there may have been two concurrent presentImageIndex++s from here and the last else-if. ... It was pretty stable, it would never go beyond index === length, and the user wouldn't even have noticed the error, as the object update (and index update) would soon follow and you could just keep on moving through the images. But the src-undefined error appeared in the log, I wanted to understand it and now it's even more watertight.
 		{
 			lockedFetchNext = true;
 			presentImageIndex = presentImgObject.images.length-1; 
@@ -207,7 +171,7 @@ async function goRight()
 			if (presentImageIndex === presentImgObject.images.length-2) // if user has not gone off leftwards to look at the already loaded images while the next one is being fetched: it will set the new images to be displayed.
 			{
 				presentImageIndex = presentImgObject.images.length-1;
-				displayImageFullWindow(true);
+				nextimaGefulLwinDow(true);
 			}
 		}
 	}
@@ -215,7 +179,7 @@ async function goRight()
 	else if (presentImageIndex < presentImgObject.images.length-1)
 	{
 		presentImageIndex++;
-		displayImageFullWindow(true);
+		nextimaGefulLwinDow(true);
 	}
 }
 
@@ -225,11 +189,11 @@ function goLeft()
 	else
 	{
 		presentImageIndex--;
-		displayImageFullWindow(true);
+		nextimaGefulLwinDow(true);
 	}
 }
 
-function displayImageFullWindow(rerender, shiftIndex, theIndex, GBIFResult)
+function nextimaGefulLwinDow(rerender, shiftIndex, theIndex, GBIFResult)
 {
 	if (theIndex !== undefined) presentImageIndex = theIndex;
 	if (shiftIndex !== undefined) presentImageIndex += shiftIndex;
@@ -290,15 +254,6 @@ window.addEventListener('resize', ()=>
 	{
 		fullWindowPlacements();
 		imagePlacement();
-		//if (isMobile) arrowPlacements();
 	}
 });
-/*
-function preventDef(e)
-{
-	if((isMobile || isTablet) && fullWindow.style.display === 'block') e.preventDefault();
-}
-fullWindow.addEventListener('touchstart', preventDef)
-fullWindow.addEventListener('touchmove', preventDef)
-*/
-export {fullWindow, displayImageFullWindow, goLeft, goRight};
+export {fullWindow, nextimaGefulLwinDow, goLeft, goRight};
