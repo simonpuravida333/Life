@@ -34,29 +34,6 @@ function adjustZoom()
 }
 if (isMobile) window.addEventListener('resize', adjustZoom); // when tilting smartphone
 
-// The minimum widths elements can have (baseBlock) is 486px. I looked at youtube.com as a guideline: It only is responsive down to a width of 486px. Below that you'd have to do 2D navigation. And it makes sense nowadays: smartphones that are well under 100 $/€ come with resolutions of 720 * 1600 and more.
-// But in the end what we need to know is simply whether it's a small screen, not the resolution, since even cheap smartphone go often beyond the HD (720p) resolution.
-// so we check whether it's mobile (tap interactions + style mobile adjustments), and if not, whether it's tablet (tap interactions, desktop / unchanged styling). // Edit after testing: the app works perfectly fine on touch and doesn't need adjustments really for tablets.
-// isMobile === true swaps the CSS file for a modified one to accomodate smaller screens.
-//if (isMobile) document.getElementById('styles').href= "{% static 'life/mobile.css' %}";
-//getStyleSheet();
-
-// + + +
-
-// MOBILE TO DO
-// when flipping screen > must fill width
-// add swipe gestures
-// make escape bigger
-// give full window images a big frame
-// center loading svg ani
-// refractor arrows and navigation states
-// MAYBE: still add arrows
-//Andigena nigrirostris
-//
-
-// ok enter and backspace are really small, that's gonna be interesting
-
-// + + +
 window.addEventListener('keydown', (event)=>
 {
 	let key = event.keyCode || event.which;
