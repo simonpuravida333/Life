@@ -1,4 +1,4 @@
-import {taxaKeys, ranks, resultOverview, filterArea, isMobile} from './startup.js';
+import {taxaKeys, ranks, resultOverview, filterArea, isMobile, touch} from './startup.js';
 import {svg, svg2, fadeTime, fadeIn, fadeOut, contractXToCenter, expandXFromCenter, fontOpacityZeroToFull, brightenHover, removeAni} from './animation.js';
 import {constructFilter} from './filter.js';
 import {displayRank, GBIFResultOpenClose} from './navigate.js';
@@ -354,7 +354,7 @@ function createSummary()
 		statBlock.addEventListener('mouseover', ()=> statBlock.animate([{backgroundColor: '#409CB5'},{backgroundColor: '#86DBEF'}],fadeTime));
 		statBlock.addEventListener('mouseout', ()=> statBlock.animate([{backgroundColor: '#86DBEF'},{backgroundColor: '#409CB5'}],fadeTime));
 		
-		if (isMobile)
+		if (touch)
 		{
 			statBlock.addEventListener('touchstart', holdDown);
 			statBlock.addEventListener('touchend', holdEnd);

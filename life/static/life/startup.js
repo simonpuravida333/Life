@@ -355,7 +355,7 @@ searchGo.addEventListener('click',()=>
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile};
+export {taxaKeys, ranks, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile, touch};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
 // Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.

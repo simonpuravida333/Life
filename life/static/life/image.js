@@ -1,4 +1,4 @@
-import {taxaKeys, isMobile} from './startup.js';
+import {taxaKeys, touch} from './startup.js';
 import {svg, fadeIn, fadeOut, fontOpacityZeroToFull, fadeTime, grow} from './animation.js';
 import {fullWindow, nextimaGefulLwinDow} from './fullWindowImage.js';
 
@@ -121,7 +121,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 			theImage.classList.add('resultImage');
 			theImage.style['border-color'] = allImageSources.colors[counter];
 			theImage.style['outline-color'] = allImageSources.colors[counter];
-			if (!isMobile) renderImageText(theImage, allImageSources.descriptions[counter], allImageSources.colors[counter]);
+			if (!touch) renderImageText(theImage, allImageSources.descriptions[counter], allImageSources.colors[counter]);
 			clickOnImage(theImage, GBIFResult, originOfCall);
 			
 			theImage.animate({transform: ['scale(0.9)','scale(1)'], opacity: [0,1]}, fadeTime).onfinish = ()=> theImage.style.opacity = 1;
@@ -246,7 +246,7 @@ function renderImageText(theImage, theText, frameColor)
 
 function clickOnImage(theImage, GBIFResult, originOfCall)
 {
-	if (isMobile)
+	if (touch)
 	{
 		if (GBIFResult.mobileFullWidthImage.src === theImage.src) return; 
 		let trackX = 0;
