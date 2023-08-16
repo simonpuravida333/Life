@@ -17,6 +17,12 @@ function create(data, querySubmit, rankSubmit)
 	if (resultOverview.style.opacity < 0.9) resultOverview.animate(fadeIn, fadeTime).onfinish = ()=>resultOverview.style.opacity = 1;
 	if (filterArea.style.opacity < 0.9) filterArea.animate(fadeIn, fadeTime).onfinish = ()=> filterArea.style.opacity = 1; // why 0.9? becuase maybe the user is so fast and hits enter on a pre-typed text just after having deleted a group. It's highly unlikely though.
 	
+	if (data === 'nothingFetched')
+	{
+		createSummary(data, querySubmit);
+		return;
+	}
+	
 	console.log(querySubmit, rankSubmit, data);
 	let withinHigherTaxa = false;
 	if (rankSubmit.search('within') !== -1) withinHigherTaxa = true;
@@ -118,7 +124,7 @@ function create(data, querySubmit, rankSubmit)
 		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank && !withinHigherTaxa) continue;
 		// ENDFILTER
 		
-		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, when user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
+		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, in case user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
 		// 'targetRank' in the GBIFResult object is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden), meaning FAMILY is the lowest rank / is the targetRank
 		
 		// THE BASIC AREA FOR EACH RESULT
@@ -331,8 +337,34 @@ function create(data, querySubmit, rankSubmit)
 	createSummary();
 }
 
-function createSummary()
+function createSummary(nothingFetched, querySubmit)
 {
+	if (nothingFetched !== undefined)
+	{
+		const statBlock = document.createElement('div');
+		const info = document.createElement('div');
+		info.style['pointer-events'] = 'none';
+		statBlock.classList.add('baseBlock', 'summery');
+		statBlock.append(info);
+		resultOverview.append(statBlock);
+		info.innerHTML = "Nothing found for <i><strong>"+querySubmit+"</i></strong>";
+		statBlock.animate({backgroundColor: ['rgba(255,80,50,1)','rgba(255,80,50,0.65)','rgba(255,80,50,1)','rgba(255,50,50,0)']},3000).onfinish =()=>
+		{
+			statBlock.style.opacity = 0;
+			if (resultOverview.children.length === 1)
+			{
+				resultOverview.animate(fadeOut,fadeTime).onfinish = ()=>
+				{
+					resultOverview.style.opacity = 0;
+					statBlock.remove();
+				}
+				filterArea.animate(fadeOut,fadeTime).onfinish = ()=> filterArea.style.opacity = 0;
+			}
+			else statBlock.remove();
+		}
+		return;
+	}
+	
 	while (resultOverview.children.length > 0) resultOverview.children[0].remove();
 	for (const group of allQueriesGroups)
 	{
@@ -353,6 +385,7 @@ function createSummary()
 		let fontColorAni;
 		statBlock.addEventListener('mouseover', ()=> statBlock.animate([{backgroundColor: '#409CB5'},{backgroundColor: '#86DBEF'}],fadeTime));
 		statBlock.addEventListener('mouseout', ()=> statBlock.animate([{backgroundColor: '#86DBEF'},{backgroundColor: '#409CB5'}],fadeTime));
+		resultOverview.append(statBlock);
 		
 		if (touch)
 		{
@@ -378,7 +411,7 @@ function createSummary()
 			{
 				while (group.GBIFResults.length > 0) // it uses the pointers in the array of the group object to find the pointers in the array of allGBIFResults to remove the pointers (of the same GBIFResult) of allGBIFResults that belong to the group.
 				{
-					for (let x = 0; x <allGBIFResults.length; x++)
+					for (let x = 0; x < allGBIFResults.length; x++)
 					{
 						if (group.GBIFResults[0] === allGBIFResults[x])
 						{
@@ -418,7 +451,6 @@ function createSummary()
 				window.scrollTo(0, group.head.getBoundingClientRect().top*zoom);
 			}
 		}
-		resultOverview.append(statBlock);
 	}
 }
 
@@ -427,4 +459,4 @@ function getRndInteger(min, max)
 	return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-export {create, allGBIFResults};
+export {create, allGBIFResults, getRndInteger};

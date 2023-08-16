@@ -75,10 +75,9 @@ class Species(models.Model):
 	genus = models.ForeignKey(Genus, null = True, on_delete=models.PROTECT)
 
 # Occurrences must be linked to a species, no other rank.
-# It's 
 class Occurrence(models.Model):
 	species = models.ForeignKey(Species, on_delete = models.CASCADE)
-	basisOfRecord = models.CharField(max_length=64, choices=basisOfRecord)
+	basisOfRecord = models.CharField(max_length=64, blank = True, choices=basisOfRecord)
 	identifiedBy = models.CharField(max_length=256, blank = True)
 	recordedBy = models.CharField(max_length=256, blank = True)
 	isInCluster = models.BooleanField()

@@ -158,7 +158,7 @@ async function goRight()
 {
 	if (presentImageIndex >= presentImgObject.images.length-1 && !presentImgObject.downloadedAllOccurrences)
 	{
-		if (!lockedFetchNext) // why is lockedFetchNext === false not part of the parent if condition? Because the interpreter must be prohibited to move over to the else-ifs while lockedFetchNext is true (fetching image) WHILE ALSO presentImageIndex is at right end. So it should just return from this function at the child-if condition not being met. Earlier, while the child if was part of the parent-if, it may have happened that this function is called repeatedly within a fraction of a moment with the last else-if (almost) at the same time is this if-statement, causing a mix-up and allowing presentImageIndex === presentImgObject.images.length; out of bounds in nextimaGefulLwinDow: img.src is undefined. It was an error difficult to track and probably had to do with the timing of the update of GBIFResult.imagesObject, allowing the last else if-condition to be met sometimes while this one was still in lock. Back then I also used presentImageIndex++ in this if statement instead of just setting it to the end of length, which is safer. So there may have been two concurrent presentImageIndex++s from here and the last else-if. ... It was pretty stable, it would never go beyond index === length, and the user wouldn't even have noticed the error, as the object update (and index update) would soon follow and you could just keep on moving through the images. But the src-undefined error appeared in the log, I wanted to understand it and now it's even more watertight.
+		if (!lockedFetchNext) // why is lockedFetchNext === false not part of the parent if condition? Because the interpreter must be prohibited to move over to the else-ifs while lockedFetchNext is true (fetching image) WHILE ALSO presentImageIndex is at right end. So it should just return from this function at the child-if condition not being met. Earlier, while the child if was part of the parent-if, it may have happened that this function is called repeatedly within a fraction of a moment with the last else-if (almost) at the same time is this if-statement, causing a mix-up and allowing presentImageIndex === presentImgObject.images.length; out of bounds in nextImageFullWindow: img.src is undefined. It was an error difficult to track and probably had to do with the timing of the update of GBIFResult.imagesObject, allowing the last else if-condition to be met sometimes while this one was still in lock. Back then I also used presentImageIndex++ in this if statement instead of just setting it to the end of length, which is safer. So there may have been two concurrent presentImageIndex++s from here and the last else-if. ... It was pretty stable, it would never go beyond index === length, and the user wouldn't even have noticed the error, as the object update (and index update) would soon follow and you could just keep on moving through the images. But the src-undefined error appeared in the log, I wanted to understand it and now it's even more watertight.
 		{
 			lockedFetchNext = true;
 			presentImageIndex = presentImgObject.images.length-1; 
@@ -171,7 +171,7 @@ async function goRight()
 			if (presentImageIndex === presentImgObject.images.length-2) // if user has not gone off leftwards to look at the already loaded images while the next one is being fetched: it will set the new images to be displayed.
 			{
 				presentImageIndex = presentImgObject.images.length-1;
-				nextimaGefulLwinDow(true);
+				nextImageFullWindow(true);
 			}
 		}
 	}
@@ -179,7 +179,7 @@ async function goRight()
 	else if (presentImageIndex < presentImgObject.images.length-1)
 	{
 		presentImageIndex++;
-		nextimaGefulLwinDow(true);
+		nextImageFullWindow(true);
 	}
 }
 
@@ -189,11 +189,11 @@ function goLeft()
 	else
 	{
 		presentImageIndex--;
-		nextimaGefulLwinDow(true);
+		nextImageFullWindow(true);
 	}
 }
 
-function nextimaGefulLwinDow(rerender, shiftIndex, theIndex, GBIFResult)
+function nextImageFullWindow (rerender, shiftIndex, theIndex, GBIFResult)
 {
 	if (theIndex !== undefined) presentImageIndex = theIndex;
 	if (shiftIndex !== undefined) presentImageIndex += shiftIndex;
@@ -256,4 +256,4 @@ window.addEventListener('resize', ()=>
 		imagePlacement();
 	}
 });
-export {fullWindow, nextimaGefulLwinDow, goLeft, goRight};
+export {fullWindow, nextImageFullWindow, goLeft, goRight};

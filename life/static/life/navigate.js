@@ -26,10 +26,7 @@ function displayRank(GBIFResult, y)
 	}
 	
 	// console.log("CLICKED ON RANK "+taxaKeys[y]+". IS OPENED: "+r[taxaKeys[y]].opened);
-		
-	// apparently a direct attribute check like flexPartDescription.style.display === 'flex' doesn't work if it's styled via classList (even though it gets display: 'flex' through the CSS class). Looking through the prototype attributes of flexPartDescription.style in the console reveals that all styling attributes are "", even though the CSS class attributes are clearly in effect. Only if it is here in JS explicitly expressed (flexPartDescription.style.display = 'flex'), then it would be having the attribute in the element styling prototype. So you have to keep interacting over classList functions and className once you use them. ... but you can mix it up: giving it a classList and then additionally a style via JS (like 'block'/'none' for convieniently switching it on/off) means that you can make bool compares, manipulate that particular style etc. but only with the style given through JS, not the ones given by classList.
-	// why classList just doesn't write into the object style prototype? I don't know. You might assume it would make more sense. But that's JS for you.
-	
+			
 	if (!r[taxaKeys[y]].openedFirstTime)
 	{
 		r[taxaKeys[y]].openedFirstTime = true;

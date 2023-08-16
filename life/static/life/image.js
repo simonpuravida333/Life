@@ -1,6 +1,6 @@
 import {taxaKeys, touch} from './startup.js';
 import {svg, fadeIn, fadeOut, fontOpacityZeroToFull, fadeTime, grow} from './animation.js';
-import {fullWindow, nextimaGefulLwinDow} from './fullWindowImage.js';
+import {fullWindow, nextImageFullWindow} from './fullWindowImage.js';
 
 const body = document.querySelector('body');
 
@@ -275,9 +275,9 @@ function clickOnImage(theImage, GBIFResult, originOfCall)
 			}
 		});
 	}
-	else theImage.addEventListener('click',()=> nextimaGefulLwinDow(true, 0, Array.prototype.indexOf.call(GBIFResult.images.children, theImage), GBIFResult));
+	else theImage.addEventListener('click',()=> nextImageFullWindow(true, 0, Array.prototype.indexOf.call(GBIFResult.images.children, theImage), GBIFResult));
 	
-	if (fullWindow.style.display === 'block' && originOfCall === 'MEDIA') nextimaGefulLwinDow(false, 1); // automatically prepends MEDIA image without user noticing it when you're in fullWindow mode.
+	if (fullWindow.style.display === 'block' && originOfCall === 'MEDIA') nextImageFullWindow(false, 1); // automatically prepends MEDIA image without user noticing it when you're in fullWindow mode.
 }
 
 export{displayImages};

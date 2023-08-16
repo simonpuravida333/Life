@@ -84,8 +84,13 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 		{
 			if (incoming === undefined || incoming.results.length === 0)
 			{
-				console.log('Nothing fetched. Returning!');
-				if (rankSubmit === 'highestRank' && goThroughRanks < 7)
+				if (rankSubmit !== 'highestRank')
+				{
+					create('nothingFetched',querySubmit);
+					console.log('Nothing fetched. Returning!');
+					return;
+				}
+				else if (rankSubmit === 'highestRank' && goThroughRanks < 7)
 				{
 					goThroughRanks++;
 					search(querySubmit, rankSubmit);
