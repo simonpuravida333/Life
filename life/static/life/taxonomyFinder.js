@@ -213,10 +213,9 @@ function fetchChildren (parent, childRank)
 	
 	function allChildren(rank)
 	{
-		console.log('allChildren doing rank '+taxaKeys[rank]);
-		console.log(variousRanks[taxaKeys[rank].toUpperCase()])
 		variousRanks[taxaKeys[rank].toUpperCase()] = filterResults(variousRanks[taxaKeys[rank].toUpperCase()]);
 		if (variousRanks[taxaKeys[rank].toUpperCase()].length === 0) return;
+		console.log(variousRanks[taxaKeys[rank].toUpperCase()])
 		
 		let highestRank = 6; 
 		for (const various in variousRanks) if (various !== 'UNRANKED' && Number(taxaKeys.indexOf(various.toLowerCase())) < highestRank) highestRank = Number(taxaKeys.indexOf(various.toLowerCase()));
