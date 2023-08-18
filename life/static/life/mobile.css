@@ -242,6 +242,172 @@ select
 	margin-left: 20px;
 }
 
+.input
+{
+	color: white;
+	background-color: #409CB5; /*#45B6DD; /* #66547F; */
+	font-size: 18px;
+	height: 50px;
+	width: 350px;
+	border-radius: 10px;
+	margin: 10px;
+	/*text-align: left;*/
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: none;
+	
+	&:hover
+	{
+		background-color: #8FE2FF;
+	}
+	&:focus
+	{
+		background-color:#8FE2FF;
+		color: #684B33;
+	}
+	&.textareaWithinSearch
+	{
+		background-color: orange;
+		&:hover
+		{
+			background-color: white;
+			color: #684B33;
+		}
+		&:focus
+		{
+			background-color: white;
+		}
+	}
+}
+
+.newEntryTextArea
+{
+	height: 250px;
+	&::placeholder
+	{
+		color: #409CB5;
+	}
+}
+
+.newEntryInput
+{
+	&::placeholder
+	{
+		color: #409CB5;
+	}
+}
+
+.searchGo
+{
+	background-color: #2BAF60; /*#45B6DD; /*#66547F;*/
+	border-radius: 10px;
+	width: 75px;
+	height: 50px;
+	margin: 10px;
+	border: none;
+	color: white;
+	font-weight: bold;
+	font-style: italic;
+	border: none;
+	outline: none;
+	
+	&:focus
+	{
+		outline: none;
+	}
+	&:hover
+	{
+		background-color: #8AED97; /*#5FD6FF;*/
+		border:none;
+	}
+	&.go
+	{
+		&:focus
+		{
+			background-color: #8AED97; /*#8FE2FF;*/
+			font-size: 25px;
+		}
+	}
+	&.newSpecies
+	{
+		width: 150px;
+	}
+	&.newEntrySubmit
+	{
+		width: 160px;
+	}
+	&.locate
+	{
+		width: 120px;
+	}
+}
+
+.findRank
+{
+	color: white;
+	background-color: orange;
+	height: 40px;
+	width: 300px;
+	border-radius: 5px;
+	margin: 0 auto;
+	/*text-align: left;*/
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: none;
+	display: block;
+	font-family: Gaegu;
+	font-size: 25px;
+	
+	&:hover
+	{
+		background-color: #8FE2FF;
+	}
+	&:focus
+	{
+		background-color:#8FE2FF;
+		color: #684B33;
+	}
+}
+
+.suggestionBlock
+{
+	/*padding: 5px;*/
+	padding-left: 8px;
+	padding-right: 8px;
+	border-radius: 5px;
+	border: 2px solid #2A4051;
+	border-bottom: 5px solid #2A4051;
+	border-left: 5px solid #2A4051;
+	margin: 2px;
+	cursor: pointer;
+	opacity: 0;
+	color: #2A4051;
+	/*font-weight: 600;*/
+	font-family: 'Gaegu';
+	font-size: 25px;
+}
+
+.plus
+{
+	font-size: 60px;
+	font-family: 'Gaegu';
+	cursor: pointer;
+	color: orange;
+	font-weight: 800;
+	margin: -20px;
+	margin-left: 20px;
+}
+
+.showMore
+{
+	display: flex;
+	align-items: center;
+}
+
 /* IDs */
 #plusSign
 {
@@ -315,27 +481,6 @@ select
 	z-index: 0;
 	margin: 5px;
 	display: none;
-}
-
-#searchGo
-{
-	background-color: #2BAF60; /*#45B6DD; /*#66547F;*/
-	border-radius: 10px;
-	width: 75px;
-	height: 50px;
-	margin: 10px;
-	border: none;
-	color: white;
-	font-weight: bold;
-	font-style: italic;
-	border: none;
-	outline: none;
-
-	&:focus
-	{
-		background-color: #8AED97; /*#8FE2FF;*/
-		font-size: 25px;
-	}
 }
 
 #howTo
