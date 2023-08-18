@@ -381,6 +381,10 @@ select
 			font-size: 25px;
 		}
 	}
+	&.newSpecies
+	{
+		width: 150px;
+	}
 	&.newEntrySubmit
 	{
 		width: 160px;
@@ -436,10 +440,6 @@ select
 	/*font-weight: 600;*/
 	font-family: 'Gaegu';
 	font-size: 25px;
-	&:hover
-	{
-		filter: brightness(1.2);
-	}
 }
 
 .plus
@@ -451,7 +451,20 @@ select
 	font-weight: 800;
 	margin: -20px;
 	margin-left: 20px;
-	
+}
+
+.showMore
+{
+	display: flex;
+	align-items: center;
+}
+
+.brightHover
+{
+	&:hover
+	{
+		filter: brightness(1.2);
+	}
 }
 
 /* IDs */

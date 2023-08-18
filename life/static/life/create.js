@@ -448,7 +448,7 @@ function createSummary(nothingFetched, querySubmit)
 				statBlock.style['background-color'] = null; // removes the added styling from mousedown. As I explain in displayRank() below: the styling attributes from classlist.add are seperate from directly-set styling attributes in JS (element.style.something...). Testing reveals that directly set-styling in JS ALWAYS has precedence over the classList styling; even if the classList is added later, it does not overwrite JS-coded styling. So here I remove the attributes again, instead of manually setting the same attributes of the classList attributes in JS directly, to reverse it to the original (classList / CSS) style. This allows the hover style to be back in place. If I would here manually set the attributes from classList (like statBlock.style.color = 'white') it would look alright, but the hover would be gone. Also it's cleaner to remove it by setting it null, or you'd have to deal with two concurrent stylings.
 				let zoom = 1;
 				if (isMobile) zoom = body.style.zoom;
-				window.scrollTo(0, group.head.getBoundingClientRect().top*zoom);
+				window.scrollTo(0, group.head.offsetTop*zoom);
 			}
 		}
 	}

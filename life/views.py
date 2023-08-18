@@ -13,5 +13,10 @@ def newSpecies(request):
 	if request.method != "POST":
 		return JsonResponse({"error": "POST request required."}, status=400)
 	incoming = json.loads(request.body)
-	print(incoming)
-	return JsonResponse({"message": "New Species successfully added to database!"}, status=201)
+	c = incoming.content
+	newSpecies = Species(canonicalName = c.canonicalName, vernacularNames = c.vernacularNames, synonyms = c.synonyms, distribution = c.distribution, description = c.description)
+	newLineage(incoming.lineage);
+	return JsonResponse({"message": "New Species successfully added to database!"}, status=201)	
+		
+def newLineage(l):
+	pass

@@ -10,7 +10,7 @@ findSpace.style.display = 'none';
 body.prepend(findSpace);
 
 const information = document.createElement('div');
-information.innerHTML = 'Look for canonical name suggestions in any rank you want.';
+information.innerHTML = 'Look for canonical name suggestions in any rank you want.<br>To refresh everything, delete the name of the highest taxonomy.';
 information.style['text-align'] = 'center';
 information.style['font-size'] = '18px';
 findSpace.append(information);
@@ -57,7 +57,13 @@ async function constructInputFields()
 			{
 				rankDivisions[counter].children[0].style.display = 'block'; // title
 				findRanks[counter].style.display = 'block';
-				findRanks[counter].value = "";			
+				rankDivisions[counter].children[0].style.opacity = 0;
+				findRanks[counter].style.opacity = 0;
+				setTimeout(()=>{
+					rankDivisions[counter].children[0].animate({opacity: [0,1]},500).onfinish = ()=> rankDivisions[counter].children[0].style.opacity = 1;
+					findRanks[counter].animate({opacity: [0,1]},500).onfinish = ()=> findRanks[counter].style.opacity = 1;
+				},200*(counter-rank-1))
+				findRanks[counter].value = "";		
 			}
 			return;
 		}
@@ -68,7 +74,7 @@ async function constructInputFields()
 			findRanks[counter].style.display = 'none';
 		}
 
-		fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=100&rank='+taxaKeys	[rank]+'&q='+findRanks[rank].value)
+		fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=50&rank='+taxaKeys	[rank]+'&q='+findRanks[rank].value)
 		.then(response => response.json())
 		.then(suggestions =>
 		{
@@ -103,7 +109,7 @@ async function constructInputFields()
 function createSuggestionBlock(colorDegree)
 {
 	const block = document.createElement('div');
-	block.classList.add('suggestionBlock');
+	block.classList.add('suggestionBlock', 'brightHover');
 	block.style['background-color'] = 'hsl('+colorDegree+', 80%, 80%)';
 	//block.onmouseover = ()=> block.style['background-color'] = 'hsl('+colorDegree+', 90%, 90%)';
 	//block.onmouseout = ()=> block.style['background-color'] = 'hsl('+colorDegree+', 80%, 80%)';
@@ -164,9 +170,82 @@ function setSelection(GBIFObject)
 	if (theRank < 6) fetchChildren(GBIFObject, theRank+1);
 }
 
-function fetchChildren(parent, childRank)
+function fetchChildren (parent, childRank)
 {
-	fetch('https://api.gbif.org/v1/species/'+parent.key+'/children?limit=1000&rank=phylum&isExtinct=false')
+	const variousRanks = {};
+	
+	fetchUntilExhausted(1000, 0, childRank);
+	function fetchUntilExhausted(limit, offset)
+	{
+		fetch('https://api.gbif.org/v1/species/'+parent.key+'/children?limit='+limit+'&offset='+offset+'&isExtinct=false') // isExtinct doesn't work on children, and within the children themselves there's no data about extinct / extant. A LOT of the children are of extinct species - recognizable by having lineage of two, three or four missing ancestors, like Genus being the direct children of Animalia. For this app, they're annoying, as most provide practically no data.
+		.then(response => response.json())
+		.then(incoming =>
+		{
+			if (incoming.results.length === 0)
+			{
+				const infoTitle = suggestionTitle('There are no children for '+ parent.rank.slice(0,1) + parent.rank.slice(1).toLowerCase() + ' <i>'+ ((parent.canonicalName !== undefined) ? parent.canonicalName : parent.scientificName) + '</i>');
+					spacesForSuggestions[childRank].append(infoTitle);
+				return;
+			}
+			
+			let presentRank = taxaKeys.indexOf(incoming.results[0].rank.toLowerCase()); // highest-ranked children should always come first.
+			const packageOfChildren = [];
+			
+			for (const child of incoming.results)
+			{
+				if (child.rank !== taxaKeys[presentRank].toUpperCase())
+				{
+					allChildren(presentRank);
+					if (child.rank === 'UNRANKED') return;
+					presentRank = taxaKeys.indexOf(child.rank.toLowerCase()); // presentRank++ may not work as the next child is more distant / not direct
+				}
+				if (variousRanks[child.rank] === undefined) variousRanks[child.rank] = [];
+				variousRanks[child.rank].push(child);
+			}
+			if (incoming.endOfRecords === true)
+			{
+				allChildren(presentRank);
+				return;
+			}
+			fetchUntilExhausted(1000, incoming.offset+1000)
+		})
+	}
+	
+	function allChildren(rank)
+	{
+		console.log('allChildren doing rank '+taxaKeys[rank]);
+		console.log(variousRanks[taxaKeys[rank].toUpperCase()])
+		variousRanks[taxaKeys[rank].toUpperCase()] = filterResults(variousRanks[taxaKeys[rank].toUpperCase()]);
+		if (variousRanks[taxaKeys[rank].toUpperCase()].length === 0) return;
+		
+		let highestRank = 6; 
+		for (const various in variousRanks) if (various !== 'UNRANKED' && Number(taxaKeys.indexOf(various.toLowerCase())) < highestRank) highestRank = Number(taxaKeys.indexOf(various.toLowerCase()));
+		if (highestRank > childRank)
+		{
+			const infoTitle = suggestionTitle('The next direct '+ ((variousRanks[taxaKeys[rank].toUpperCase()].length > 1) ? 'children' : 'child') +' for '+ parent.rank.slice(0,1) + parent.rank.slice(1).toLowerCase() + ' <i>'+ ((parent.canonicalName !== undefined) ? parent.canonicalName : parent.scientificName) + '</i> ' + ((variousRanks[taxaKeys[highestRank].toUpperCase()].length > 1) ? 'are' : 'is') +' of rank ' + taxaKeys[highestRank].slice(0,1).toUpperCase() + taxaKeys[highestRank].slice(1));
+			infoTitle.children[1].style.color = 'orange';
+			spacesForSuggestions[childRank].append(infoTitle);
+		}
+		
+		displayChildren(variousRanks[taxaKeys[rank].toUpperCase()]);
+		function displayChildren(directChildren, unranked)
+		{
+			showInfoTitle(directChildren.length, parent, rank, unranked);
+			makeChildren(directChildren, rank);
+		}
+		
+		if (variousRanks['UNRANKED'] !== undefined)
+		{
+			let unrankedChildren = [];
+			for (const child of variousRanks['UNRANKED']) if (child.parentKey === parent.key) unrankedChildren.push(child);
+			displayChildren(unrankedChildren, 'UNRANKED');
+		}
+	}
+}
+
+function FORMER_fetchChildren(parent, childRank) // works perfectly 
+{
+	fetch('https://api.gbif.org/v1/species/'+parent.key+'/children?limit=1000&isExtinct=false')
 	.then(response => response.json())
 	.then(children =>
 	{
@@ -279,31 +358,51 @@ function makeChildren(children, theRank)
 		}		
 	}
 	
-	let plus;
+	let showMore;
+	let showAll;
 	if (children.length > 50)
 	{
-		plus = document.createElement('div');
+		showMore = document.createElement('div');
+		showMore.classList.add('showMore', 'brightHover')
+		const plus = document.createElement('div');
 		plus.innerHTML = '+';
 		plus.classList.add('plus');
-		spacesForSuggestions[theRank].append(plus);
-		plus.onclick = showMoreChildren;
+		const number = document.createElement('div');
+		number.innerHTML = showLimit;
+		number.classList.add('plus');
+		number.style['font-size'] = '30px';
+		showMore.append(plus, number)
+		spacesForSuggestions[theRank].append(showMore);
+		showMore.addEventListener('click', ()=> showMoreChildren(false));
+		
+		showAll = document.createElement('div');
+		showAll.innerHTML = 'Show All';
+		showAll.classList.add('plus', 'brightHover');
+		showAll.style['font-size'] = '30px';
+		showAll.style.color = 'deepskyblue';
+		showAll.style.margin = '0px';
+		showAll.style['margin-left'] = '40px';
+		spacesForSuggestions[theRank].append(showAll);
+		showAll.addEventListener('click', ()=> showMoreChildren(true));
 	}
 
-	function showMoreChildren()
+	function showMoreChildren(all)
 	{
 		multiplicator++;
-		for (let child = (multiplicator-1)*showLimit; child < multiplicator*showLimit; child++)
+		const end = (all) ? childrenDivs.length : (multiplicator*showLimit > childrenDivs.length) ? childrenDivs.length : multiplicator*showLimit;
+		const start = (multiplicator-1)*showLimit;
+		if (end === childrenDivs.length)
 		{
-			if (child >= childrenDivs.length)
-			{
-				plus.remove();
-				break;
-			}
+			showAll.remove();
+			showMore.remove();
+		}
+		for (let child = start; child < end; child++)
+		{
 			childrenDivs[child].style.display = 'block';
 			setTimeout(()=>
 			{
 				childrenDivs[child].animate({opacity: [0,1]},300).onfinish = ()=> childrenDivs[child].style.opacity = 1;
-			},20*(child-(multiplicator-1)*showLimit));
+			},20* ((end-start <= 50) ? (child-(multiplicator-1)*showLimit) : (1/20)));
 		}
 	}
 }
@@ -313,7 +412,7 @@ function filterResults(results)
 	const selection = [];
 	for (const result of results)
 	{
-		if (((result.status !== 'ACCEPTED' && result.taxonomicStatus === undefined) || (result.status === undefined && result.taxonomicStatus !== 'ACCEPTED')) || result.synonym === true || (result.scientificName === undefined && result.canonicalName === undefined)/* || result.rank === 'UNRANKED'*/) continue;
+		if (((result.status !== 'ACCEPTED' && result.taxonomicStatus === undefined) || (result.status === undefined && result.taxonomicStatus !== 'ACCEPTED')) || result.synonym === true || (result.scientificName === undefined && result.canonicalName === undefined) || result.rank === 'UNRANKED') continue;
 		selection.push(result);
 	}
 	return selection;

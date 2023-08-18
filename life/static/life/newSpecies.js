@@ -3,21 +3,26 @@ const body = document.querySelector('body');
 // NEW GBIF ENTRY
 const newEntrySpace = document.createElement('div');
 newEntrySpace.classList.add('blockRow');
+newEntrySpace.style.display = 'none';
+(async ()=>
+{
+	const startupModule = await import('./startup.js');
+	const searchSection = startupModule.searchSection;
+	searchSection.after(newEntrySpace);
+})()
 
 const groupOfTwo = new Array(3);
-const divisions = [];
-const titles = [];
+const divisions = new Array(6);
+const titles = new Array(6);
 
-for (let x = 0; x < groupOfTwo.length; x++) groupOfTwo[x] = document.createElement('div');
-for (let x = 0; x < groupOfTwo.length*2; x++)
+for (let x = 0; x < 6; x++)
 {
-	const division = document.createElement('div');
-	divisions.push(division);
-	const title = document.createElement('div');
-	title.classList.add('selectTitle' ,'newEntryLabel');
-	titles.push(title);
-	division.append(title);
-	groupOfTwo[Math.floor(x/2)].append(division);
+	if (x%2 === 0) groupOfTwo[Math.floor(x/2)] = document.createElement('div');
+	titles[x] = document.createElement('div');
+	titles[x].classList.add('selectTitle' ,'newEntryLabel');
+	divisions[x] = document.createElement('div');
+	divisions[x].append(titles[x]);
+	groupOfTwo[Math.floor(x/2)].append(divisions[x]);
 	if (x%2 === 0)
 	{
 		groupOfTwo[Math.floor(x/2)].classList.add('flexPart');
@@ -95,13 +100,34 @@ submit.onclick =()=>
 		description: description.value,
 		media: media.value
 	} // the whole job of this object is to allow an instant refresh of the fields when the user sends it off.
-	for (const div of divisions) div.children[1].value = "";
 	
+	
+	// ANCESTRY
+	const selection = GBIFObject;
+	
+	for (rank in taxaKeys) if (selection[taxaKeys[rank]] !== undefined)
+	{
+		const hr = higherRank.cloneNode(true);
+		hr.canonicalName = selection[taxaKeys[rank]];
+		rankKeyName = selection[taxaKeys[rank]]+'Key'
+		hr.key = rankKeyName;
+		lineage[taxaKeys[rank]] = hr;
+	}
+	
+	const lineage = {}
+	const higherRank = {
+		canonicalName: null,
+		key: null,
+	}
+		
 	fetch('/newSpecies',
 	{
 		method: 'POST',
 		body: JSON.stringify
-		({newSpecies: content})
+		({
+			newSpecies: content,
+			lineage: lineage,
+		})
 	})
 	.then(response =>console.log(response));
 }

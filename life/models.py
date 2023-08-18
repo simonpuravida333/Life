@@ -40,23 +40,40 @@ iucnRedListCategory = [
 ]
 
 # TAXONOMY RANKS
+# every rank stands for itself. There is not an enforced tree-hierarchy; relating to parents is optional. This is a mock-up DB simulating the taxonomy tree. On the GBIF there are sometimes no direct parents or children, there're also UNRANKED entries.
+
+class GBIFKey(models.Model):
+	key = models.IntegerField()
+
 class Kingdom(models.Model):
-	name = models.CharField(max_length = 64, choices=kingdoms)
+	key = models.OneToOneField(GBIFKey, on_delete=models.CASCADE, primary_key=True)
+	canonicalName = models.CharField(max_length = 64, choices=kingdoms)
+	
 class Phylum(models.Model):
+	key = models.OneToOneField(GBIFKey, on_delete=models.CASCADE, primary_key=True)
 	kingdom = models.ForeignKey(Kingdom, null=True, on_delete = models.PROTECT)
-	name = models.CharField(max_length = 256)
+	canonicalName = models.CharField(max_length = 256)
+	
 class ClassRank(models.Model):
+	key = models.OneToOneField(GBIFKey, on_delete=models.CASCADE, primary_key=True)
 	phylum = models.ForeignKey(Phylum, null=True, on_delete = models.PROTECT)
-	name = models.CharField(max_length = 256)
+	canonicalName = models.CharField(max_length = 256)
+	
 class Order(models.Model):
-	classification = models.ForeignKey(ClassRank, null=True, on_delete = models.PROTECT)
-	name = models.CharField(max_length = 256)
+	key = models.OneToOneField(GBIFKey, on_delete=models.CASCADE, primary_key=True)
+	classRank = models.ForeignKey(ClassRank, null=True, on_delete = models.PROTECT)
+	canonicalName = models.CharField(max_length = 256)
+	
 class Family(models.Model):
+	key = models.OneToOneField(GBIFKey, on_delete=models.CASCADE, primary_key=True)
 	order = models.ForeignKey(Order, null=True, on_delete = models.PROTECT)
-	name = models.CharField(max_length = 256)
+	canonicalName = models.CharField(max_length = 256)
+	
 class Genus(models.Model):
+	key = models.OneToOneField(GBIFKey, on_delete=models.CASCADE, primary_key=True)
 	family = models.ForeignKey(Family, null=True, on_delete = models.PROTECT)
-	name = models.CharField(max_length = 256)
+	canonicalName = models.CharField(max_length = 256)
+	
 
 class Species(models.Model):
 	# to create a species, a user will only have to know either a canonical name or at least one vernacular name.

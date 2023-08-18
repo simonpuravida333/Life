@@ -76,7 +76,8 @@ const rankCondition = document.createElement('select');
 const withinSearch = document.createElement('div');
 const withinSearchCore = document.createElement('div');
 const searchGo = document.createElement('button');
-const findTaxanomy = document.createElement('button');
+const findTaxonomy = document.createElement('button');
+const newSpecies = document.createElement('button');
 const howTo = document.createElement('div');
 const howToText = document.createElement('div');
 let withinSearchActivated = false;
@@ -116,11 +117,13 @@ rankCondition.classList.add('select');
 withinSearch.id = 'withinSearch';
 withinSearchCore.id = 'withinSearchCore';
 searchGo.classList.add('searchGo', 'go');
-findTaxanomy.classList.add('searchGo', 'locate');
+findTaxonomy.classList.add('searchGo', 'locate');
+newSpecies.classList.add('searchGo', 'newSpecies');
 howTo.id = 'howTo';
 howToText.id = 'howToText';
 searchGo.innerHTML = 'GO'
-findTaxanomy.innerHTML = 'LOCATE';
+findTaxonomy.innerHTML = 'LOCATE';
+newSpecies.innerHTML = 'NEW SPECIES';
 howTo.innerHTML = "?";
 howToText.innerHTML = "This app allows you to search the<br><strong><i>GLOBAL BIODIVERSITY INFORMATION FACILITY (GBIF).</strong></i><br><br>You can query the GBIF using vernacular names.<br>Choose a rank for which you want to find results.<br><br>If you want to search for canonical names, you have to set it rank selector to CANONICAL NAME.<br><br>Activate the trigger right of the rank selector to <strong><i>query for every taxa of a rank within higher taxa rank</i></strong> (query areas turn orange):<br>You'll have to use canonical names for acurate <i>(e.g.) every SPECIES within</i> results, as the GBIF needs to know the exact taxa in which it can search.<br>For example querying for 'Paradisaeidae' (FAMILY of birds of paradise) and having chosen the rank '<i>every SPECIES within</i>' will yield <i>all SPECIES within the FAMILY rank 'Paradisaeidae'</i>.<br><br>After having queried for something, beneath the query-area will appear a <i><strong>result summery area.</i></strong> New queries won't reset the content, they'll be added, and you can use the summery-area to click on a summery to make the window teleport to the result. Holding mouse on a result summery until it turns orange will delete it.<br><br>Beneath comes the <i><strong>filter area</i></strong> which can help you navigate and narrow down results. E.g. querying for the SPECIES 'strawberry' will yield 87 results, 39 of which are animals (surprised? They're strawberry-coloured or -shaped insects, anemoa, cockles, sea squirts, fish, frogs, crabs...). Just setting the KINGDOM filter to 'Plantae', you can halve the results. This does not remove the animal results, it just hides them. Setting KINGDOM to '...' will let everything show up again, because '...' (idle filter) will set any lower rank filter to '...' as well. Next to how many results there are for any taxa, filters also show (when opening) which of the taxa are contained within the taxa selected in an upper rank filter: contained taxa are <strong style='color:orange'>bold orange</strong>. This is very useful to get a connected understanding of your results. Filters always keep every taxa from every result, even if the result is not displayed right now from a set filter. This allows you to directly change the setting of the filter. Setting any filter will always pre-fill the higher filters with the ancestor lineage, and the lower filters with '...' to allow everything from this rank onwards (downwards) to be displayed.<br><br>After filter come the actual results, always <i><strong>grouped by the title</i></strong> (your query). Clicking on the title will hide / show the entire group / query results. This may be of use when making multiple queries (having multiple groups). Groups and the upper mentioned <i>result summeries</i> are the same; delete groups in the result summery area.<br><br><i><strong>A note on using vernacular names for queries:</strong></i><br>Sometimes the nature of vernacular or folk names can be confusing.<br>E.g. searching for SPECIES 'whale' will yield 58 species of whale where 'whale' is part of the name, like southern right whale, bowhead whale and whaleshark, even though the latter is a shark. But if you searched for SPECIES 'dolphin' you'll be given 48 species that would not appear within the finds for 'whale'. Scientifically, dolphins are whales, but in their own FAMILY rank, beneath the ORDER rank Cetacea (whales); for the same reason killer whales would be missing in the 'dolphin' results, even though Orcas belong to the FAMILY of dolphins. Likewise, searching for 'whale' in the FAMILY rank would yield ten families of whales where the dolphin family would be missing as well.";
 	// If you would search for 'Paradisaeidae' in the CANONICAL NAME category, you'd receive the single family object. Searching for 'bird of paradise' in the default SPECIES (vernacular name) category would give you 8 plants and 18 animals, of which 2 aren't birds of paradise. These are the results where 'bird of paradise' appears in the vernacular name. But using the canonical name in the <i>every SPECIES within</i> option would give you 56 birds of paradise (so, all birds of paradise known to exist).
@@ -132,7 +135,7 @@ howTo.addEventListener('click', ()=>
 });
 
 withinSearch.append(withinSearchCore);
-searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, findTaxanomy, howTo, howToText);
+searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, findTaxonomy, /*newSpecies,*/ howTo, howToText);
 body.append(searchSection);
 
 textareaNameSearch.addEventListener('mouseover',()=>
@@ -169,6 +172,11 @@ rankCondition.addEventListener('mouseout',()=>
 });
 searchGo.addEventListener('mouseover', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
 searchGo.addEventListener('mouseout', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
+findTaxonomy.addEventListener('mouseover', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
+findTaxonomy.addEventListener('mouseout', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
+newSpecies.addEventListener('mouseover', ()=> {if (newSpecies !== document.activeElement) newSpecies.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
+newSpecies.addEventListener('mouseout', ()=> {if (newSpecies !== document.activeElement) newSpecies.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
+
 withinSearch.addEventListener('mouseover', ()=>
 { 
 	if (!withinSearchActivated) withinSearch.animate({borderColor: ['#409CB5','orange']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = 'orange';
@@ -298,18 +306,31 @@ searchGo.addEventListener('click',()=>
 		textareaNameSearch.value="";
 	}
 });
-findTaxanomy.addEventListener('click', ()=>
+findTaxonomy.addEventListener('click', ()=>
 {
-	console.log(findSpace.style.display);
 	if (findSpace.style.display === 'none')
 	{
 		findSpace.style.display = 'block';
-		findTaxanomy.style['background-color'] = '#8AED97'
+		findSpace.animate({opacity: [0,1]},500);
+		findTaxonomy.style['background-color'] = '#8AED97'
 	}
 	else
 	{
-		findSpace.style.display = 'none';
-		findTaxanomy.style['background-color'] = null;
+		findSpace.animate({opacity: [1,0]},500).onfinish = ()=> findSpace.style.display = 'none';
+		findTaxonomy.style['background-color'] = null;
+	}
+});
+newSpecies.addEventListener('click', ()=>
+{
+	if (newEntrySpace.style.display === 'none')
+	{
+		newEntrySpace.style.display = 'block';
+		newSpecies.style['background-color'] = '#8AED97'
+	}
+	else
+	{
+		newEntrySpace.style.display = 'none';
+		newSpecies.style['background-color'] = null;
 	}
 });
 
@@ -348,7 +369,7 @@ findTaxanomy.addEventListener('click', ()=>
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {taxaKeys, ranks, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile, touch};
+export {taxaKeys, ranks, searchSection, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile, touch};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
 // Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.
