@@ -3,9 +3,8 @@ import {fullWindow, goLeft, goRight} from './fullWindowImage.js';
 import {fadeOut, fadeTime} from './animation.js';
 import {selectRank} from './filter.js';
 import startup from './mobileResponsiveness.js';
-import newEntrySpace from './newSpecies.js';
-import findSpace from './taxonomyFinder.js';
-
+import {newSpeciesSpace, closeNewSpeciesSpace} from './newSpecies.js';
+import {findSpace} from './taxonomyFinder.js';
 
 const body = document.querySelector('body');
 body.style['background-color'] = '#325D77' //'#3C7185';
@@ -23,8 +22,8 @@ if (isMobile && isTablet) isMobile = false; // assuming it's an Android tablet
 for (const sheet of document.styleSheets)
 {
 	if (sheet.href.indexOf('mobile.css') !== -1 && !isMobile) sheet.disabled = true;
-	else if (sheet.href.indexOf('styles.css') !== -1 && isMobile) sheet.disabled = true;
-}
+	else if (sheet.href.indexOf('desktop.css') !== -1 && isMobile) sheet.disabled = true;
+} // styles.css is the standard file that has all descriptions that APPLY FOR BOTH, desktop and mobile. Every other styling (which varies between desktop and mobile) is handled in the two files. desktop.css and mobile.css use the same class and ID names, so all it takes is to swap out the files.
 
 if (isMobile) adjustZoom();
 function adjustZoom()
@@ -45,6 +44,7 @@ window.addEventListener('keydown', (event)=>
 	if (key === enterKey && textareaNameSearch.value.trim() !== "" && (textareaNameSearch === document.activeElement || rankCondition === document.activeElement))
 	{
 		search(textareaNameSearch.value.trim(), rankCondition.value);
+		search(textareaNameSearch.value.trim(), rankCondition.value, true);
 		textareaNameSearch.value="";
 	}
 	if (key === arrowDown && rankCondition.value === 'species')
@@ -135,7 +135,7 @@ howTo.addEventListener('click', ()=>
 });
 
 withinSearch.append(withinSearchCore);
-searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, findTaxonomy, /*newSpecies,*/ howTo, howToText);
+searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, findTaxonomy, newSpecies, howTo, howToText);
 body.append(searchSection);
 
 textareaNameSearch.addEventListener('mouseover',()=>
@@ -174,8 +174,8 @@ searchGo.addEventListener('mouseover', ()=> {if (searchGo !== document.activeEle
 searchGo.addEventListener('mouseout', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
 findTaxonomy.addEventListener('mouseover', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
 findTaxonomy.addEventListener('mouseout', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
-newSpecies.addEventListener('mouseover', ()=> {if (newSpecies !== document.activeElement) newSpecies.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
-newSpecies.addEventListener('mouseout', ()=> {if (newSpecies !== document.activeElement) newSpecies.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
+newSpecies.addEventListener('mouseover', ()=> {if (newSpeciesSpace.style.display !== 'block') newSpecies.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
+newSpecies.addEventListener('mouseout', ()=> {if (newSpeciesSpace.style.display !== 'block') newSpecies.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
 
 withinSearch.addEventListener('mouseover', ()=>
 { 
@@ -240,7 +240,6 @@ function limitOptions(limit)
 		}
 	}
 }
-
 // END SEARCH SECTION
 
 // RESULT OVERVIEW SECTION
@@ -303,6 +302,7 @@ searchGo.addEventListener('click',()=>
 	if (textareaNameSearch.value.trim() !== "")
 	{
 		search(textareaNameSearch.value.trim(), rankCondition.value);
+		search(textareaNameSearch.value.trim(), rankCondition.value, true);
 		textareaNameSearch.value="";
 	}
 });
@@ -310,6 +310,7 @@ findTaxonomy.addEventListener('click', ()=>
 {
 	if (findSpace.style.display === 'none')
 	{
+		body.prepend(findSpace);
 		findSpace.style.display = 'block';
 		findSpace.animate({opacity: [0,1]},500);
 		findTaxonomy.style['background-color'] = '#8AED97'
@@ -322,17 +323,38 @@ findTaxonomy.addEventListener('click', ()=>
 });
 newSpecies.addEventListener('click', ()=>
 {
-	if (newEntrySpace.style.display === 'none')
+	if (newSpeciesSpace.style.display === 'none')
 	{
-		newEntrySpace.style.display = 'block';
-		newSpecies.style['background-color'] = '#8AED97'
+		if (findSpace.style.display === 'block') findTaxonomy.click();
+		newSpeciesSpace.style.display = 'block';
+		newSpeciesSpace.animate({opacity: [0,1]},500);
+		newSpecies.style['background-color'] = '#8AED97';
+		searchSection.style.display = 'none';
+		const inputFields = Array.from(document.getElementsByClassName('findRank'));
+		const fieldLabels = Array.from(document.getElementsByClassName('newSpeciesLabel'));
+		for (const field of inputFields)
+		{
+			field.style['background-color'] = '#2BAF60';
+			field.style.color = 'white';
+		}
+		for (let x = 0; x < 7; x++) fieldLabels[x].style.color = '#2BAF60'; 
 	}
 	else
 	{
-		newEntrySpace.style.display = 'none';
+		newSpeciesSpace.animate({opacity: [1,0]},500).onfinish = ()=> newSpeciesSpace.style.display = 'none';
 		newSpecies.style['background-color'] = null;
 	}
 });
+closeNewSpeciesSpace.addEventListener('click', ()=>
+{	
+	newSpecies.style['background-color'] = null;
+	findSpace.style.display = 'none';
+	newSpeciesSpace.style.display = 'none';
+	searchSection.style.display = 'flex';
+	searchSection.animate({opacity: [0,1]},500);
+	for (const e of Array.from(document.getElementsByClassName('findRank'))) e.style = null;
+	for (const e of Array.from(document.getElementsByClassName('newSpeciesLabel'))) e.style = null;
+})
 
 // DEBUG //
 //search('Caperea marginata','canonicalName');

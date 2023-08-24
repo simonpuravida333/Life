@@ -1,7 +1,10 @@
+import {parentSelectionChange} from './newSpecies.js';
+
 const taxaKeys = [];
 const ranks = [];
 var textareaNameSearch;
-import {getRndInteger} from './create.js'
+import {getRndInteger} from './create.js';
+import {newSpeciesSpace, parentSelection} from './newSpecies.js';
 
 const body = document.querySelector('body');
 const findSpace = document.createElement('div');
@@ -35,7 +38,7 @@ async function constructInputFields()
 		rankDivisions[rank] = document.createElement('div');
 		rankDivisions[rank].style['margin-top'] = '20px';
 		const title = document.createElement('div');
-		title.classList.add('selectTitle' ,'newEntryLabel');
+		title.classList.add('selectTitle' ,'newSpeciesLabel');
 		title.style['text-align'] = 'center';
 		title.innerHTML = taxaKeys[rank].toUpperCase();
 		findRanks[rank] = document.createElement('input');
@@ -215,7 +218,6 @@ function fetchChildren (parent, childRank)
 	{
 		variousRanks[taxaKeys[rank].toUpperCase()] = filterResults(variousRanks[taxaKeys[rank].toUpperCase()]);
 		if (variousRanks[taxaKeys[rank].toUpperCase()].length === 0) return;
-		console.log(variousRanks[taxaKeys[rank].toUpperCase()])
 		
 		let highestRank = 6; 
 		for (const various in variousRanks) if (various !== 'UNRANKED' && Number(taxaKeys.indexOf(various.toLowerCase())) < highestRank) highestRank = Number(taxaKeys.indexOf(various.toLowerCase()));
@@ -432,14 +434,13 @@ function suggestionTitle(title)
 	line1.style.margin = '10px';
 	line1.style['border-width'] = '3px';
 	line1.classList.add('horizontalLine');
-	const line2 = line1.cloneNode(true);
 	const groupTitle = document.createElement('div');
 	groupTitle.classList.add('groupTitle');
 	groupTitle.style.color = '#2A4051';
 	groupTitle.style['font-size'] = '14';
 	groupTitle.style['letter-spacing'] = '0em';
 	groupTitle.innerHTML = title;
-	newGroup.append(line1, groupTitle, line2);
+	newGroup.append(line1, groupTitle, line1.cloneNode(true));
 	return newGroup;
 }
 
@@ -469,8 +470,13 @@ function RGBToHSL(r, g, b)
 function getClickedSelection(selection)
 {
 	console.log(selection);
-	textareaNameSearch.value = selection.key;
-	//textareaNameSearch.value = (selection.canonicalName !== undefined) ? selection.canonicalName : selection.scientificName;
+	if (newSpeciesSpace.style.display === 'block')
+	{
+		parentSelection.value = (selection.canonicalName !== undefined) ? selection.canonicalName : selection.scientificName;
+		parentSelectionChange();
+	} 
+	else textareaNameSearch.value = selection.key;
+	return selection;
 }
 
-export default findSpace
+export {findSpace, filterResults, suggestionTitle, createSuggestionBlock, suggestionBlockClickStyling};

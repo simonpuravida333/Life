@@ -1,24 +1,3 @@
-/* THIS FILE IS A COPY OF styles.css WITH SOME ADJUSTMENTS TO MAKE UX-FRIENDLY ON MOBILE PHONES */
-html {
-  scroll-behavior: smooth;
-  
-}
-body
-{
-	font-family: "Montserrat"; /* it actually looks different than to putting it in html{  } */
-	zoom: 2;
-}
-
-input, select, input[type=submit]:focus
-{
-	outline:none;
-}
-select
-{
-	-webkit-appearance: none;
-	-moz-appearance: none;
-}
-
 ::-webkit-scrollbar {
   display: none;
 }
@@ -34,19 +13,13 @@ select
 	margin: 5px;
 }
 
-.resizable-content
+.arrow
 {
-  min-height: 30px;
-  min-width: 30px;
-  resize: both;
-  overflow: auto;
-  max-height: fit-content;
-  max-width: fit-content;
-}
-
-.rankClassification
-{
-	font-weight: bold;
+	font-size: 60px;
+	color: #82D5EA;
+	transform: translateY(-5%);
+	cursor: pointer;
+	margin-left: 20px;
 }
 
 .blockRow
@@ -60,49 +33,9 @@ select
 	margin-top: 7px;
 }
 
-.flexPart
+.description
 {
-	display: flex;
-	flex-wrap: wrap;
-	/*align-items: flex-start;
-	align-content: flex-start;*/
-	align-items: center;
-    justify-content: left;
-    
-    &.description
-    {
-		align-items: stretch;	
-    }
-}
-
-.rankDescription
-{
-	display: block;
-}
-
-.hidden
-{
-	display: none;
-}
-
-.flexPartImages
-{
-	overflow-x: auto;
-	white-space: nowrap;
-	margin: 10px;
-}
-
-.flexPartImages::-webkit-scrollbar-thumb
-{
-  background: lightgray;
-  border-radius: 14px;
-}
-
-.resultObjectLine
-{
-	margin: 10px;
-  	border: 3px solid white;
-	border-radius: 3px;
+	align-items: stretch;	
 }
 
 .baseBlock
@@ -121,77 +54,15 @@ select
 	}
 }
 
-.imageDescription
+.filter /* for .select */
 {
-	position: absolute;
-	font-size: 15px;
-	border-radius: 20px;
-	padding: 20px;
-	color: white;
-	max-width: 450px;
-	user-select: none;
-	opacity: 0;
-	display: none;
-}
-
-.select
-{	
-	color: white;
-	background-color: #409CB5; /*#5852A3; #66547F;*/
-	height: 50px;
-	text-align: center;
-	font-weight: 600;
-	border-radius: 40px;
-	width: 140px;
-	margin: 10px;
-	letter-spacing: 0.2em;
-	border: none;
-	cursor: pointer;
-	
-	& *
-	{
-		color: #684B33;
-		font-weight: 500;
-		font-size: 17px;
-	}
+	transform: scale(0.9);
+	background-color: #2BAF60;
 	&:focus
 	{
-		background-color: #8FE2FF; /* #78FF8E; /*#6AC7E8;*/
-		color: #684B33;
+		background-color: #8AED97;
+		color: #684B33;	
 	}
-	&.filter
-	{
-		transform: scale(0.9);
-		background-color: #2BAF60;
-		&:focus
-		{
-			background-color: #8AED97;
-			color: #684B33;	
-		}
-	}
-	&.withinOptions
-	{
-		font-style: italic;
-		background-color: orange;
-		width: 220px;
-		&:focus
-		{
-			background-color: white;
-		}
-	}
-}
-
-.selectTitle
-{
-	font-weight: bold;
-	text-align: center;
-	color: #2BAF60;
-}
-
-.newGroup
-{
-	justify-content: center;
-	width: 100%;
 }
 
 .horizontalLine
@@ -199,21 +70,6 @@ select
 	border: 5px solid white;
 	flex: 1;
 	border-radius: 10px;
-}
-
-.groupTitle
-{
-	color: white;
-	font-size: 20px;
-	font-weight: 600;
-	letter-spacing: 0.2em;
-	cursor: pointer;
-}
-
-.highlightFilterOption
-{
-	font-weight: bold;
-	color: orange; /*deepskyblue; /*#26669A;*/
 }
 
 .mobileFullWidthImageDiv
@@ -233,189 +89,7 @@ select
 	border-color: black;
 }
 
-.arrow
-{
-	font-size: 60px;
-	color: #82D5EA;
-	transform: translateY(-5%);
-	cursor: pointer;
-	margin-left: 20px;
-}
-
-.input
-{
-	color: white;
-	background-color: #409CB5; /*#45B6DD; /* #66547F; */
-	font-size: 18px;
-	height: 50px;
-	width: 350px;
-	border-radius: 10px;
-	margin: 10px;
-	/*text-align: left;*/
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 20px;
-	padding-right: 20px;
-	border: none;
-	
-	&:hover
-	{
-		background-color: #8FE2FF;
-	}
-	&:focus
-	{
-		background-color:#8FE2FF;
-		color: #684B33;
-	}
-	&.textareaWithinSearch
-	{
-		background-color: orange;
-		&:hover
-		{
-			background-color: white;
-			color: #684B33;
-		}
-		&:focus
-		{
-			background-color: white;
-		}
-	}
-}
-
-.newEntryTextArea
-{
-	height: 250px;
-	&::placeholder
-	{
-		color: #409CB5;
-	}
-}
-
-.newEntryInput
-{
-	&::placeholder
-	{
-		color: #409CB5;
-	}
-}
-
-.searchGo
-{
-	background-color: #2BAF60; /*#45B6DD; /*#66547F;*/
-	border-radius: 10px;
-	width: 75px;
-	height: 50px;
-	margin: 10px;
-	border: none;
-	color: white;
-	font-weight: bold;
-	font-style: italic;
-	border: none;
-	outline: none;
-	
-	&:focus
-	{
-		outline: none;
-	}
-	&:hover
-	{
-		background-color: #8AED97; /*#5FD6FF;*/
-		border:none;
-	}
-	&.go
-	{
-		&:focus
-		{
-			background-color: #8AED97; /*#8FE2FF;*/
-			font-size: 25px;
-		}
-	}
-	&.newSpecies
-	{
-		width: 150px;
-	}
-	&.newEntrySubmit
-	{
-		width: 160px;
-	}
-	&.locate
-	{
-		width: 120px;
-	}
-}
-
-.findRank
-{
-	color: white;
-	background-color: orange;
-	height: 40px;
-	width: 300px;
-	border-radius: 5px;
-	margin: 0 auto;
-	/*text-align: left;*/
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 20px;
-	padding-right: 20px;
-	border: none;
-	display: block;
-	font-family: Gaegu;
-	font-size: 25px;
-	
-	&:hover
-	{
-		background-color: #8FE2FF;
-	}
-	&:focus
-	{
-		background-color:#8FE2FF;
-		color: #684B33;
-	}
-}
-
-.suggestionBlock
-{
-	/*padding: 5px;*/
-	padding-left: 8px;
-	padding-right: 8px;
-	border-radius: 5px;
-	border: 2px solid #2A4051;
-	border-bottom: 5px solid #2A4051;
-	border-left: 5px solid #2A4051;
-	margin: 2px;
-	cursor: pointer;
-	opacity: 0;
-	color: #2A4051;
-	/*font-weight: 600;*/
-	font-family: 'Gaegu';
-	font-size: 25px;
-}
-
-.plus
-{
-	font-size: 60px;
-	font-family: 'Gaegu';
-	cursor: pointer;
-	color: orange;
-	font-weight: 800;
-	margin: -20px;
-	margin-left: 20px;
-}
-
-.showMore
-{
-	display: flex;
-	align-items: center;
-}
-
 /* IDs */
-#plusSign
-{
-	text-align: center;
-	width: 140px;
-	margin: 10px;
-}
-
 #searchSection
 {
 	width: 100%;
@@ -457,43 +131,6 @@ select
 			background-color: white;
 		}
 	}
-	
-}
-
-#withinSearch
-{
-	width: 40px;
-	height: 40px;
-	border-radius: 12px;
-	border: 4px solid #409CB5;
-	background-color: rgba(0,0,0,0);
-	margin: 15px;
-	cursor: pointer;
-	z-index: 1;
-}
-
-#withinSearchCore
-{
-	width: 22px;
-	height: 22px;
-	border-radius: 8px;
-	background-color: orange;
-	z-index: 0;
-	margin: 5px;
-	display: none;
-}
-
-#howTo
-{
-	border: 4px solid #409CB5;
-	border-radius: 20px;
-	color: #409CB5;
-	font-size: 25px;
-	font-weight: 500;
-	height: 40px;
-	width: 40px;
-	margin: 15px;
-	padding-left: 9px;
 }
 
 #howToText

@@ -18,46 +18,6 @@ select
 	-moz-appearance: none;
 }
 
-::-webkit-scrollbar {
-  width: 14px;
-}
-
-/* Track */ 
-::-webkit-scrollbar-track {
-  /*box-shadow: inset 0 0 5px grey; */ 
-  border-radius:14px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: white;
-  border-radius: 14px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #bbbbbb;
-  cursor: pointer;
-}
-
-::-webkit-resizer
-{
-	background-color: white;
-	border-radius: 5px;
-}
-
-/* CLASSES */
-.resultImage
-{
-	height: 500px;
-	outline: 5px solid;
-	outline-offset: -9px;
-	border: 6px solid;
-	border-radius: 10px;
-	margin: 10px;
-	margin-right: 20px;
-}
-
 .resizable-content
 {
   min-height: 30px;
@@ -68,44 +28,9 @@ select
   max-width: fit-content;
 }
 
-.arrow
-{
-	font-size: 40px;
-	color: #82D5EA;
-	transform: translateY(-5%);
-	cursor: pointer;
-	margin-left: 20px;
-	
-	&:hover
-	{
-		color: #15BFEA;
-		font-size: 50px;
-	}
-
-}
-
-.fullWindowImageNavigationArrow
-{
-	font-size: 50px;
-	font-weight: bold;
-	color: white;
-	position: absolute;
-	top: 50%;
-	transform: translate(-50%,-50%);
-}
-
 .rankClassification
 {
 	font-weight: bold;
-}
-
-.blockRow
-{
-	align-items: center;
-	margin: 40px;
-	border-radius: 20px;
-	padding: 10px;
-	background-color: white;
 }
 
 .flexPart
@@ -116,10 +41,10 @@ select
 	align-content: flex-start;*/
 	align-items: center;
     justify-content: left;
-    
-    &.description
+    &.center
     {
-		align-items: normal;
+    	align-items: center;
+    	justify-content: center;
     }
 }
 
@@ -152,39 +77,6 @@ select
 	border-radius: 3px;
 }
 
-.baseBlock
-{
-	font-size: 20px;
-	border-radius: 20px;
-	cursor: pointer;
-	margin: 10px;
-	padding: 20px;
-	color: white;
-
-	&.summery
-	{
-		background-color: #409CB5;
-		&:hover
-		{
-			background-color: #86DBEF;
-			color: #684B33;
-		}
-	}
-}
-
-.imageDescription
-{
-	position: absolute;
-	font-size: 15px;
-	border-radius: 20px;
-	padding: 20px;
-	color: white;
-	max-width: 450px;
-	user-select: none;
-	opacity: 0;
-	display: none;
-}
-
 .select
 {	
 	color: white;
@@ -198,7 +90,6 @@ select
 	letter-spacing: 0.2em;
 	border: none;
 	cursor: pointer;
-	
 	& *
 	{
 		color: #684B33;
@@ -214,34 +105,6 @@ select
 		background-color: #8FE2FF; /* #78FF8E; /*#6AC7E8;*/
 		color: #684B33;
 	}
-	&.filter
-	{
-		background-color: #2BAF60;
-		&:hover
-		{
-			background-color: #8AED97;
-		}
-		&:focus
-		{
-			background-color: #8AED97;
-			color: #684B33;	
-		}
-	}
-	&.withinOptions
-	{
-		font-style: italic;
-		background-color: orange;
-		width: 220px;
-		&:hover
-		{
-			background-color: white;
-			color: #684B33;
-		}
-		&:focus
-		{
-			background-color: white;
-		}
-	}
 }
 
 .selectTitle
@@ -249,9 +112,25 @@ select
 	font-weight: bold;
 	text-align: center;
 	color: #2BAF60;
-	&.newEntryLabel
+	&.newSpeciesLabel
 	{
 		color: orange;
+	}
+}
+
+.withinOptions
+{
+	font-style: italic;
+	background-color: orange;
+	width: 220px;
+	&:hover
+	{
+		background-color: white;
+		color: #684B33;
+	}
+	&:focus
+	{
+		background-color: white;
 	}
 }
 
@@ -259,23 +138,6 @@ select
 {
 	justify-content: center;
 	width: 100%;
-}
-
-.circle
-{
-	border: 5px solid white;
-	background-color: white;
-	border-radius: 10px;
-	height: 20px;
-	width: 20px;
-	margin: 40px;
-}
-
-.horizontalLine
-{
-	border: 5px solid white;
-	flex: 1;
-	border-radius: 5px;
 }
 
 .groupTitle
@@ -331,19 +193,34 @@ select
 			background-color: white;
 		}
 	}
-}
-
-.newEntryTextArea
-{
-	height: 250px;
-	&::placeholder
+	&.newSpeciesInput
 	{
-		color: #409CB5;
+		display: block;
+		&::placeholder
+		{
+			color: #409CB5;
+		}
+	}
+	&.parent
+	{
+		background-color: #2BAF60;
+		font-weight: 600;
+		text-align: center;
+		color: white;
+		&::placeholder
+		{
+			color: #2BAF60;
+		}
+		&:hover
+		{
+			background-color: #84e1a9;
+		}
 	}
 }
 
-.newEntryInput
+.newSpeciesTextArea
 {
+	height: 250px;
 	&::placeholder
 	{
 		color: #409CB5;
@@ -385,9 +262,12 @@ select
 	{
 		width: 150px;
 	}
-	&.newEntrySubmit
+	&.newSpeciesSubmit
 	{
 		width: 160px;
+		display: block;
+		margin: 20px auto;
+		background-color: orange;
 	}
 	&.locate
 	{
@@ -459,12 +339,14 @@ select
 	align-items: center;
 }
 
-.brightHover
+.newSpeciesTitle
 {
-	&:hover
-	{
-		filter: brightness(1.2);
-	}
+	color: deepskyblue;
+	font-size: 18px;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	margin-left: 15px;
+	margin-right: 15px;
 }
 
 /* IDs */
@@ -473,58 +355,6 @@ select
 	text-align: center;
 	width: 140px;
 	margin: 10px;
-}
-
-#searchSection
-{
-	background-color: white; /* #9FF1FF; /* #093C48 */
-	border-radius: 40px;
-	margin: 40px;
-	padding: 10px;
-	display: flex;
-	flex-wrap: 	wrap;
-}
-
-#textareaNameSearch
-{
-	color: white;
-	background-color: #409CB5; /*#45B6DD; /* #66547F; */
-	font-family: 'Gaegu';
-	font-size: 25px;
-	font-weight: bold;
-	height: 50px;
-	width: 350px;
-	border-radius: 40px;
-	margin: 10px;
-	text-align: left;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 20px;
-	padding-right: 20px;
-	border: none;
-	
-	&:hover
-	{
-		background-color: #8FE2FF;
-	}
-	&:focus
-	{
-		background-color:#8FE2FF;
-		color: #684B33;
-	}
-	&.textareaWithinSearch
-	{
-		background-color: orange;
-		&:hover
-		{
-			background-color: white;
-			color: #684B33;
-		}
-		&:focus
-		{
-			background-color: white;
-		}
-	}
 }
 
 #withinSearch
@@ -569,73 +399,14 @@ select
 	}
 }
 
-#howToText
+#closeNewSpeciesSpace
 {
-	color: #684B33;
+	font-size: 40px;
 	margin: 10px;
-	text-align: justify;
-	width: 600px;
-	font-weight: 500;
-}
-
-#fullWindow
-{
-	background-color: rgba(0,25,50,0.8);
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0px;
-	display: none;
-	z-index: 1;
-}
-
-#fullWindowImage
-{
-	position: absolute;
-	transform: translate(-50%,-50%);
-	left: 50%;
-	top: 50%;
-	z-index: 2;
-}
-
-#escape
-{
-	position : absolute;
-	left : 95%;
-	top : 5%;
-	color : white;
-	font-size : 40px;
-	font-family: 'Arial';
-	transform : translate(-50%,-50%);
-	text-align: center;
-	z-index: 3;
-	
+	cursor: pointer;
+	color: #684B33;
 	&:hover
 	{
-		/*font-weight: bold;*/
 		color: orange;
-		font-size: 50px;
-		cursor: pointer;
 	}
-}
-
-#escapeBorder
-{
-	position : absolute;
-	/*left : 95%;*/
-	top : 5%;
-	width: 45px;
-	height: 45px;
-	border: 2px solid white;
-	border-radius: 100px;
-	transform : translate(-50%,-50%);
-}
-
-#svg2
-{
-	z-index: 3;
-	position: absolute;
-	left: 95%;
-	top: 50%;
-	opacity: 0;
 }

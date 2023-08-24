@@ -44,6 +44,8 @@ function create(data, querySubmit, rankSubmit)
 	const circle1 = document.createElement('div');
 	circle1.classList.add('circle');
 	const circle2 = circle1.cloneNode(true);
+	
+	if (data[0].localDjangoDB === true) groupTitle.innerHTML += ' (local Django DB)'
 
 	newGroup.append(circle1, line1, groupTitle, line2, circle2);
 	const groupResults = document.createElement('div');
@@ -123,7 +125,7 @@ function create(data, querySubmit, rankSubmit)
 		if(data[x].synonym === true) continue;
 		if(rankSubmit !== 'any' && rankSubmit !== 'canonicalName' && rankSubmit !== 'highestRank' && rankSubmit !== 'keyID' && rankSubmit.toUpperCase() !== data[x].rank && !withinHigherTaxa) continue;
 		// ENDFILTER
-		
+
 		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, in case user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
 		// 'targetRank' in the GBIFResult object is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden), meaning FAMILY is the lowest rank / is the targetRank
 		
@@ -237,6 +239,8 @@ function create(data, querySubmit, rankSubmit)
 		}
 		allGBIFResults.push(GBIFResult);
 		queryGroup.GBIFResults.push(GBIFResult);
+		
+		if (data[x].localDjangoDB === true) GBIFResult.species['localDjangoDB'] = true;
 		
 		// CONSTRUCTING THE INDIVIDUAL taxaBlocks
 		for (const y of ranks)

@@ -21,7 +21,7 @@ function displayRank(GBIFResult, y)
 	}
 	else
 	{
-		GBIFResultOpenClose(GBIFResult, false); // ...yes I could just use 'r' as a parameter, but I like to be clear when using parameters.
+		GBIFResultOpenClose(GBIFResult, false); // ...yes I could just use 'r' as a parameter, but I like to be "outspoken" when using parameters.
 		return;
 	}
 	

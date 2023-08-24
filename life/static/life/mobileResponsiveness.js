@@ -44,7 +44,7 @@ function handleEnd(event, elements, goLeft, goRight)
 	fullPull = 0;
 }
 
-/*
+/* TEST OBJECT
 const bluCirc = document.createElement('div');
 bluCirc.style.position = 'absolute';
 bluCirc.style.left = '500px';

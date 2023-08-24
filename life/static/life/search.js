@@ -3,19 +3,19 @@ import {taxaKeys, withinSearchActivated} from './startup.js';
 
 var goThroughRanks = 0;
 
-export default function search(querySubmit, rankSubmit)
+export default function search(querySubmit, rankSubmit, localDjangoDB)
 {
 	let fetchThis = "";
 	
 	if (isNaN(querySubmit) === false)
 	{
-		fetchThis = 'https://api.gbif.org/v1/species/'+querySubmit; // if user queries with keyID.
+		fetchThis = ((localDjangoDB) ? '/life/species/' : 'https://api.gbif.org/v1/species/')+querySubmit; // if user queries with keyID.
 		rankSubmit = 'keyID';
 		console.log('key ID query');
 	}
 	else if (rankSubmit === 'canonicalName')
 	{
-		fetchThis = 'https://api.gbif.org/v1/species?name='+querySubmit+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
+		fetchThis = (localDjangoDB) ? '/life/species?name='+querySubmit : 'https://api.gbif.org/v1/species?name='+querySubmit+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
 		console.log('canonical name query');
 	}
 	else if (rankSubmit === 'allRanks')
@@ -32,7 +32,7 @@ export default function search(querySubmit, rankSubmit)
 	}
 	else if (withinSearchActivated)
 	{
-		if (isNaN(querySubmit) === false) checkResponse('https://api.gbif.org/v1/species/search?higherTaxonKey='+querySubmit+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED', querySubmit, 'within '+rankSubmit);
+		if (isNaN(querySubmit) === false) checkResponse(((localDjangoDB) ? '/life/search?higherTaxonKey='+querySubmit+'&limit=1000' : 'https://api.gbif.org/v1/species/search?higherTaxonKey='+querySubmit+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED'), querySubmit, 'within '+rankSubmit); // for the DjangoDB fetch we don't need to specify a rank as we only provide specieses.
 		else 
 		{
 			querySubmit = querySubmit.slice(0,1).toUpperCase()+querySubmit.slice(1).toLowerCase();
@@ -48,7 +48,7 @@ export default function search(querySubmit, rankSubmit)
 				}
 				else
 				{
-					fetchThis = 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED&isExtinct=false';
+					fetchThis = (localDjangoDB) ? '/life/search?higherTaxonKey='+incoming.usageKey+'&limit=1000' : 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED&isExtinct=false';
 					checkResponse(fetchThis, querySubmit, 'every '+rankSubmit+' within');
 				}
 			});
@@ -59,7 +59,7 @@ export default function search(querySubmit, rankSubmit)
 		let rankConditionFetchParam;
 		if (rankSubmit === 'any') rankConditionFetchParam = "";
 		else rankConditionFetchParam = "&rank="+rankSubmit;
-		fetchThis = 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&isExtinct=false&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
+		fetchThis = (localDjangoDB) ? '/life/search?q='+ querySubmit + '&qField=VERNACULAR&limit=1000' : 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&isExtinct=false&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c'; // no rank necessary for localDjangoDB, as we only provide Species
 		console.log('vernacular name query');
 	}
 	if (!withinSearchActivated) checkResponse(fetchThis, querySubmit, rankSubmit);
@@ -74,6 +74,7 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 		// console.log(Object.prototype.toString.call(incoming));
 		// console.log(Object.prototype.toString.call(incoming.results));
 		// console.log(incoming.results)
+		console.log(incoming)
 		
 		if (rankSubmit === 'keyID' && incoming.key === undefined)
 		{
@@ -86,7 +87,7 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 			{
 				if (rankSubmit !== 'highestRank')
 				{
-					create('nothingFetched',querySubmit);
+					//create('nothingFetched',querySubmit);
 					console.log('Nothing fetched. Returning!');
 					return;
 				}
