@@ -138,33 +138,34 @@ const suggestionSpace = g();
 suggestionSpace.classList.add('flexPart');
 newSpeciesSpace.append(addLineage, suggestionSpace);
 
-var isUnique = false;
-canonicalName.onmouseover = ()=> {if (isUnique) canonicalName.style['background-color'] = null}
-canonicalName.onmouseout = ()=> {if (isUnique) canonicalName.style['background-color'] = null}
+var isUniqueLocalAndGBIF = true;
+var isUniqueGBIF = true;
+var isUniqueLocal = true;
+canonicalName.onmouseover = ()=> {if (isUniqueLocalAndGBIF) canonicalName.style['background-color'] = null}
+canonicalName.onmouseout = ()=> {if (isUniqueLocalAndGBIF) canonicalName.style['background-color'] = null}
 canonicalName.oninput = ()=>
 {
 	if (canonicalName.value.trim() === "")
 	{
 		canonicalName.style['background-color'] = null;
-		isUnique = true; // in case the user saves with a vernacular name(s) only.
+		isUniqueLocalAndGBIF = true; // in case the user saves with a vernacular name(s) only.
 		return;
 	}
 	fetch('https://api.gbif.org/v1/species?name='+canonicalName.value.trim()+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c')
 	.then(response => response.json())
-	.then(incoming => 
-	{
-		if (incoming.results[0] !== undefined) // I can't comprehend why, but for canonical names, the GBIF will actually send a results-array back, even though every canonical name is unique, and there would only be one result. It should actually be doing the same as with key queries, where it directly sends back the single species (any taxa), and not in a result array.
-		{
-			
-			canonicalName.style['background-color'] = '#ff444e';
-			isUnique = false;
-		}
-		else
-		{
-			canonicalName.style['background-color'] = null;
-			isUnique = true;
-		}
-	})
+	.then(incoming =>{isUniqueCanonicalName((incoming.results[0] === undefined) ? true : false, null)}); // I can't comprehend why, but for canonical names, the GBIF will actually send a results-array back, even though every canonical name is unique, and there would only be one result. It should actually be doing the same as with key queries, where it directly sends back the single species (any taxa), and not within a result array.
+	fetch('/life/species?name='+canonicalName.value.trim())
+	.then(response => response.json())
+	.then(incoming =>{isUniqueCanonicalName(null, (incoming.results[0] === undefined) ? true : false)});
+}
+
+function isUniqueCanonicalName(GBIF, local)
+{
+	if (GBIF !== null) isUniqueGBIF = GBIF;
+	if (local !== null) isUniqueLocal = local;
+	isUniqueLocalAndGBIF = isUniqueGBIF && isUniqueLocal;
+	if (isUniqueLocalAndGBIF) canonicalName.style['background-color'] = null;
+	else canonicalName.style['background-color'] = '#ff444e';
 }
 
 var hasParent = false;

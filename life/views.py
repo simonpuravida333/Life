@@ -257,11 +257,12 @@ def speciesQuery(request):
 		try:
 			species = Species.objects.get(canonicalName__iexact = name)
 		except(Species.DoesNotExist, AttributeError):
-			return JsonResponse({'message': "DB does not contain a species with the canonical name '"+name+"'"}, status = 404)
-		
+			return JsonResponse(buildResponseDict(0,0,20), status=200)	
+
 		species = buildSpeciesDict(species)
-		response = buildResponseDict(1,0,20) # It's incomprehensible, but when querying the GBIF with canonical names (api.gbif.org/v1/species?name=...), it'll always send back a response container with the standard data (offset, limit, reachedEnd...) where the sole result is in 'results'. It would make much more sense to just send back the single species, as it happens when you do a key query. Canonical names are unique, that's their very purpose. There'll always be one find, and when doing a 'species?name=...' query, the GBIF does not look for containing strings... so you either get a single object (in 'results'!), or none. But always delivered in a container (unlike in key search). That's why I have to emulate this here, as the front-end already expects this quirky behaviour, and the purpose of the backend is to be simplified version of the GBIF API.
+		response = buildResponseDict(1,0,20)
 		response['results'].append(species)
+		# It's incomprehensible, but when querying the GBIF with canonical names (api.gbif.org/v1/species?name=...), it'll always send back a response container with the standard data (offset, limit, reachedEnd...) where the sole result is in 'results'. It would make much more sense to just send back the single species, as it happens when you do a key query. Canonical names are unique, that's their very purpose. There'll always be one find, and when doing a 'species?name=...' query, the GBIF does not look for containing strings... so you either get a single object (in 'results'!), or none. But always delivered in a container (unlike in key search). That's why I have to emulate this here, as the front-end already expects this quirky behaviour, and the purpose of the backend is to be simplified version of the GBIF API.
 		return JsonResponse(response, status=200)		
 
 def getHigherTaxon(taxon):
