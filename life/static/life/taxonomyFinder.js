@@ -472,6 +472,7 @@ function getClickedSelection(selection)
 	console.log(selection);
 	if (newSpeciesSpace.style.display === 'block')
 	{
+		if (selection.rank === 'SPECIES') return;
 		parentSelection.value = (selection.canonicalName !== undefined) ? selection.canonicalName : selection.scientificName;
 		parentSelectionChange();
 	} 

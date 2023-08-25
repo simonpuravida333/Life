@@ -184,7 +184,7 @@ function parentSelectionChange()
 	.then(response => response.json())
 	.then(incoming => 
 	{
-		if (incoming.results[0] !== undefined)
+		if (incoming.results[0] !== undefined && incoming.results[0].rank !== 'SPECIES')
 		{
 			
 			parentSelection.style['background-color'] = null;
