@@ -275,7 +275,6 @@ submit.onclick = ()=>
 				alert("New Species successfully saved to DB");
 			}
 		})
-		.then(status => console.log(status))
 	}
 }
 
