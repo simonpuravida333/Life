@@ -1,6 +1,7 @@
 # Life
 
-Features are complete. It's mobile responisive!
+Features are mostly complete. Will add feature to add occurrences soon.
+It's mobile responisive!
 
 To run it, you need python.
 Go to the root of the folder and enter the command:

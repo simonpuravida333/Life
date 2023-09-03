@@ -330,5 +330,3 @@ function getClickedSuggestion(selection)
 }
 
 export {newSpeciesSpace, closeNewSpeciesSpace, parentSelection, parentSelectionChange, provideSuggestions, getFindSpace};
-
-// '⦿'
