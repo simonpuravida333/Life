@@ -3,9 +3,6 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
-class User(AbstractUser):
-	pass
-
 basisOfRecord = [
 	('Living Speciem', 'Living Speciem'),
 	('Preserved Specimen', 'Preserved Specimen'),
@@ -51,6 +48,15 @@ nameType = [
 	('VIRUS', 'VIRUS')
 ]
 
+establishmentMeans = [
+	('INTRODUCED', 'INTRODUCED' ),
+	('INVASIVE', 'INVASIVE' ),
+	('MANAGED', 'MANAGED' ),
+	('NATIVE', 'NATIVE' ),
+	('NATURALISED', 'NATURALISED' ),
+	('UNCERTAIN', 'UNCERTAIN' ),
+]
+
 # TAXONOMY RANKS
 # every rank stands for itself. There is not an enforced tree-hierarchy; relating to parents is optional. This is a mock-up DB simulating the taxonomy tree. On the GBIF there are sometimes no direct parents or children, there're also UNRANKED entries.
 
@@ -82,38 +88,37 @@ class Genus(models.Model):
 	key = models.IntegerField()
 	family = models.ForeignKey(Family, null=True, on_delete = models.PROTECT)
 	canonicalName = models.CharField(max_length = 256)
-	
-class Species(models.Model):
-	# to create a species, a user will only have to know either a canonical name or at least one vernacular name.
-	canonicalName = models.CharField(max_length=256)
-	species = models.CharField(max_length=256)
-	
-	key = models.IntegerField(null = True)
-	speciesKey = models.IntegerField(null = True)
-	nubKey = models.IntegerField(null = True)
-	# let's stay in true GBIF fashion and have an actual key (despite it also being the id in Species objects). It is null=True because I first have to create the Species object, before I can set key = id. Otherwise it'd throw a non-nullable field error.
-	rank = models.CharField(max_length = 32)
-	synonym = models.BooleanField()
-	taxonomicStatus = models.CharField(max_length = 32, choices = status)
-	nameType = models.CharField(max_length = 32, choices = nameType)
-	
-	#PARENTS: user doesn't need to know every parent, they can directly refer it to ranks higher than Genus. That is if the user doesn't know some ranks (maybe only knows that it is a mammal), and also for the case that there is no particular rank fitting within the 7 GBIF ranks.
-	parent = models.CharField(max_length=256, null = True)
-	parentKey = models.IntegerField(null = True)
-	
+
+class AllRanks(models.Model):
 	kingdom = models.CharField(max_length=256, null = True)
 	phylum = models.CharField(max_length=256, null = True)
 	classRank = models.CharField(max_length=256, null = True)
 	order = models.CharField(max_length=256, null = True)
 	family = models.CharField(max_length=256, null = True)
 	genus = models.CharField(max_length=256, null = True)
+	theSpecies = models.CharField(max_length=256) # just using 'species' will cause a name-clash with inherited class 'Species'
 	kingdomKey = models.IntegerField(null = True)
 	phylumKey = models.IntegerField(null = True)
 	classRankKey = models.IntegerField(null = True)
 	orderKey = models.IntegerField(null = True)
 	familyKey = models.IntegerField(null = True)
 	genusKey = models.IntegerField(null = True)
+	speciesKey = models.IntegerField(null = True)
+
+class Species(AllRanks):
+	# to create a species, a user will only have to know either a canonical name or at least one vernacular name.
+	canonicalName = models.CharField(max_length=256)
+		
+	key = models.IntegerField(null = True)
+	# let's stay in true GBIF fashion and have an actual key (despite it also being the id in Species objects). It is null=True because I first have to create the Species object, before I can set key = id. Otherwise it'd throw a non-nullable field error.
+	rank = models.CharField(max_length = 32)
+	taxonomicStatus = models.CharField(max_length = 32, choices = status)
+	nameType = models.CharField(max_length = 32, choices = nameType)
 	
+	#PARENTS: user doesn't need to know every parent, they can directly refer it to ranks higher than Genus. That is if the user doesn't know some ranks (maybe only knows that it is a mammal), and also for the case that there is no particular rank fitting within the 7 GBIF ranks.
+	parent = models.CharField(max_length=256, null = True)
+	parentKey = models.IntegerField(null = True)
+
 	localDjangoDB = models.BooleanField()
 
 class SpeciesMedia(models.Model):
@@ -144,24 +149,35 @@ class Description(models.Model):
 	language = models.CharField(max_length = 3, null=True)
 
 # Occurrences must be linked to a species, no other rank.
-class Occurrence(models.Model):
-	species = models.ForeignKey(Species, on_delete = models.CASCADE)
-	basisOfRecord = models.CharField(max_length=64, blank = True, choices=basisOfRecord)
-	identifiedBy = models.CharField(max_length=256, blank = True)
-	recordedBy = models.CharField(max_length=256, blank = True)
-	isInCluster = models.BooleanField()
-		
-	iucnRedListCategory = models.CharField(max_length=2, choices=iucnRedListCategory)
-	eventDate = models.CharField(max_length=19, blank = True) #yyyy-mm-ddThh:mm:ss
+class Occurrence(AllRanks):
+	waterBody = models.CharField(max_length= 128, null = True)
+	continent = models.CharField(max_length=64, null = True)
+	country = models.CharField(max_length=128, null = True)
+	countryCode = models.CharField(max_length=3, null = True)
+	locality = models.CharField(max_length=512, null = True)
+	elevation = models.IntegerField(null = True)
+	depth = models.IntegerField(null = True)
+
+	decimalLatitude = models.DecimalField(max_digits=11, decimal_places=8, null = True)
+	decimalLongitude = models.DecimalField(max_digits=11, decimal_places=8, null = True)
 	
-	continent = models.CharField(max_length=64, blank = True)
-	country = models.CharField(max_length=128, blank = True)
-	countryCode = models.CharField(max_length=3, blank = True)
-	locality = models.CharField(max_length=512, blank = True)
-	decimalLatitude = models.DecimalField(max_digits=11, decimal_places=8, blank = True)
-	decimalLongitude = models.DecimalField(max_digits=11, decimal_places=8, blank = True)
-	elevation = models.DecimalField(max_digits=8, decimal_places=4, blank = True)
+	basisOfRecord = models.CharField(max_length=64, null = True, choices=basisOfRecord)
+	identifiedBy = models.CharField(max_length=256, null = True)
+	recordedBy = models.CharField(max_length=256, null = True)
+	isInCluster = models.BooleanField(null = True)
+	individualCount = models.IntegerField(null = True)
+	sex = models.CharField(max_length=8, null = True)
+	identificationRemarks = models.CharField(max_length = 256, null=True)
+	establishmentMeans = models.CharField(max_length=16, choices= establishmentMeans, null = True)
+	iucnRedListCategory = models.CharField(max_length=2, choices=iucnRedListCategory, null = True)
+
+	eventTime = models.CharField(max_length=8, null = True) #hh:mm:ss
+	day = models.IntegerField(null = True)
+	month = models.IntegerField(null = True)
+	year = models.IntegerField(null = True)
 	
 class OccurrenceMedia(models.Model):
 	occurrence = models.ForeignKey(Occurrence, on_delete = models.CASCADE)
-	imageLink = models.URLField()
+	identifier = models.URLField()
+	imageFormat = models.CharField(max_length=32, null=True)
+	imageType = models.CharField(max_length=32, null=True)

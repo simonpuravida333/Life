@@ -1,18 +1,14 @@
-import {parentSelectionChange} from './newSpecies.js';
-
-const taxaKeys = [];
-const ranks = [];
+import {newSpeciesSpace, parentSelection, parentSelectionChange} from './newSpecies.js';
+import {newOccurrenceSpace, speciesSelection, speciesSelectionChange} from './newOccurrence.js';
 var textareaNameSearch;
-import {getRndInteger} from './create.js';
-import {newSpeciesSpace, parentSelection} from './newSpecies.js';
 
 const body = document.querySelector('body');
-const findSpace = document.createElement('div');
+const findSpace = g();
 findSpace.classList.add('blockRow');
 findSpace.style.display = 'none';
 body.prepend(findSpace);
 
-const information = document.createElement('div');
+const information = g();
 information.innerHTML = 'Look for canonical name suggestions in any rank you want.<br>To refresh everything, delete the name of the highest taxonomy.';
 information.style['text-align'] = 'center';
 information.style['font-size'] = '18px';
@@ -29,21 +25,19 @@ constructInputFields();
 async function constructInputFields()
 {
 	const startupModule = await import('./startup.js'); // startup.js loads last.
-	for (const key of startupModule.taxaKeys) taxaKeys.push(key);
-	for (const rank of startupModule.ranks) ranks.push(rank);
 	textareaNameSearch = startupModule.textareaNameSearch;
 	
 	for (const rank of ranks)
 	{
-		rankDivisions[rank] = document.createElement('div');
+		rankDivisions[rank] = g();
 		rankDivisions[rank].style['margin-top'] = '20px';
-		const title = document.createElement('div');
+		const title = g();
 		title.classList.add('selectTitle' ,'newSpeciesLabel');
 		title.style['text-align'] = 'center';
 		title.innerHTML = taxaKeys[rank].toUpperCase();
-		findRanks[rank] = document.createElement('input');
+		findRanks[rank] = g('in');
 		findRanks[rank].classList.add('findRank');
-		spacesForSuggestions[rank] = document.createElement('div');
+		spacesForSuggestions[rank] = g();
 		spacesForSuggestions[rank].classList.add('flexPart');
 		rankDivisions[rank].append(title, findRanks[rank], spacesForSuggestions[rank]);
 		findSpace.append(rankDivisions[rank]);
@@ -84,7 +78,7 @@ async function constructInputFields()
 			spacesForSuggestions[rank].append(suggestionTitle(taxaKeys[rank].toUpperCase()+" suggestions for <i>"+findRanks[rank].value+'<i>'));
 			
 			suggestions = filterResults(suggestions);
-			let colorDegree = getRndInteger(0,360);
+			let colorDegree = randomInt(0,360);
 			const previousClick = {element: null, backgroundColor: null}
 			
 			for (const suggestion in suggestions)
@@ -111,7 +105,7 @@ async function constructInputFields()
 
 function createSuggestionBlock(colorDegree)
 {
-	const block = document.createElement('div');
+	const block = g();
 	block.classList.add('suggestionBlock', 'brightHover');
 	block.style['background-color'] = 'hsl('+colorDegree+', 80%, 80%)';
 	//block.onmouseover = ()=> block.style['background-color'] = 'hsl('+colorDegree+', 90%, 90%)';
@@ -328,7 +322,7 @@ function fetchGrandchildren(grandparent, theRank)
 
 function makeChildren(children, theRank)
 {
-	let colorDegree = getRndInteger(0,360);
+	let colorDegree = randomInt(0,360);
 	const previousClick = {element: null, backgroundColor: null}
 	let multiplicator = 1;
 	const childrenDivs = [];
@@ -363,12 +357,12 @@ function makeChildren(children, theRank)
 	let showAll;
 	if (children.length > 50)
 	{
-		showMore = document.createElement('div');
+		showMore = g();
 		showMore.classList.add('showMore', 'brightHover')
-		const plus = document.createElement('div');
+		const plus = g();
 		plus.innerHTML = '+';
 		plus.classList.add('plus');
-		const number = document.createElement('div');
+		const number = g();
 		number.innerHTML = showLimit;
 		number.classList.add('plus');
 		number.style['font-size'] = '30px';
@@ -376,7 +370,7 @@ function makeChildren(children, theRank)
 		spacesForSuggestions[theRank].append(showMore);
 		showMore.addEventListener('click', ()=> showMoreChildren(false));
 		
-		showAll = document.createElement('div');
+		showAll = g();
 		showAll.innerHTML = 'Show All';
 		showAll.classList.add('plus', 'brightHover');
 		showAll.style['font-size'] = '30px';
@@ -427,14 +421,14 @@ function showInfoTitle(childrenLen, parent, theRank, unranked)
 
 function suggestionTitle(title)
 {
-	const newGroup = document.createElement('div');
+	const newGroup = g();
 	newGroup.classList.add('flexPart', 'newGroup');
-	const line1 = document.createElement('div');
+	const line1 = g();
 	line1.style['border-color'] = '#2A4051';
 	line1.style.margin = '10px';
 	line1.style['border-width'] = '3px';
 	line1.classList.add('horizontalLine');
-	const groupTitle = document.createElement('div');
+	const groupTitle = g();
 	groupTitle.classList.add('groupTitle');
 	groupTitle.style.color = '#2A4051';
 	groupTitle.style['font-size'] = '14';
@@ -475,7 +469,13 @@ function getClickedSelection(selection)
 		if (selection.rank === 'SPECIES') return;
 		parentSelection.value = (selection.canonicalName !== undefined) ? selection.canonicalName : selection.scientificName;
 		parentSelectionChange();
-	} 
+	}
+	else if (newOccurrenceSpace.style.display === 'block')
+	{
+		if (selection.rank !== 'SPECIES') return;
+		speciesSelection.value = (selection.canonicalName !== undefined) ? selection.canonicalName : selection.scientificName;
+		speciesSelectionChange();
+	}
 	else textareaNameSearch.value = selection.key;
 	return selection;
 }

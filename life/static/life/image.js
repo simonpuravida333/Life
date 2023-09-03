@@ -1,4 +1,3 @@
-import {taxaKeys, touch} from './startup.js';
 import {svg, fadeIn, fadeOut, fontOpacityZeroToFull, fadeTime, grow} from './animation.js';
 import {fullWindow, nextImageFullWindow} from './fullWindowImage.js';
 
@@ -45,13 +44,13 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 	async function addNextImage()
 	{
 		if (unlockAddImage) // this prevents concurrent calls from preview mode and full-window mode, which would cause it to load the same image multiple times: The user pushes right in the preview mode and triggers a call, and while it is still loading clicks on the latest image and clicks on arrowRight in full-window mode, triggering the same call.
-		{
+		{	
 			unlockAddImage = false;
 			while(true)
 			{
-				while (allImageSources.links[counter] === undefined) counter++; // there shouldn't be any undefineds, but safer is safer
-				let theReturn = await getImage()
-				if (counter < allImageSources.links.length-1) unlockPushRight = true;
+				while (allImageSources.links[counter] === undefined) counter++; // there shouldn't be any undefineds coming from fetch.js, but safer is safer
+				let theReturn = await getImage();
+				if (counter < allImageSources.links.length) unlockPushRight = true;
 				if (r.images.offsetWidth === 0 || !r.resultOpened) break; // user has closed the GBIFResult
 				if (theReturn) break;
 				console.log("RETURN IS FALSE. TRYING NEXT ONE.");
@@ -86,7 +85,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		
 		// console.log(Object.prototype.toString.call(theImage));
 		// console.log(theImage instanceof Error) // old design.
-		
+
 		if (!(!theImage)) await waitForAni();
 		else
 		{
@@ -147,7 +146,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 	
 	async function downloadImage(address) // The purpose of this async func is to make getImage() wait for fully loaded images.
 	{
-		const image = document.createElement('IMG');
+		const image = g('i');
 		const thePromise = new Promise(resolve =>
 		{	
 			let timeout;
@@ -191,7 +190,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 
 function renderImageText(theImage, theText, frameColor)
 {
-	const renderedText = document.createElement('div');
+	const renderedText = g();
 	renderedText.classList.add('imageDescription');
 	renderedText.style['background-color'] = frameColor;
 	renderedText.innerHTML = theText;

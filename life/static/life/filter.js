@@ -1,4 +1,4 @@
-import {taxaKeys, ranks, allRankFilters} from './startup.js';
+import {allRankFilters} from './startup.js';
 import {allGBIFResults} from './create.js';
 
 const body = document.querySelector('body');
@@ -48,7 +48,7 @@ function constructFilter()
 	{
 		for (const option of everyArrayOfOptions[index])
 		{
-			const opt = document.createElement('option');
+			const opt = g('o');
 			opt.value = option;
 			if(howManySpecies[option]!== undefined) opt.innerHTML = option + " ("+howManySpecies[option]+")";
 			else opt.innerHTML = option;
@@ -58,12 +58,12 @@ function constructFilter()
 			
 	for (const index of ranks) // add '...' for inactive filter, and 'No Rank.'
 	{
-		const opt = document.createElement('option');
+		const opt = g('o');
 		opt.value = '...'
 		opt.innerHTML = '...'
 		allRankFilters[index].append(opt);
 		if (index === 0 || index === 6) continue; // 'No rank.' doesn't exist for kingdom, neither does it for species (if you find a species result, then it obviously exists). In between though appropriate ranks is still very much an ongoing debate of classification in the life science community.
-		const opt2 = document.createElement('option');
+		const opt2 = g('o');
 		opt2.value = 'No rank.';
 		opt2.innerHTML = '<i>No rank.</i>';
 		allRankFilters[index].append(opt2);

@@ -262,6 +262,10 @@ select
 	{
 		width: 150px;
 	}
+	&.newOccurrence
+	{
+		width: 200px;
+	}
 	&.newSpeciesSubmit
 	{
 		width: 160px;

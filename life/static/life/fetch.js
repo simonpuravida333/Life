@@ -1,5 +1,4 @@
 import {iucnRedList, months, imageFileTypes, countryCodes} from './officialDesignations.js';
-import {taxaKeys, isMobile} from './startup.js';
 import {displayImages} from './image.js';
 import search from './search.js';
 import {fadeIn, fadeTime} from './animation.js';
@@ -32,7 +31,7 @@ export default function fetchEverything(GBIFResult, y)
 		console.log(incoming.results); //console.log(incoming);
 		if (y < 6 && incoming.results.length !== 0) // there are in fact sometimes GENEA, FAMILIES etc. that don't have children; it's the rarer case, but it exists. 
 		{
-			const children = document.createElement('div');
+			const children = g();
 			let childCount = 0;
 			for (const child of incoming.results)
 			{/*
@@ -43,7 +42,7 @@ export default function fetchEverything(GBIFResult, y)
 				// if (child.rank === 'UNRANKED') continue;
 				if (child.rank.toLowerCase() === taxaKeys[y+1])
 				{
-					const thisChild = document.createElement('div');
+					const thisChild = g();
 					thisChild.innerHTML = "<strong>"+ child.rank.toUpperCase()+"</strong> "+child.canonicalName+"<br>";
 					const theChild = child.key;
 					thisChild.addEventListener('click', ()=> {console.log('SEARCHING FOR CHILD ID: '+theChild), search(theChild)});
@@ -53,12 +52,12 @@ export default function fetchEverything(GBIFResult, y)
 					childCount++;
 				}
 			}
-			const superElement = document.createElement('div');
+			const superElement = g();
 			superElement.classList.add('baseBlock');
 			
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
-			const elementTitle = document.createElement('div');
+			const elementTitle = g();
 			elementTitle.innerHTML = '<strong>CHILDREN</strong>';
 			superElement.append(elementTitle);
 			if (childCount > 5)
@@ -82,7 +81,7 @@ export default function fetchEverything(GBIFResult, y)
 	{
 		console.log('SYNONYMS: ');
 		console.log(incoming)
-		const allSynonyms = document.createElement('div'); 
+		const allSynonyms = g(); 
 		if (incoming.results.length !== 0)
 		{
 			let synonymsCount = 0;
@@ -90,18 +89,18 @@ export default function fetchEverything(GBIFResult, y)
 			for (const synonym of incoming.results)
 			{
 				if (checkDuplicates.indexOf(synonym.canonicalName) !== -1) continue;
-				const theSynonym = document.createElement('div');
+				const theSynonym = g();
 				theSynonym.innerHTML = synonym.canonicalName;
 				allSynonyms.append(theSynonym);
 				checkDuplicates += synonym.canonicalName;
 				synonymsCount++;
 			}
-			const superElement = document.createElement('div');
+			const superElement = g();
 			superElement.classList.add('baseBlock');
 					
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
-			const elementTitle = document.createElement('div');
+			const elementTitle = g();
 			elementTitle.innerHTML = '<strong>SYNONYMS</strong>';
 			superElement.append(elementTitle);
 			if (synonymsCount > 5)
@@ -125,21 +124,21 @@ export default function fetchEverything(GBIFResult, y)
 	{
 		console.log('DESCRIPTIONS: ');
 		console.log(incoming);
-		const allDescriptions = document.createElement('div'); 
+		const allDescriptions = g(); 
 		if (incoming.results.length !== 0)
 		{
 			for (const description of incoming.results)
 			{
 				if (description.description.indexOf("There is no information available for this species.") !== -1) continue; // There may still be descriptions that start with "There is no information available for this species, but / other than...", so the comma ',' would save it from getting kicked out.
-				const theDescription = document.createElement('div');
+				const theDescription = g();
 				theDescription.innerHTML = "<br><strong>"+ description.type.toUpperCase().replace("_"," ")+"</strong><br>"+description.description;
 				allDescriptions.append(theDescription);
 			}
-			const superElement = document.createElement('div');
+			const superElement = g();
 			superElement.classList.add('baseBlock');
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
-			const elementTitle = document.createElement('div');
+			const elementTitle = g();
 			elementTitle.innerHTML = '<strong>DESCRIPTIONS</strong>';
 			superElement.append(elementTitle, allDescriptions);
 			
@@ -185,14 +184,14 @@ export default function fetchEverything(GBIFResult, y)
 		console.log('DISTRIBUTIONS: ');
 		console.log(incoming);
 		
-		const allDistributions = document.createElement('div'); 
+		const allDistributions = g(); 
 		if (incoming.results.length !== 0)
 		{
 			let rememberPlaces = "";
 			let localitiesCounter = 0;
 			for (const distribution of incoming.results)
 			{	
-				const theLocality = document.createElement('div');
+				const theLocality = g();
 				theLocality.style['margin-right'] = '15px';
 				if (distribution.locality !== undefined)
 				{
@@ -255,11 +254,11 @@ export default function fetchEverything(GBIFResult, y)
 				}
 				allDistributions.append(theLocality);
 			}
-			const superElement = document.createElement('div');
+			const superElement = g();
 			superElement.classList.add('baseBlock');
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
-			const elementTitle = document.createElement('div');
+			const elementTitle = g();
 			elementTitle.innerHTML = '<strong>LOCALITIES</strong>';
 			superElement.append(elementTitle);
 			if (localitiesCounter > 5)
@@ -288,7 +287,7 @@ export default function fetchEverything(GBIFResult, y)
 		if (incoming.results.length !== 0)
 		{
 			let nameCount = 0;
-			let vernacularNames = document.createElement('div');
+			let vernacularNames = g();
 			let rememberNames = "";
 			for (const name of incoming.results)
 			{ 
@@ -301,7 +300,7 @@ export default function fetchEverything(GBIFResult, y)
 				if (tempName.charAt(tempName.length-1)==="s") tempName = tempName.slice(0, tempName.length-1);
 				if (rememberNames.toLowerCase().indexOf(tempName.toLowerCase()) !== -1) continue; // throws out the duplicate of plurals and singulars that comes second: if 'Whale' (ORDER) is first, then 'Whales' will be dismissed.
 				
-				const theName = document.createElement('div');
+				const theName = g();
 				theName.innerHTML = name.vernacularName;
 				theName.style["margin-right"] = "15px";
 				theName.addEventListener('click',()=>
@@ -314,12 +313,12 @@ export default function fetchEverything(GBIFResult, y)
 				rememberNames += name.vernacularName;
 				nameCount++;
 			}
-			const superElement = document.createElement('div');
+			const superElement = g();
 			superElement.classList.add('baseBlock');
 					
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
-			const elementTitle = document.createElement('div');
+			const elementTitle = g();
 			elementTitle.innerHTML = '<strong>VERNACULAR NAMES</strong>';
 			if (nameCount > 5)
 			{
@@ -368,21 +367,38 @@ export default function fetchEverything(GBIFResult, y)
 			}
 		})
 	}
-			
-	fetch('https://api.gbif.org/v1/occurrence/search?speciesKey='+keyID+'&limit=500') // GBIF caps it at 300 though
+	
+	// FETCH OCCURRENCES
+	fetch('/life/occurrence/search?speciesKey='+keyID+'&limit=300')
 	.then(response => response.json())
-	.then(incoming =>
+	.then(async (incoming) =>
 	{
-		console.log('OCCURRENCE SPECIES');
+		let allImageSources = 
+		{
+			'links': [],
+			'descriptions': [],
+			'colors': [],
+		};
+		
+		console.log('OCCURRENCES LOCAL DJANGO');
+		allImageSources = await readOccurrences(incoming, allImageSources);
+		
+		fetch('https://api.gbif.org/v1/occurrence/search?speciesKey='+keyID+'&limit=500') // GBIF caps it at 300 though
+		.then(response => response.json())
+		.then(async (incoming2) =>
+		{
+			console.log('OCCURRENCES GBIF');
+			allImageSources = await readOccurrences(incoming2, allImageSources);
+			displayImages(allImageSources, GBIFResult, 'OCCURRENCE', y);
+		});
+	});
+
+	function readOccurrences(incoming, allImageSources)
+	{
 		console.log(incoming);
 		if (incoming.results.length !== 0)
 		{
-			const allImageSources = 
-			{
-				'links': [],
-				'descriptions': [],
-				'colors': [],
-			};
+			
 			let total = 0;
 			for (const occurrence of incoming.results)
 			{
@@ -410,7 +426,7 @@ export default function fetchEverything(GBIFResult, y)
 							hasImage = true;
 						}
 						else if (image.identifier !== undefined)
-						{console.log('GOES THIRD');
+						{
 							//for (const fileType of imageFileTypes)
 								//if (image.identifier.search(fileType) !== -1)
 							//console.log('IMAGE.IDENTIFIER: '+image.references);
@@ -422,17 +438,17 @@ export default function fetchEverything(GBIFResult, y)
 							
 						// LOCALITY
 						let locality = "";
-						if (occurrence.locality !== undefined) locality = capitalizeFirstLetters(occurrence.locality);
+						if (occurrence.locality !== undefined) locality = caps(occurrence.locality);
 						let county = ""
-						if (occurrence.county !== undefined) county = capitalizeFirstLetters(occurrence.county);
+						if (occurrence.county !== undefined) county = caps(occurrence.county);
 						let localityCommaCounty = "";
 						if (locality !== "" && county !== "") localityCommaCounty = ", ";
 						let country = "";
-						if (occurrence.country !== undefined) country = capitalizeFirstLetters(occurrence.country);
+						if (occurrence.country !== undefined) country = caps(occurrence.country);
 						let countryComma = "";
 						if ((county !== "" || locality !== "") && country !== "") countryComma = ", ";
 						let continent = "";
-						if (occurrence.continent !== undefined) continent = capitalizeFirstLetters(occurrence.continent);
+						if (occurrence.continent !== undefined) continent = caps(occurrence.continent);
 						let continentComma = "";
 						if ((locality !== "" || county !== "" || country !== "") && continent !== "") continentComma = ", ";
 						let localityTitle = "";
@@ -440,14 +456,18 @@ export default function fetchEverything(GBIFResult, y)
 						
 						// OCEAN AND ISLAND
 						let island = "";
-						if (occurrence.island !== undefined) island = capitalizeFirstLetters(occurrence.island);
+						if (occurrence.island !== undefined) island = caps(occurrence.island);
 						let waterBody = ""
-						if (occurrence.waterBody !== undefined) waterBody = capitalizeFirstLetters(occurrence.waterBody);
+						if (occurrence.waterBody !== undefined) waterBody = caps(occurrence.waterBody);
 						let islandCommaWaterBody = "";
 						if (island !== "" && waterBody !== "") islandCommaWaterBody = ", ";
 						let islandWaterBodyTitle = "";
-						if (island !== "" || waterBody !== "") islandWaterBodyTitle = "<br><br><strong>Ocean</strong><br>";
-						let theLocality = localityTitle+locality+localityCommaCounty+county+countryComma+country+continentComma+continent+islandWaterBodyTitle+island+islandCommaWaterBody+waterBody;
+						if (island !== "" || waterBody !== "") islandWaterBodyTitle = "<br><strong>Ocean:</strong> ";
+						let elevation = "";
+						if (occurrence.elevation !== undefined) elevation = "<br>Elevation: "+occurrence.elevation+"m";
+						let depth = "";
+						if (occurrence.depth !== undefined) depth = "<br>Depth: "+occurrence.depth+"m";
+						let theLocality = localityTitle+locality+localityCommaCounty+county+countryComma+country+continentComma+continent+islandWaterBodyTitle+island+islandCommaWaterBody+waterBody+elevation+depth;
 						theLocality = theLocality.replaceAll('_',' ');
 						
 						// LONGITUDE & LATITUDE
@@ -485,7 +505,6 @@ export default function fetchEverything(GBIFResult, y)
 							if (eventTime !== "" && eventTime !== "00:00:00")  eventTime = ", "+eventTime+" local time.";
 							else eventTime = "";
 							dateAndTime = "<br><br><strong>Date of record:</strong> "+year+month+day+eventTime;
-							console.log(eventTime);
 						}
 						let recordedBy = "";
 						if (occurrence.recordedBy !== undefined) recordedBy = "<br><strong>Recorded by:</strong> "+occurrence.recordedBy;
@@ -505,11 +524,13 @@ export default function fetchEverything(GBIFResult, y)
 							else isInCluster = "<br>Subject is not part of a cluster.";
 						}
 						let conservationStatus = "";
-						if (occurrence.iucnRedListCategory !== undefined) conservationStatus = "<br>Conservation status: <strong>"+ capitalizeFirstLetters(iucnRedList[occurrence.iucnRedListCategory])+"</strong>";
+						if (occurrence.iucnRedListCategory !== undefined) conservationStatus = "<br>Conservation status: <strong>"+ caps(iucnRedList[occurrence.iucnRedListCategory])+"</strong>";
+						let establishmentMeans = ""
+						if (occurrence.establishmentMeans !== undefined) establishmentMeans = "<br>Establishment means: "+caps(occurrence.establishmentMeans);
 						let basisOfRecord = ""
-						if (occurrence.basisOfRecord !== undefined) basisOfRecord = "<br>Basis of record: "+ capitalizeFirstLetters(occurrence.basisOfRecord.replace('_',' ')); // "HUMAN_OBSERVATION"
+						if (occurrence.basisOfRecord !== undefined) basisOfRecord = "<br>Basis of record: "+ caps(occurrence.basisOfRecord.replace('_',' ')); // "HUMAN_OBSERVATION"
 						let identificationRemarks = "";
-						if (occurrence.identificationRemarks !== undefined) identificationRemarks = "<br>"+occurrence.identificationRemarks;
+						if (occurrence.identificationRemarks !== undefined) identificationRemarks = "<br>Identification remarks: "+occurrence.identificationRemarks;
 						let license = "";
 						if (occurrence.license !== undefined)
 						{
@@ -517,8 +538,8 @@ export default function fetchEverything(GBIFResult, y)
 							else license = "<br>License: "+ occurrence.license;
 						}
 						let institutionCode = "";
-						if (institutionCode !== undefined) institutionCode = "<br>Institution code: "+occurrence.institutionCode;
-						let subjectObservationData = sex+individualCount+isInCluster+conservationStatus+basisOfRecord+identificationRemarks+license+institutionCode;
+						if (occurrence.institutionCode !== undefined) institutionCode = "<br>Institution code: "+occurrence.institutionCode;
+						let subjectObservationData = sex+individualCount+isInCluster+conservationStatus+establishmentMeans+basisOfRecord+identificationRemarks+license+institutionCode;
 						if (subjectObservationData.length > 0) subjectObservationData = "<br><br><strong>Subject Observation Data</strong>"+subjectObservationData; // adding title 
 
 						// PUBLISHER
@@ -579,10 +600,10 @@ export default function fetchEverything(GBIFResult, y)
 						x--;
 					} 
 				}
-			}
-			displayImages(allImageSources, GBIFResult, 'OCCURRENCE', y);
+			}	
 		}
-	});	
+		return allImageSources;
+	}	
 	
 	/* DISMISSED FETCH CALLS
 	Verbatim-get always responds with an error with the message that there's no entity. No idea how an object would look like.
@@ -613,7 +634,7 @@ export default function fetchEverything(GBIFResult, y)
 		console.log(incoming);
 		if (incoming.length !== 0)
 		{
-			let parents = document.createElement('div');
+			let parents = g();
 			parents.classList.add('baseBlock');
 			parents.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			parents.innerHTML = '<strong>PARENT TREE</strong><br>';
@@ -625,12 +646,4 @@ export default function fetchEverything(GBIFResult, y)
 			console.log(parents.clientHeight);
 		}
 	})*/
-}
-
-function capitalizeFirstLetters(str)
-{
-	const strArray = str.toLowerCase().split(' ');
-	let theReturn = '';
-	for (let part of strArray) theReturn += ' '+part.charAt(0).toUpperCase()+part.substr(1);
-	return theReturn.substr(1); //dismiss first white space
 }

@@ -1,11 +1,9 @@
 import {svg2, fadeIn, fadeOut, imageFadeIn, imageFadeOut, fadeTime} from './animation.js';
-import {isMobile} from './startup.js';
-import touchResponse from './mobileResponsiveness.js';
 
 const body = document.querySelector('body');
 
 // AN OVERLAY-BACKGROUND FOR DISPLAYING IMAGES FULL WINDOW
-const fullWindow = document.createElement('div');
+const fullWindow = g();
 fullWindow.id = 'fullWindow';
 body.append(fullWindow);
 fullWindow.addEventListener('wheel', (event)=>
@@ -15,12 +13,12 @@ fullWindow.addEventListener('wheel', (event)=>
 });
 
 // THE FULL-WINDOW IMAGE
-const fullWindowImage = document.createElement('IMG'); // the fullWindow mode only has one image, of which the src gets changed on changing the image.
+const fullWindowImage = g('i'); // the fullWindow mode only has one image, of which the src gets changed on changing the image.
 fullWindowImage.id = 'fullWindowImage';
 fullWindow.append(fullWindowImage);
 
 // NAVIGATION INTERACTION
-const arrow = document.createElement('div');
+const arrow = g();
 arrow.classList.add('fullWindowImageNavigationArrow');
 const arrowLeft = arrow.cloneNode();
 const arrowRight = arrow.cloneNode();
@@ -46,14 +44,14 @@ arrowLeft.addEventListener('click', ()=> goLeft());
 arrowRight.addEventListener('click', ()=> goRight());
 fullWindow.append(arrowRight, arrowLeft)
 
-const escape = document.createElement('div');
+const escape = g();
 escape.id = 'escape';
 escape.innerHTML = '⊙';
 escape.onclick = ()=> leaveFullWindow();
 svg2.id = 'svg2';
 
 /*
-const escapeBorder = document.createElement('div');
+const escapeBorder = g();
 escapeBorder.id = 'escapeBorder';
 escapeBorder.style['z-index'] = 3;
 escape.onmouseover = ()=>

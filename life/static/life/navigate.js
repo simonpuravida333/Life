@@ -1,4 +1,3 @@
-import {taxaKeys, ranks} from './startup.js';
 import fetchEverything from './fetch.js';
 import {fadeOut, fadeIn, fadeTime, brighten, expandFromLeft, fontOpacityZeroToFull} from './animation.js';
 
@@ -86,6 +85,13 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 	if (!r.resultOpened)
 	{
 		r.arrow.animate(fadeOut,fadeTime/2);
+		r.resultOpened = true;
+		r.arrow.innerHTML = '⊙';
+		r.line1.style.display = 'block';
+		r.description.style.display = 'flex';
+		r.line2.style.display = 'block';
+		r.images.style.display = 'block';
+		
 		b[taxaKeys.indexOf(r.targetRank)].animate(fadeOut,fadeTime/2).onfinish = ()=>
 		{
 			r.arrow.style.opacity = 0;
@@ -118,12 +124,6 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 					}
 				},(fadeTime/1.5)*y);
 			}
-			r.resultOpened = true;
-			r.arrow.innerHTML = '⊙';
-			r.line1.style.display = 'block';
-			r.description.style.display = 'flex';
-			r.line2.style.display = 'block';
-			r.images.style.display = 'block';
 			r.line1.animate(fadeIn, fadeTime).onfinish = ()=>
 			{
 				r.line1.style.opacity = 1;
@@ -148,7 +148,8 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 					}
 				}
 			}
-			if (r.imagesObject.functionAddNextOccurrence !== null && r.images.scrollWidth === r.images.offsetWidth) {console.log('REMOTE FETCH CALL + continuing trying to fill white space with images'); r.imagesObject.functionAddNextOccurrence()}; // this is for the rather rare case when the user closes the GBIFResult BEFORE it had fetched enough images to fill the horizontal space. The checkWidth() function fires only once when the user opens a result for the first time, but it would get aborted (by a check in addNextImage()) if the user would close GBIFResult before it would fill the horizontal r.images. Hence this if-check;
+			if (r.imagesObject.functionAddNextOccurrence !== null && r.images.scrollWidth === r.images.offsetWidth && r.resultOpenedSecondTime) {console.log('REMOTE FETCH CALL + continuing trying to fill white space with images'); r.imagesObject.functionAddNextOccurrence()}; // this is for the rather rare case when the user closes the GBIFResult BEFORE it had fetched enough images to fill the horizontal space. The checkWidth() function fires only once when the user opens a result for the first time, but it would get aborted (by a check in addNextImage()) if the user would close GBIFResult before it would fill the horizontal r.images. Hence this if-check when opening it again.
+			r.resultOpenedSecondTime = true;
 		}
 	}
 	else

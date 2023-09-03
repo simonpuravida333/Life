@@ -45,7 +45,7 @@ function handleEnd(event, elements, goLeft, goRight)
 }
 
 /* TEST OBJECT
-const bluCirc = document.createElement('div');
+const bluCirc = g();
 bluCirc.style.position = 'absolute';
 bluCirc.style.left = '500px';
 bluCirc.style.top = '500px';

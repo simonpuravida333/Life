@@ -1,10 +1,11 @@
+import './globalVariables.js';
 import search from './search.js';
 import {fullWindow, goLeft, goRight} from './fullWindowImage.js';
 import {fadeOut, fadeTime} from './animation.js';
 import {selectRank} from './filter.js';
-import startup from './mobileResponsiveness.js';
-import {newSpeciesSpace, closeNewSpeciesSpace} from './newSpecies.js';
 import {findSpace} from './taxonomyFinder.js';
+import {newSpeciesSpace, closeNewSpeciesSpace} from './newSpecies.js';
+import {newOccurrenceSpace, closeNewOccurrence} from './newOccurrence.js';
 
 const body = document.querySelector('body');
 body.style['background-color'] = '#325D77' //'#3C7185';
@@ -13,14 +14,10 @@ let isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
 console.log ("Runs on WebKit / Blink: "+isWebKit);
 if (!isWebKit) window.alert("Dear user,\nSome of the styling of Life is only supported in browsers that run on WebKit / Blink.\n(Safari, Google Chrome, Microsoft Edge, Opera...)"); // ...nested CSS description that is.
 
-const userAgent = navigator.userAgent.toLowerCase();
-var isMobile = /iPhone|Android/i.test(navigator.userAgent);
-const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent); // credits: eyehunts.com > https://tutorial.eyehunts.com/js/javascript-detect-mobile-or-tablet-html-example-code/
-const touch = isMobile || isTablet;
-if (isMobile && isTablet) isMobile = false; // assuming it's an Android tablet
-
+console.log(document.styleSheets)
 for (const sheet of document.styleSheets)
 {
+	if (sheet.href === null) continue; // for Opera.
 	if (sheet.href.indexOf('mobile.css') !== -1 && !isMobile) sheet.disabled = true;
 	else if (sheet.href.indexOf('desktop.css') !== -1 && isMobile) sheet.disabled = true;
 } // styles.css is the standard file that has all descriptions that APPLY FOR BOTH, desktop and mobile. Every other styling (which varies between desktop and mobile) is handled in the two files. desktop.css and mobile.css use the same class and ID names, so all it takes is to swap out the files.
@@ -65,47 +62,44 @@ window.addEventListener('keydown', (event)=>
 	}
 });
 
-// GLOBAL TAXA NAMES
-const taxaKeys = ["kingdom", "phylum", "class", "order", "family", "genus", "species"];
-const ranks = [0,1,2,3,4,5,6]; // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
-
 // SEARCH SECTION
-const searchSection = document.createElement('div');
-const textareaNameSearch = document.createElement('input');
-const rankCondition = document.createElement('select');
-const withinSearch = document.createElement('div');
-const withinSearchCore = document.createElement('div');
-const searchGo = document.createElement('button');
-const findTaxonomy = document.createElement('button');
-const newSpecies = document.createElement('button');
-const howTo = document.createElement('div');
-const howToText = document.createElement('div');
+const searchSection = g();
+const textareaNameSearch = g('in');
+const rankCondition = g('s');
+const withinSearch = g();
+const withinSearchCore = g();
+const searchGo = g('b');
+const findTaxonomy = g('b');
+const newSpecies = g('b');
+const newOccurrence = g('b');
+const howTo = g();
+const howToText = g();
 let withinSearchActivated = false;
 
 for (const key of taxaKeys)
 {
-	let opt = document.createElement('option');
+	let opt = g('o');
 	opt.value = key;
 	opt.innerHTML = key.toUpperCase();
 	if(key == 'species') opt.selected=true;
 	rankCondition.append(opt);
 }
-const seperation = document.createElement('option');
+const seperation = g('o');
 seperation.value = 'seperation';
 seperation.innerHTML = '--------';
-const any = document.createElement('option');
+const any = g('o');
 any.value = 'any';
 any.innerHTML = 'ANY';
-const highestRank = document.createElement('option');
+const highestRank = g('o');
 highestRank.value = 'highestRank';
 highestRank.innerHTML = 'HIGHEST RANK';
-const allRanks = document.createElement('option');
+const allRanks = g('o');
 allRanks.value = 'allRanks';
 allRanks.innerHTML = 'ALL RANKS';
-const seperation2 = document.createElement('option');
+const seperation2 = g('o');
 seperation2.value = 'seperation';
 seperation2.innerHTML = '--------';
-const canonicalName = document.createElement('option');
+const canonicalName = g('o');
 canonicalName.value = 'canonicalName';
 canonicalName.innerHTML= 'CANONICAL NAME';
 
@@ -119,11 +113,13 @@ withinSearchCore.id = 'withinSearchCore';
 searchGo.classList.add('searchGo', 'go');
 findTaxonomy.classList.add('searchGo', 'locate');
 newSpecies.classList.add('searchGo', 'newSpecies');
+newOccurrence.classList.add('searchGo', 'newOccurrence');
 howTo.id = 'howTo';
 howToText.id = 'howToText';
 searchGo.innerHTML = 'GO'
 findTaxonomy.innerHTML = 'LOCATE';
 newSpecies.innerHTML = 'NEW SPECIES';
+newOccurrence.innerHTML = 'NEW OCCURRENCE';
 howTo.innerHTML = "?";
 howToText.innerHTML = "This app allows you to search the<br><strong><i>GLOBAL BIODIVERSITY INFORMATION FACILITY (GBIF).</strong></i><br><br>You can query the GBIF using vernacular names.<br>Choose a rank for which you want to find results.<br><br>If you want to search for canonical names, you have to set it rank selector to CANONICAL NAME.<br><br>Activate the trigger right of the rank selector to <strong><i>query for every taxa of a rank within higher taxa rank</i></strong> (query areas turn orange):<br>You'll have to use canonical names for acurate <i>(e.g.) every SPECIES within</i> results, as the GBIF needs to know the exact taxa in which it can search.<br>For example querying for 'Paradisaeidae' (FAMILY of birds of paradise) and having chosen the rank '<i>every SPECIES within</i>' will yield <i>all SPECIES within the FAMILY rank 'Paradisaeidae'</i>.<br><br>After having queried for something, beneath the query-area will appear a <i><strong>result summery area.</i></strong> New queries won't reset the content, they'll be added, and you can use the summery-area to click on a summery to make the window teleport to the result. Holding mouse on a result summery until it turns orange will delete it.<br><br>Beneath comes the <i><strong>filter area</i></strong> which can help you navigate and narrow down results. E.g. querying for the SPECIES 'strawberry' will yield 87 results, 39 of which are animals (surprised? They're strawberry-coloured or -shaped insects, anemoa, cockles, sea squirts, fish, frogs, crabs...). Just setting the KINGDOM filter to 'Plantae', you can halve the results. This does not remove the animal results, it just hides them. Setting KINGDOM to '...' will let everything show up again, because '...' (idle filter) will set any lower rank filter to '...' as well. Next to how many results there are for any taxa, filters also show (when opening) which of the taxa are contained within the taxa selected in an upper rank filter: contained taxa are <strong style='color:orange'>bold orange</strong>. This is very useful to get a connected understanding of your results. Filters always keep every taxa from every result, even if the result is not displayed right now from a set filter. This allows you to directly change the setting of the filter. Setting any filter will always pre-fill the higher filters with the ancestor lineage, and the lower filters with '...' to allow everything from this rank onwards (downwards) to be displayed.<br><br>After filter come the actual results, always <i><strong>grouped by the title</i></strong> (your query). Clicking on the title will hide / show the entire group / query results. This may be of use when making multiple queries (having multiple groups). Groups and the upper mentioned <i>result summeries</i> are the same; delete groups in the result summery area.<br><br><i><strong>A note on using vernacular names for queries:</strong></i><br>Sometimes the nature of vernacular or folk names can be confusing.<br>E.g. searching for SPECIES 'whale' will yield 58 species of whale where 'whale' is part of the name, like southern right whale, bowhead whale and whaleshark, even though the latter is a shark. But if you searched for SPECIES 'dolphin' you'll be given 48 species that would not appear within the finds for 'whale'. Scientifically, dolphins are whales, but in their own FAMILY rank, beneath the ORDER rank Cetacea (whales); for the same reason killer whales would be missing in the 'dolphin' results, even though Orcas belong to the FAMILY of dolphins. Likewise, searching for 'whale' in the FAMILY rank would yield ten families of whales where the dolphin family would be missing as well.";
 	// If you would search for 'Paradisaeidae' in the CANONICAL NAME category, you'd receive the single family object. Searching for 'bird of paradise' in the default SPECIES (vernacular name) category would give you 8 plants and 18 animals, of which 2 aren't birds of paradise. These are the results where 'bird of paradise' appears in the vernacular name. But using the canonical name in the <i>every SPECIES within</i> option would give you 56 birds of paradise (so, all birds of paradise known to exist).
@@ -135,7 +131,7 @@ howTo.addEventListener('click', ()=>
 });
 
 withinSearch.append(withinSearchCore);
-searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, findTaxonomy, newSpecies, howTo, howToText);
+searchSection.append(textareaNameSearch, rankCondition, withinSearch , searchGo, findTaxonomy, newSpecies, newOccurrence, howTo, howToText);
 body.append(searchSection);
 
 textareaNameSearch.addEventListener('mouseover',()=>
@@ -174,8 +170,10 @@ searchGo.addEventListener('mouseover', ()=> {if (searchGo !== document.activeEle
 searchGo.addEventListener('mouseout', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
 findTaxonomy.addEventListener('mouseover', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
 findTaxonomy.addEventListener('mouseout', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
-newSpecies.addEventListener('mouseover', ()=> {if (newSpeciesSpace.style.display !== 'block') newSpecies.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
-newSpecies.addEventListener('mouseout', ()=> {if (newSpeciesSpace.style.display !== 'block') newSpecies.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
+newSpecies.addEventListener('mouseover', ()=> newSpecies.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime));
+newSpecies.addEventListener('mouseout', ()=> newSpecies.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime));
+newOccurrence.addEventListener('mouseover', ()=> newOccurrence.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime));
+newOccurrence.addEventListener('mouseout', ()=> newOccurrence.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime));
 
 withinSearch.addEventListener('mouseover', ()=>
 { 
@@ -243,15 +241,14 @@ function limitOptions(limit)
 // END SEARCH SECTION
 
 // RESULT OVERVIEW SECTION
-const resultOverview = document.createElement('div');
+const resultOverview = g();
 resultOverview.classList.add('blockRow', 'flexPart');
-// resultOverview.style.display = 'none';
-resultOverview.style.opacity = 0;
+resultOverview.style.display = 'none';
 body.append(resultOverview);
 // END RESULT OVERVIEW SECTION
 
 // FILTER AREA
-const filterArea = document.createElement('div');
+const filterArea = g();
 filterArea.classList.add('blockRow', 'flexPart');
 // filterArea.style.display = 'none';
 filterArea.style.opacity = 0;
@@ -260,11 +257,11 @@ const allRankFilters = [];
 
 for (const rank of taxaKeys)
 {
-	const container = document.createElement('div');
-	const selectTitle = document.createElement('div');
+	const container = g();
+	const selectTitle = g();
 	selectTitle.innerHTML = rank.toUpperCase();
 	selectTitle.classList.add('selectTitle');
-	const rankFilter = document.createElement('select');
+	const rankFilter = g('s');
 	rankFilter.classList.add('select', 'filter');
 	rankFilter.addEventListener('change', ()=> selectRank(taxaKeys.indexOf(rank)));
 	allRankFilters.push(rankFilter);
@@ -321,40 +318,40 @@ findTaxonomy.addEventListener('click', ()=>
 		findTaxonomy.style['background-color'] = null;
 	}
 });
-newSpecies.addEventListener('click', ()=>
+
+searchSection.after(newSpeciesSpace);
+searchSection.after(newOccurrenceSpace);
+newSpecies.onclick = ()=> openNewSpeciesOccurrence(newSpeciesSpace, newSpecies);
+closeNewSpeciesSpace.onclick = ()=> closeNewSpeciesOccurrence(newSpeciesSpace, closeNewSpeciesSpace);
+newOccurrence.onclick = ()=> openNewSpeciesOccurrence(newOccurrenceSpace, newOccurrence);
+closeNewOccurrence.onclick = ()=> closeNewSpeciesOccurrence(newOccurrenceSpace, closeNewOccurrence);
+
+function closeNewSpeciesOccurrence(space, trigger) // new species OR new occurrence
 {
-	if (newSpeciesSpace.style.display === 'none')
-	{
-		if (findSpace.style.display === 'block') findTaxonomy.click();
-		newSpeciesSpace.style.display = 'block';
-		newSpeciesSpace.animate({opacity: [0,1]},500);
-		newSpecies.style['background-color'] = '#8AED97';
-		searchSection.style.display = 'none';
-		const inputFields = Array.from(document.getElementsByClassName('findRank'));
-		const fieldLabels = Array.from(document.getElementsByClassName('newSpeciesLabel'));
-		for (const field of inputFields)
-		{
-			field.style['background-color'] = '#2BAF60';
-			field.style.color = 'white';
-		}
-		for (let x = 0; x < 7; x++) fieldLabels[x].style.color = '#2BAF60'; 
-	}
-	else
-	{
-		newSpeciesSpace.animate({opacity: [1,0]},500).onfinish = ()=> newSpeciesSpace.style.display = 'none';
-		newSpecies.style['background-color'] = null;
-	}
-});
-closeNewSpeciesSpace.addEventListener('click', ()=>
-{	
-	newSpecies.style['background-color'] = null;
-	findSpace.style.display = 'none';
-	newSpeciesSpace.style.display = 'none';
+	if (findSpace.style.display === 'block') findTaxonomy.click();
+	space.style.display = 'none';
 	searchSection.style.display = 'flex';
 	searchSection.animate({opacity: [0,1]},500);
 	for (const e of Array.from(document.getElementsByClassName('findRank'))) e.style = null;
 	for (const e of Array.from(document.getElementsByClassName('newSpeciesLabel'))) e.style = null;
-})
+}
+
+function openNewSpeciesOccurrence(space, trigger) // new species OR new occurrence
+{
+	if (findSpace.style.display === 'block') findTaxonomy.click();
+	space.style.display = 'block';
+	space.animate({opacity: [0,1]},500);
+	//trigger.style['background-color'] = '#8AED97';
+	searchSection.style.display = 'none';
+	const inputFields = Array.from(document.getElementsByClassName('findRank'));
+	const fieldLabels = Array.from(document.getElementsByClassName('newSpeciesLabel'));
+	for (const field of inputFields)
+	{
+		field.style['background-color'] = '#2BAF60';
+		field.style.color = 'white';
+	}
+	for (const x in ranks) fieldLabels[x].style.color = '#2BAF60'; 
+}
 
 // DEBUG //
 //search('Caperea marginata','canonicalName');
@@ -391,8 +388,8 @@ closeNewSpeciesSpace.addEventListener('click', ()=>
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {taxaKeys, ranks, searchSection, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, isMobile, touch};
+export {searchSection, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated};
 
-// modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which create the same kind of app-wide prototype object. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window;
-// Another solution is to export a function that allows to manipulate module-wide variables of another module, though this is less recommended.
+// modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which make the object global. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window. BUT: globalThis is the standard meanwhile, the only one that will work in all kinds of environments from browsers to Node.js and more.
+// Another solution is to export a function that allows to manipulate module-wide variables in another module, though this is less recommended.
 // For this app I solved it (cross-module variables) mostly by simply exporting JS objects, rather than primitive types variables.

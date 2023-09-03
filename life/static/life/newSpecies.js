@@ -1,6 +1,4 @@
 import {findSpace, filterResults, suggestionTitle, createSuggestionBlock, suggestionBlockClickStyling} from './taxonomyFinder.js';
-import {getRndInteger} from './create.js';
-import {taxaKeys} from './startup.js';
 
 const body = document.querySelector('body');
 
@@ -8,16 +6,12 @@ const body = document.querySelector('body');
 const newSpeciesSpace = g();
 newSpeciesSpace.classList.add('blockRow');
 newSpeciesSpace.style.display = 'none';
-(async ()=>
-{
-	const startupModule = await import('./startup.js');
-	const searchSection = startupModule.searchSection;
-	searchSection.after(newSpeciesSpace);
-})()
 
 const closeNewSpeciesSpace = g();
 closeNewSpeciesSpace.innerHTML = '⊙';
 closeNewSpeciesSpace.id = 'closeNewSpeciesSpace';
+closeNewSpeciesSpace.onmouseover = ()=> closeNewSpeciesSpace.innerHTML = '⦿';
+closeNewSpeciesSpace.onmouseout = ()=> closeNewSpeciesSpace.innerHTML = '⊙';
 const centerDiv = g();
 centerDiv.classList.add('flexPart', 'center');
 const line1 = g();
@@ -90,10 +84,10 @@ titles[5].innerHTML = 'Media Links';
 divisions[5].append(media);
 
 const hint = g();
-hint.innerHTML = "To add a new Species, a new / unique canonical name must be provided. Every other information is optional.<br><br>Seperate multiple names, locations, links... using comma. In the description field, you can create headlines by putting a # at the beginning of the line.<br><br>Remember: Once a species has been added, you have to set condition selection to 'CANONICAL NAME' if you want query it for that name. The standard condition 'SPECIES' will only find it over vernacular names, if provided.";
+hint.innerHTML = "To add a new Species, a new / unique canonical name must be provided. Every other information is optional.<br>Separate multiple names, locations, links... using comma. In the description field, you can create headlines by putting a # at the beginning of the line.<br><br>Remember: Once a species has been added, you have to set condition selection to 'CANONICAL NAME' if you want query it for that name. The standard condition 'SPECIES' will only find it over vernacular names, if provided.<br><br>IMPORTANT<br>In this app, any added species will be saved to the local Django DB and NOT to the actual GBIF. If you query for a species, Life will always do a double-fetch, searching both databases and assembling results from both sources.";
 hint.style.margin = '20px auto';
 hint.style['font-style'] = 'italic';
-hint.style.width = '700px';
+hint.style['max-width'] = '500px';
 hint.style['text-align'] = 'center';
 const submit = g('b');
 submit.classList.add('searchGo', 'newSpeciesSubmit', 'brightHover');
@@ -101,7 +95,7 @@ submit.style.width = '200px';
 submit.style.display = 'block';
 submit.innerHTML = 'Save to Database';
 const addAncestorInfo = hint.cloneNode(true);
-addAncestorInfo.innerHTML = "Below you can add the next ancestor / parent of this species (optional).<br>It must be of the rank <i>Genus</i> or higher, all higher ranks will be added automatically.<br>The finder will suggest genera, but you can use <i>Advanced Search</i> to find higher taxa ranks.<br>HINT: Adding a lineage will improve searches.";
+addAncestorInfo.innerHTML = "Below you can add the next ancestor / parent of this species (optional).<br>It must be of the rank <i>Genus</i> or higher; when choosing a rank, all higher ranks up to <i>Kingdom</i> will be added automatically.<br>The finder will suggest Genera, but you can use <i>Advanced Search</i> to find higher taxa ranks. HINT: Adding a lineage will improve searches.";
 addAncestorInfo.style['margin-top'] = '50px';
 newSpeciesSpace.append(hint, submit, addAncestorInfo);
 
@@ -123,7 +117,7 @@ parentSelection.classList.add('input');
 parentSelection.placeholder = 'Delphinus';
 const parentSuggestionTitle = parentSelectionTitle.cloneNode(true);
 parentSuggestionTitle.style.color = '#409CB5';
-parentSuggestionTitle.innerHTML = 'Find a direct Ancestor (GENUS)';
+parentSuggestionTitle.innerHTML = 'Look for a GENUS / direct Ancestor';
 const parentSuggestion = parentSelection.cloneNode(true);
 parentSelection.classList.add('parent');
 parentSuggestion.classList.add('newSpeciesInput');
@@ -172,7 +166,7 @@ var hasParent = false;
 var theParent;
 parentSelection.onmouseover = ()=> {if (parentSelection.value.trim() === "") parentSelection.style['background-color'] = '#84e1a9'}
 parentSelection.onmouseout = ()=> {if (parentSelection.value.trim() === "") parentSelection.style['background-color'] = '#2BAF60'}
-parentSelection.oninput = ()=> parentSelectionChange();
+parentSelection.oninput = parentSelectionChange;
 function parentSelectionChange()
 {
 	if (parentSelection.value.trim() === "")
@@ -207,7 +201,7 @@ submit.onclick = ()=>
 		parentSelection.animate({backgroundColor: ['#ff444e', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#ff444e']},1000);
 		return;
 	}
-	else if (!isUnique)
+	else if (!isUniqueLocalAndGBIF)
 	{
 		canonicalName.animate({backgroundColor: ['#409CB5', '#FFB56C', 'orange', '#FFB56C', 'orange' , '#FFB56C', '#409CB5']},1000)
 		return;
@@ -255,7 +249,7 @@ submit.onclick = ()=>
 
 	function sendToBackend()
 	{
-		fetch('/life/newSpecies',
+		fetch('/life/species/newAddition',
 		{
 			method: 'POST',
 			body: JSON.stringify
@@ -275,29 +269,28 @@ submit.onclick = ()=>
 				alert("New Species successfully saved to DB");
 			}
 		})
-		.then(status => console.log(status))
 	}
 }
 
-parentSuggestion.oninput = ()=>
+parentSuggestion.oninput = ()=> provideSuggestions(parentSuggestion, suggestionSpace, "", getClickedSuggestion); // GBIF sets rank to genus by default, which is what we want here.
+function provideSuggestions(inputElement, areaForSuggestions, rank, clickOnSuggestionFun)
 {
-	suggestionSpace.innerHTML = ""; // removes suggestions every time you change the string
-	if (parentSuggestion.value.trim() === "") return;
-
-	fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=50&q='+parentSuggestion.value)
+	areaForSuggestions.innerHTML = ""; // removes suggestions every time you change the string
+	if (inputElement.value.trim() === "") return;
+	fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=50&q='+inputElement.value+((rank !== '') ? '&rank='+rank : '' ))
 	.then(response => response.json())
 	.then(suggestions =>
 	{
 		suggestions = filterResults(suggestions);
-		suggestionSpace.append(suggestionTitle('Suggestions for <i>'+parentSuggestion.value+'<i>'));
-		let colorDegree = getRndInteger(0,360);
+		areaForSuggestions.append(suggestionTitle(((rank === '') ? '<i>GENERA</i> ' : '<i>'+rank.toUpperCase()+'</i> ') + 'Suggestions for <i>'+inputElement.value+'<i>'));
+		let colorDegree = randomInt(0,360);
 		const previousClick = {element: null, backgroundColor: null}
 		for (const suggestion in suggestions)
 		{
 			colorDegree += 4;
 			const aSuggestion = createSuggestionBlock(colorDegree);
-			aSuggestion.innerHTML	= suggestions[suggestion].canonicalName+" <i>"+suggestions[suggestion].rank+"</i>";
-			suggestionSpace.append(aSuggestion);
+			aSuggestion.innerHTML	= suggestions[suggestion].canonicalName; //+" <i>"+suggestions[suggestion].rank+"</i>";
+			areaForSuggestions.append(aSuggestion);
 			setTimeout(()=>
 			{
 				aSuggestion.animate({opacity: [0,1]},300).onfinish = ()=> aSuggestion.style.opacity = 1;
@@ -305,21 +298,28 @@ parentSuggestion.oninput = ()=>
 			aSuggestion.onclick = ()=>
 			{
 				suggestionBlockClickStyling(aSuggestion, previousClick);
-				getClickedSuggestion(suggestions[suggestion]);
+				clickOnSuggestionFun(suggestions[suggestion]);
 			}
 		}
-	})
+	});
 }
 
-advancedSearch.onclick = ()=>
+advancedSearch.onclick = ()=> getFindSpace(advancedSearch, newSpeciesSpace);
+
+function getFindSpace(trigger, beforeElement)
 {
 	if (findSpace.style.display !== 'block')
 	{
-		newSpeciesSpace.after(findSpace);
+		beforeElement.after(findSpace);
 		findSpace.style.display = 'block';
 		findSpace.animate({opacity: [0,1]},500);
+		trigger.style.filter = 'brightness(1.2)'
 	}
-	else findSpace.animate({opacity: [1,0]},500).onfinish = ()=> findSpace.style.display = 'none';
+	else
+	{
+		findSpace.animate({opacity: [1,0]},500).onfinish = ()=> findSpace.style.display = 'none';
+		trigger.style.filter = null;
+	}
 }
 
 function getClickedSuggestion(selection)
@@ -329,16 +329,6 @@ function getClickedSuggestion(selection)
 	parentSelectionChange();
 }
 
-function g(elementType) // element Generator
-{
-	if (elementType === undefined) return document.createElement('div');
-	else elementType = elementType.toLowerCase();
-	if (elementType === 'img' || 'image'.startsWith(elementType)) return document.createElement('img');
-	if ('input'.startsWith(elementType)) return document.createElement('input');
-	if ('textarea'.startsWith(elementType)) return document.createElement('textarea');
-	if ('button'.startsWith(elementType)) return document.createElement('button');
-	if ('select'.startsWith(elementType)) return document.createElement('select');
-	if ('option'.startsWith(elementType)) return document.createElement('option');
-} //... I only started it using in this module, which was one of the app's last additions. Why didn't I get this idea sooner?
+export {newSpeciesSpace, closeNewSpeciesSpace, parentSelection, parentSelectionChange, provideSuggestions, getFindSpace};
 
-export {newSpeciesSpace, closeNewSpeciesSpace, parentSelection, parentSelectionChange};
+// '⦿'

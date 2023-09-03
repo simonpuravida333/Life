@@ -1,4 +1,4 @@
-import {taxaKeys, ranks, resultOverview, filterArea, isMobile, touch} from './startup.js';
+import {resultOverview, filterArea} from './startup.js';
 import {svg, svg2, fadeTime, fadeIn, fadeOut, contractXToCenter, expandXFromCenter, fontOpacityZeroToFull, brightenHover, removeAni} from './animation.js';
 import {constructFilter} from './filter.js';
 import {displayRank, GBIFResultOpenClose} from './navigate.js';
@@ -30,25 +30,25 @@ function create(data, querySubmit, rankSubmit)
 	//console.log(data);
 	
 	// CREATE GROUP TITLE SECTION / BEGINNING OF GROUP (OF RESULTS)
-	const newGroup = document.createElement('div');
+	const newGroup = g();
 	newGroup.classList.add('flexPart', 'newGroup');
-	const line1 = document.createElement('div');
+	const line1 = g();
 	line1.classList.add('horizontalLine');
 	const line2 = line1.cloneNode(true);
 	line1.style['margin-right'] = "40px";
 	line2.style['margin-left'] = "40px";
-	const groupTitle = document.createElement('div');
+	const groupTitle = g();
 	if (isNaN(querySubmit)) groupTitle.innerHTML = querySubmit.toUpperCase();
 	else groupTitle.innerHTML = data[0].canonicalName+", "+data[0].rank+" (Key: "+data[0].key+")";
 	groupTitle.classList.add('groupTitle');
-	const circle1 = document.createElement('div');
+	const circle1 = g();
 	circle1.classList.add('circle');
 	const circle2 = circle1.cloneNode(true);
 	
 	if (data[0].localDjangoDB === true) groupTitle.innerHTML += ' (local Django DB)'
 
 	newGroup.append(circle1, line1, groupTitle, line2, circle2);
-	const groupResults = document.createElement('div');
+	const groupResults = g();
 	body.append(newGroup, groupResults);
 			
 	groupTitle.addEventListener('click', () =>
@@ -130,7 +130,7 @@ function create(data, querySubmit, rankSubmit)
 		// 'targetRank' in the GBIFResult object is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden), meaning FAMILY is the lowest rank / is the targetRank
 		
 		// THE BASIC AREA FOR EACH RESULT
-		const blockRow = document.createElement('div');
+		const blockRow = g();
 		blockRow.classList.add('blockRow');
 		//body.append(blockRow);
 		groupResults.append(blockRow);
@@ -138,15 +138,15 @@ function create(data, querySubmit, rankSubmit)
 		// THE COMPONENTS ON THE BASIC AREA - MADE UP OF THREE PARTS (ROWS)
 		
 		// the UPPER PART that shows interatable taxaBlocks ranks from KINGDOM up to SPECIES
-		const flexPartRanks = document.createElement('div');
+		const flexPartRanks = g();
 		// the MIDDLE PART that displays text information for a rank (clicked on a taxaBlock)
-		const line1 = document.createElement('div');
-		const flexPartDescription = document.createElement('div');
-		const line2 = document.createElement('div');
+		const line1 = g();
+		const flexPartDescription = g();
+		const line2 = g();
 		// the LOWER PART that shows images
-		const flexPartImages = document.createElement('div');
-		const mobileFullWidthImageDiv = document.createElement('div');
-		const mobileFullWidthImage = document.createElement('IMG');
+		const flexPartImages = g();
+		const mobileFullWidthImageDiv = g();
+		const mobileFullWidthImage = g('i');
 		mobileFullWidthImageDiv.append(mobileFullWidthImage);
 		
 		flexPartRanks.classList.add('flexPart');
@@ -165,15 +165,15 @@ function create(data, querySubmit, rankSubmit)
 		
 		blockRow.append(flexPartRanks, line1, flexPartDescription, line2, flexPartImages, mobileFullWidthImageDiv);
 		
-		let color = getRndInteger(0,360);
+		let color = randomInt(0,360);
 		
-		const kingdom = document.createElement('div');
-		const phylum = document.createElement('div');
-		const classRank = document.createElement('div');
-		const order = document.createElement('div');
-		const family = document.createElement('div');
-		const genus = document.createElement('div');
-		const species = document.createElement('div');
+		const kingdom = g();
+		const phylum = g();
+		const classRank = g();
+		const order = g();
+		const family = g();
+		const genus = g();
+		const species = g();
 		
 		const taxaBlocks = [kingdom, phylum, classRank, order, family, genus, species];
 	
@@ -234,6 +234,7 @@ function create(data, querySubmit, rankSubmit)
 			imagesObject: imagesObject,
 			
 			resultOpenedFirstTime: false,
+			resultOpenedSecondTime: false,
 			resultOpened: false,
 			// END JS DATA //
 		}
@@ -261,8 +262,8 @@ function create(data, querySubmit, rankSubmit)
 			const keyID = data[x][rankNameKey];
 
 			// THE TWO STRINGS THAT ARE DISPLAYED PER taxaBlock
-			const rankClassification = document.createElement('div');
-			const rankName = document.createElement('div');
+			const rankClassification = g();
+			const rankName = g();
 			rankClassification.style['pointer-events'] = 'none';
 			rankName.style['pointer-events'] = 'none';
 			
@@ -274,7 +275,7 @@ function create(data, querySubmit, rankSubmit)
 				rankClassification.classList.add('rankClassification');
 				taxaBlocks[y].append(rankClassification, rankName);
 				
-				const rankDescriptionContent = document.createElement('div');
+				const rankDescriptionContent = g();
 				rankDescriptionContent.classList.add('rankDescription');
 				flexPartDescription.append(rankDescriptionContent);
 
@@ -330,7 +331,7 @@ function create(data, querySubmit, rankSubmit)
 			if (taxaKeys[y] === rankSubmit) break; // if searched in rank GENUS, it will only create ranks until GENUS.
 		}
 		
-		const arrow = document.createElement('div');
+		const arrow = g();
 		flexPartRanks.append(arrow);
 		arrow.classList.add('arrow');
 		arrow.innerHTML = '⦿'; // ⪡ ⪢ ⋖ ⋗⩹⩺ ≪≫ ⦾⦿⊙ ⧀⧁ ⧏⧐ ⩹⩺⪢ ⪦⪧ ⪻⪼ ⫷⫸ ▢▣ ⋘⋙  ᗞ ᗡ ᗧ
@@ -345,11 +346,12 @@ function createSummary(nothingFetched, querySubmit)
 {
 	if (nothingFetched !== undefined)
 	{
-		const statBlock = document.createElement('div');
-		const info = document.createElement('div');
+		const statBlock = g();
+		const info = g();
 		info.style['pointer-events'] = 'none';
 		statBlock.classList.add('baseBlock', 'summery');
 		statBlock.append(info);
+		resultOverview.style.display = 'flex';
 		resultOverview.append(statBlock);
 		info.innerHTML = "Nothing found for <i><strong>"+querySubmit+"</i></strong>";
 		statBlock.animate({backgroundColor: ['rgba(255,80,50,1)','rgba(255,80,50,0.65)','rgba(255,80,50,1)','rgba(255,50,50,0)']},3000).onfinish =()=>
@@ -359,10 +361,10 @@ function createSummary(nothingFetched, querySubmit)
 			{
 				resultOverview.animate(fadeOut,fadeTime).onfinish = ()=>
 				{
-					resultOverview.style.opacity = 0;
+					resultOverview.style.display = 'none';
 					statBlock.remove();
 				}
-				filterArea.animate(fadeOut,fadeTime).onfinish = ()=> filterArea.style.opacity = 0;
+				filterArea.animate(fadeOut,fadeTime).onfinish = ()=> filterArea.style.display = 'none';
 			}
 			else statBlock.remove();
 		}
@@ -370,10 +372,12 @@ function createSummary(nothingFetched, querySubmit)
 	}
 	
 	while (resultOverview.children.length > 0) resultOverview.children[0].remove();
+	resultOverview.style.display = 'flex';
+	filterArea.style.display = 'flex';
 	for (const group of allQueriesGroups)
 	{
-		const statBlock = document.createElement('div');
-		const info = document.createElement('div');
+		const statBlock = g();
+		const info = g();
 		info.style['pointer-events'] = 'none';
 
 		let corrected = '';
@@ -427,8 +431,8 @@ function createSummary(nothingFetched, querySubmit)
 				}
 				if (resultOverview.children.length === 1)
 				{
-					resultOverview.animate(fadeOut,fadeTime).onfinish = ()=> resultOverview.style.opacity = 0;
-					filterArea.animate(fadeOut,fadeTime).onfinish = ()=> filterArea.style.opacity = 0;
+					resultOverview.animate(fadeOut,fadeTime).onfinish = ()=> resultOverview.style.display = 'none';
+					filterArea.animate(fadeOut,fadeTime).onfinish = ()=> filterArea.style.display = 'none';
 				}
 				statBlock.animate(fadeOut, fadeTime).onfinish = ()=>
 				{
@@ -458,9 +462,4 @@ function createSummary(nothingFetched, querySubmit)
 	}
 }
 
-function getRndInteger(min, max)
-{
-	return Math.floor(Math.random() * (max - min + 1) ) + min;
-}
-
-export {create, allGBIFResults, getRndInteger};
+export {create, allGBIFResults};
