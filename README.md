@@ -1,6 +1,8 @@
 # Life
+## An application to access the GBIF (Global Biodiversity Information Facility).
+## Several search options (including a dynamic taxonomy tree), and dynamic fetching.
+## You can also add your own new specieses and occurrences (sightings), which get stored in the local Django DB (but will be fetched alongside the GBIF on querying).
 
-Features are mostly complete. Will add feature to add occurrences soon.
 It's mobile responisive!
 
 To run it, you need python.
