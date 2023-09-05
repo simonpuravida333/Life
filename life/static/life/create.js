@@ -163,6 +163,9 @@ function create(data, querySubmit, rankSubmit)
 		flexPartImages.style.display = 'none';
 		mobileFullWidthImageDiv.style.display = 'none';
 		
+		// this deactivates the second border. It's still existent with animations (in navigate.js), just not visible anymore. For now I won't remove the element yet, in case I want it back. Also it still serves a purpose by giving a margin between images and mid-part descriptions.
+		line2.style.border = '0px';
+		
 		blockRow.append(flexPartRanks, line1, flexPartDescription, line2, flexPartImages, mobileFullWidthImageDiv);
 		
 		let color = randomInt(0,360);

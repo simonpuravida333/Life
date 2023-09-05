@@ -170,15 +170,14 @@ searchGo.addEventListener('mouseover', ()=> {if (searchGo !== document.activeEle
 searchGo.addEventListener('mouseout', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
 findTaxonomy.addEventListener('mouseover', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
 findTaxonomy.addEventListener('mouseout', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
-newSpecies.addEventListener('mouseover', ()=> newSpecies.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime));
-newSpecies.addEventListener('mouseout', ()=> newSpecies.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime));
-newOccurrence.addEventListener('mouseover', ()=> newOccurrence.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime));
-newOccurrence.addEventListener('mouseout', ()=> newOccurrence.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime));
+newSpecies.addEventListener('mouseover', ()=> newSpecies.animate([{backgroundColor: 'orange'},{backgroundColor: '#ffe164'}],fadeTime).onfinish = ()=>{newSpecies.style['background-color'] = '#ffe164';});
+newSpecies.addEventListener('mouseout', ()=> newSpecies.animate([{backgroundColor: '#ffe164'},{backgroundColor: 'orange'}],fadeTime).onfinish = ()=>{newSpecies.style['background-color'] = null;});
+newOccurrence.addEventListener('mouseover', ()=> newOccurrence.animate([{backgroundColor: 'orange'},{backgroundColor: '#ffe164'}],fadeTime).onfinish = ()=>{newOccurrence.style['background-color'] = '#ffe164';});
+newOccurrence.addEventListener('mouseout', ()=> newOccurrence.animate([{backgroundColor: '#ffe164'},{backgroundColor: 'orange'}],fadeTime).onfinish = ()=>{newOccurrence.style['background-color'] = null});
 
 withinSearch.addEventListener('mouseover', ()=>
 { 
 	if (!withinSearchActivated) withinSearch.animate({borderColor: ['#409CB5','orange']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = 'orange';
-	
 });
 withinSearch.addEventListener('mouseout', ()=>
 { 
@@ -382,6 +381,7 @@ function openNewSpeciesOccurrence(space, trigger) // new species OR new occurren
 //search('whale','family');
 //search('toucan','species');
 //search('macaw','species');
+search('blueberry','species');
 
 // +++ within search +++
 //withinSearchActivated = true;

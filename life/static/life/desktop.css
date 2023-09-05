@@ -30,12 +30,19 @@
 .resultImage
 {
 	height: 500px;
-	outline: 5px solid;
+	
+	/*
+	outline: 1px solid;
 	outline-offset: -9px;
-	border: 6px solid;
+	*/
+	/*
+	border-left: 10px solid;
+	border-right: 10px solid;
+	*/
+	border-top: 10px solid;
+	border-bottom: 10px solid;
 	border-radius: 10px;
 	margin: 10px;
-	margin-right: 20px;
 }
 
 .arrow
@@ -57,8 +64,10 @@
 .blockRow
 {
 	align-items: center;
-	margin: 40px;
-	border-radius: 20px;
+	margin: 30px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border-radius: 7px 30px 7px 30px;
 	padding: 10px;
 	background-color: white;
 }
@@ -71,12 +80,14 @@
 .baseBlock
 {
 	font-size: 20px;
-	border-radius: 20px;
+	border-radius: 7px 25px 7px 25px;
 	cursor: pointer;
-	margin: 10px;
-	padding: 20px;
+	margin: 5px;
+	padding: 15px;
+	padding-left: 20px;
+	padding-right: 30px;
 	color: white;
-
+	font-size: 17px;
 	&.summery
 	{
 		background-color: #409CB5;
@@ -154,8 +165,8 @@
 #searchSection
 {
 	background-color: white; /* #9FF1FF; /* #093C48 */
-	border-radius: 40px;
-	margin: 40px;
+	border-radius: 20px;
+	margin: 30px;
 	padding: 10px;
 	display: flex;
 	flex-wrap: 	wrap;

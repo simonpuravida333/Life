@@ -73,8 +73,13 @@ select
 .resultObjectLine
 {
 	margin: 10px;
-  	border: 3px solid white;
+	/*
+	margin-left: -10px;
+	margin-right: -10px;
+	*/
+	opacity: 0.5;
 	border-radius: 3px;
+  	border: 3px solid white;
 }
 
 .select
@@ -261,10 +266,12 @@ select
 	&.newSpecies
 	{
 		width: 150px;
+		background-color: orange;
 	}
 	&.newOccurrence
 	{
 		width: 200px;
+		background-color: orange;
 	}
 	&.newSpeciesSubmit
 	{

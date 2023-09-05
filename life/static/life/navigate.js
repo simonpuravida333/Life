@@ -124,26 +124,26 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 					}
 				},(fadeTime/1.5)*y);
 			}
-			r.line1.animate(fadeIn, fadeTime).onfinish = ()=>
+			r.line1.animate({opacity: [0,0.5]}, fadeTime).onfinish = ()=>
 			{
-				r.line1.style.opacity = 1;
+				r.line1.style.opacity = 0.5;
 				if (targetRankOpenedBefore)
 				{
 					r.description.animate(fadeIn, fadeTime).onfinish = ()=>
 					{
 						r.description.style.opacity = 1;
-						r.line2.animate(fadeIn, fadeTime).onfinish = ()=>
+						r.line2.animate({opacity: [0,0.5]}, fadeTime).onfinish = ()=>
 						{
-							r.line2.style.opacity = 1;
+							r.line2.style.opacity = 0.5;
 							r.images.animate(fadeIn, fadeTime).onfinish = ()=> r.images.style.opacity = 1;
 						}
 					}
 				}
 				else
 				{
-					r.line2.animate(fadeIn, fadeTime).onfinish = ()=>
+					r.line2.animate({opacity: [0,0.5]}, fadeTime).onfinish = ()=>
 					{
-						r.line2.style.opacity = 1;
+						r.line2.style.opacity = 0.5;
 						r.images.animate(fadeIn, fadeTime).onfinish = ()=> r.images.style.opacity = 1;
 					}
 				}
@@ -183,13 +183,13 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 		r.images.animate(fadeOut, fadeTime/2).onfinish = ()=>
 		{
 			r.images.style.opacity = 0;
-			r.line2.animate(fadeOut, fadeTime/2).onfinish = ()=>
+			r.line2.animate({opacity: [0.5,0]}, fadeTime/2).onfinish = ()=>
 			{
 				r.line2.style.opacity = 0;
 				r.description.animate(fadeOut, fadeTime).onfinish = ()=>
 				{
 					r.description.style.opacity = 0;
-					r.line1.animate(fadeOut, fadeTime).onfinish = ()=>
+					r.line1.animate({opacity: [0.5,0]}, fadeTime).onfinish = ()=>
 					{
 						r.line1.style.opacity = 0;
 						r.line1.style.display = 'none';
