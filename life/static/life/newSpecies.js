@@ -207,12 +207,12 @@ function parentSelectionChange()
 
 submit.onclick = ()=>
 {
-	if (!hasParent && parentSelection.value.trim() !== "")
+	if (!hasParent && parentSelection.value.trim() !== '')
 	{
 		parentSelection.animate({backgroundColor: ['#ff444e', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#ff444e']},1000);
 		return;
 	}
-	else if (!isUniqueLocalAndGBIF)
+	else if (!isUniqueLocalAndGBIF || canonicalName.value.trim() === '')
 	{
 		canonicalName.animate({backgroundColor: ['#409CB5', '#FFB56C', 'orange', '#FFB56C', 'orange' , '#FFB56C', '#409CB5']},1000)
 		return;
