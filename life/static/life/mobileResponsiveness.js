@@ -32,7 +32,7 @@ function handleStart(event, elements)
 
 function handleEnd(event, elements, goLeft, goRight)
 {
-	console.log('ENDED')
+	//console.log('ENDED')
 	movements = 0;
 	startPosition = 0;
 	
@@ -44,7 +44,7 @@ function handleEnd(event, elements, goLeft, goRight)
 	fullPull = 0;
 }
 
-/* TEST OBJECT
+/* TEST OBJECT (changes color when swiping)
 const bluCirc = g();
 bluCirc.style.position = 'absolute';
 bluCirc.style.left = '500px';
@@ -62,7 +62,6 @@ body.append(bluCirc);
 function handleMove(event, elements)
 {
 	movements = event.changedTouches[0].clientX;
-	console.log(startPosition)
 	let delta = movements - startPosition;
 	// bluCirc.style['background-color'] = 'rgb(50,'+delta+','+delta+')'; // TEST OBJECT
 	// bluCirc.innerHTML = window.innerHeight;
@@ -93,7 +92,7 @@ function handleMove(event, elements)
 
 function handleCancel(event, elements, goLeft, goRight)
 {
-	console.log('CANCELED');
+	//console.log('CANCELED');
 	movements = 0;
 	startPosition = 0;
 	

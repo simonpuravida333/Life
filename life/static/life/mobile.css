@@ -92,6 +92,17 @@
 	border-color: black;
 }
 
+.mobileDataHelp
+{
+	background-color: #2BAF60;
+	width: 100%;
+	color: white;
+	padding: 20px;
+	font-size: 22px;
+	border-radius: 15px;
+	display: none;
+}
+
 /* IDs */
 #searchSection
 {

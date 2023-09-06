@@ -22,7 +22,8 @@ guideText.style.margin = '20px auto';
 guideText.style['font-style'] = 'italic';
 guideText.style['max-width'] = '500px';
 guideText.style['text-align'] = 'center';
-findSpeciesTitle.children[1].innerHTML = 'SELECT A SPECIES';
+if (isMobile) findSpeciesTitle.children[0].innerHTML = 'SELECT A SPECIES';
+else findSpeciesTitle.children[1].innerHTML = 'SELECT A SPECIES';
 speciesSelectionTitle.innerHTML = 'The Species:';
 speciesSuggestionTitle.innerHTML = 'Look for a Species...';
 suggestionInput.placeholder = 'Delph...';
@@ -31,11 +32,14 @@ speciesSelection.placeholder = 'Delphinus Delphis';
 // let's wipe most of the area, except the upper title, and add everything manually, so that we idea of how which elements are added where:
 const newOccurrenceSpace = newSpeciesSpace.cloneNode(true);
 while (newOccurrenceSpace.children.length > 1) newOccurrenceSpace.children[1].remove();
-const topTitle = newOccurrenceSpace.children[0].children[1];
+const topTitle = (isMobile) ? newOccurrenceSpace.children[0].children[0] : newOccurrenceSpace.children[0].children[1];
 topTitle.innerHTML = 'add a new occurrence to the GBIF'.toUpperCase();
-const closeNewOccurrence = newOccurrenceSpace.children[0].children[3];
-closeNewOccurrence.onmouseover = ()=> closeNewOccurrence.innerHTML = '⦿';
-closeNewOccurrence.onmouseout = ()=> closeNewOccurrence.innerHTML = '⊙';
+const closeNewOccurrence = (!isMobile) ? newOccurrenceSpace.children[0].children[3] : null;
+if (!isMobile)
+{
+	closeNewOccurrence.onmouseover = ()=> closeNewOccurrence.innerHTML = '⦿';
+	closeNewOccurrence.onmouseout = ()=> closeNewOccurrence.innerHTML = '⊙';
+}
 
 const selectionArea = g();
 const dataArea = g();
@@ -99,16 +103,10 @@ for (const d in data)
 	div.onclick = ()=> openInput((d === 'mediaLinks') ? div.cloneNode(true) : div, d);
 	selectionArea.append(div);
 	
-	if (data[d][1] !== '')
+	if (data[d][1] !== '' && !isMobile)
 	{
 		const hoverDiv = g();
-		hoverDiv.classList.add('baseBlock');
-		hoverDiv.style['background-color'] = '#409CB5';
-		hoverDiv.style.position = 'absolute';
-		hoverDiv.style.transform = 'translateX(-50%)';
-		hoverDiv.style['max-width'] = '400px';
-		hoverDiv.style['z-index'] = 5;
-		hoverDiv.style.display = 'none';
+		hoverDiv.classList.add('baseBlock', 'hoverHelp');
 		hoverDiv.innerHTML = data[d][1];
 		body.append(hoverDiv);
 		div.onmouseover = ()=>
@@ -132,7 +130,9 @@ function openInput(div, dataKey)
 	div.style['background-color'] = '#2BAF60';
 	input.style['background-color'] = '#FF6680';
 	input.style.color = 'white';
-	const removeDataEntry = newOccurrenceSpace.children[0].children[3].cloneNode(true);
+	const removeDataEntry = g();
+	removeDataEntry.innerHTML = '⊙';
+	removeDataEntry.classList.add('closeNewSpeciesSpace');
 	removeDataEntry.onmouseover = ()=> removeDataEntry.innerHTML = '⦿';
 	removeDataEntry.onmouseout = ()=> removeDataEntry.innerHTML = '⊙';
 	dataEntry.append(removeDataEntry, div, input);
@@ -157,10 +157,29 @@ function openInput(div, dataKey)
 		countrySuggestion.style.color = '#409CB5';
 		countrySuggestion.style.padding = '10px';
 		countrySuggestion.style['border-radius'] = '10px';
-		countrySuggestion.style.opacity = 1;
+		countrySuggestion.style.opacity = 1;	
 		body.append(countrySuggestion);
 		input.addEventListener('focusout', ()=> setTimeout(()=>{countrySuggestion.style.display = 'none';},500)) // without the delay it is not possible to click on a country.
 	}
+	
+	const help = g(); // mobile
+	if (isMobile && data[dataKey][1] !== '')
+	{
+		help.classList.add('mobileDataHelp');
+		help.innerHTML = data[dataKey][1];
+		input.before(help);
+		input.addEventListener('focus',()=>
+		{
+			help.style.display = 'block';
+			help.style.top = input.getBoundingClientRect().height - help.getBoundingClientRect().height + 'px';
+			help.style.left = input.offsetLeft + 'px';
+		});
+		input.addEventListener('focusout', ()=>
+		{
+			help.style.display = 'none';
+		});
+	}
+
 	input.oninput = ()=>
 	{
 		let entry = input.value.trim().toLowerCase();
@@ -191,7 +210,7 @@ function openInput(div, dataKey)
 					{
 						input.value = choice;
 						ok.ok = true;
-						input.style['background-color'] = 'cyan';
+						input.style['background-color'] = '#2BAF60';
 						c.style['background-color'] = 'orange';
 						c.style.color = 'white';
 					}
@@ -249,6 +268,7 @@ function openInput(div, dataKey)
 			else delete enteredData[dataKey];
 			for (const o in allOKs) if (input === allOKs[o].input) allOKs.splice(o,1);
 		}
+		help.remove();
 	}
 }
 
@@ -344,7 +364,7 @@ function sendToBackend()
 		body: JSON.stringify
 		(enteredData)
 	})
-	.then(response =>
+	.then(async (response) =>
 	{
 		if (response.ok)
 		{
@@ -354,6 +374,9 @@ function sendToBackend()
 			for (const child of dataArea.children) child.children[0].click();
 			for (const key in enteredData) delete enteredData[key];
 			setTimeout(()=>{alert("New Occurrence successfully saved to DB")},500);
+			const theModule = await import('./startup.js');
+			const closeFunction = theModule.closeNewSpeciesOccurrence;
+			closeFunction(newOccurrenceSpace);
 		}
 	})
 }

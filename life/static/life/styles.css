@@ -360,6 +360,28 @@ select
 	margin-right: 15px;
 }
 
+.closeNewSpeciesSpace
+{
+	font-size: 40px;
+	margin: 10px;
+	cursor: pointer;
+	color: #684B33;
+	&:hover
+	{
+		color: orange;
+	}
+}
+
+.hoverHelp
+{
+	background-color: #409CB5;
+	position: absolute;
+	transform: translateX(-50%);
+	max-width: 400px;
+	z-index: 5;
+	display: none;
+}
+
 /* IDs */
 #plusSign
 {
@@ -407,17 +429,5 @@ select
 	{
 		box-shadow: 0px 0px 10px deepskyblue;
 		cursor: pointer;
-	}
-}
-
-#closeNewSpeciesSpace
-{
-	font-size: 40px;
-	margin: 10px;
-	cursor: pointer;
-	color: #684B33;
-	&:hover
-	{
-		color: orange;
 	}
 }

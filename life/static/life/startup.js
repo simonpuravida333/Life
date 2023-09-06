@@ -6,6 +6,7 @@ import {selectRank} from './filter.js';
 import {findSpace} from './taxonomyFinder.js';
 import {newSpeciesSpace, closeNewSpeciesSpace} from './newSpecies.js';
 import {newOccurrenceSpace, closeNewOccurrence} from './newOccurrence.js';
+import touchResponse from './swipe.js'
 
 const body = document.querySelector('body');
 body.style['background-color'] = '#325D77' //'#3C7185';
@@ -250,7 +251,7 @@ body.append(resultOverview);
 const filterArea = g();
 filterArea.classList.add('blockRow', 'flexPart');
 // filterArea.style.display = 'none';
-filterArea.style.opacity = 0;
+filterArea.style.display = 'none';
 body.append(filterArea);
 const allRankFilters = [];
 
@@ -321,11 +322,14 @@ findTaxonomy.addEventListener('click', ()=>
 searchSection.after(newSpeciesSpace);
 searchSection.after(newOccurrenceSpace);
 newSpecies.onclick = ()=> openNewSpeciesOccurrence(newSpeciesSpace, newSpecies);
-closeNewSpeciesSpace.onclick = ()=> closeNewSpeciesOccurrence(newSpeciesSpace, closeNewSpeciesSpace);
 newOccurrence.onclick = ()=> openNewSpeciesOccurrence(newOccurrenceSpace, newOccurrence);
-closeNewOccurrence.onclick = ()=> closeNewSpeciesOccurrence(newOccurrenceSpace, closeNewOccurrence);
+if (!isMobile)
+{
+	closeNewSpeciesSpace.onclick = ()=> closeNewSpeciesOccurrence(newSpeciesSpace);
+	closeNewOccurrence.onclick = ()=> closeNewSpeciesOccurrence(newOccurrenceSpace);
+}
 
-function closeNewSpeciesOccurrence(space, trigger) // new species OR new occurrence
+function closeNewSpeciesOccurrence(space) // new species OR new occurrence
 {
 	if (findSpace.style.display === 'block') findTaxonomy.click();
 	space.style.display = 'none';
@@ -335,12 +339,12 @@ function closeNewSpeciesOccurrence(space, trigger) // new species OR new occurre
 	for (const e of Array.from(document.getElementsByClassName('newSpeciesLabel'))) e.style = null;
 }
 
-function openNewSpeciesOccurrence(space, trigger) // new species OR new occurrence
+function openNewSpeciesOccurrence(space) // new species OR new occurrence
 {
 	if (findSpace.style.display === 'block') findTaxonomy.click();
 	space.style.display = 'block';
 	space.animate({opacity: [0,1]},500);
-	//trigger.style['background-color'] = '#8AED97';
+	if (isMobile) touchResponse(space, closeNewSpeciesOccurrence);
 	searchSection.style.display = 'none';
 	const inputFields = Array.from(document.getElementsByClassName('findRank'));
 	const fieldLabels = Array.from(document.getElementsByClassName('newSpeciesLabel'));
@@ -388,7 +392,7 @@ search('blueberry','species');
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {searchSection, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated};
+export {searchSection, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, closeNewSpeciesOccurrence};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which make the object global. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window. BUT: globalThis is the standard meanwhile, the only one that will work in all kinds of environments from browsers to Node.js and more.
 // Another solution is to export a function that allows to manipulate module-wide variables in another module, though this is less recommended.

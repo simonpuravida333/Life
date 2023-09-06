@@ -6,24 +6,31 @@ const body = document.querySelector('body');
 const newSpeciesSpace = g();
 newSpeciesSpace.classList.add('blockRow');
 newSpeciesSpace.style.display = 'none';
-
-const closeNewSpeciesSpace = g();
-closeNewSpeciesSpace.innerHTML = '⊙';
-closeNewSpeciesSpace.id = 'closeNewSpeciesSpace';
-closeNewSpeciesSpace.onmouseover = ()=> closeNewSpeciesSpace.innerHTML = '⦿';
-closeNewSpeciesSpace.onmouseout = ()=> closeNewSpeciesSpace.innerHTML = '⊙';
 const centerDiv = g();
-centerDiv.classList.add('flexPart', 'center');
-const line1 = g();
-line1.style['border-color'] = 'deepskyblue';
-line1.style['border-width'] = '3px';
-line1.classList.add('horizontalLine');
-const line2 = line1.cloneNode(true);
-line1.style['margin-left'] = '60px'; // balancing on the left the close symbol on the right which horizontally takes 60px;
+const closeNewSpeciesSpace = g();
 const newSpeciesSpaceTitle = g();
 newSpeciesSpaceTitle.classList.add('newSpeciesTitle');
 newSpeciesSpaceTitle.innerHTML = 'Add a new Species to the GBIF'.toUpperCase();
-centerDiv.append(line1, newSpeciesSpaceTitle, line2, closeNewSpeciesSpace);
+if (!isMobile)
+{
+	centerDiv.classList.add('flexPart', 'center');
+	const line1 = g();
+	line1.style['border-color'] = 'deepskyblue';
+	line1.style['border-width'] = '3px';
+	line1.classList.add('horizontalLine');
+	const line2 = line1.cloneNode(true);
+	line1.style['margin-left'] = '60px'; // balancing on the left the close symbol on the right which horizontally takes 60px;
+	closeNewSpeciesSpace.innerHTML = '⊙';
+	closeNewSpeciesSpace.classList.add('closeNewSpeciesSpace');
+	closeNewSpeciesSpace.onmouseover = ()=> closeNewSpeciesSpace.innerHTML = '⦿';
+	closeNewSpeciesSpace.onmouseout = ()=> closeNewSpeciesSpace.innerHTML = '⊙';
+	centerDiv.append(line1, newSpeciesSpaceTitle, line2, closeNewSpeciesSpace);
+}
+else 
+{
+	centerDiv.style['text-align'] = 'center';
+	centerDiv.append(newSpeciesSpaceTitle);
+}
 newSpeciesSpace.append(centerDiv);
 
 const groupOfTwo = new Array(3);
@@ -100,10 +107,14 @@ addAncestorInfo.style['margin-top'] = '50px';
 newSpeciesSpace.append(hint, submit, addAncestorInfo);
 
 const centerDiv2 = centerDiv.cloneNode(true);
-centerDiv2.children[3].remove();
-centerDiv2.children[1].innerHTML = 'Add a direct ancestor'.toUpperCase();
-centerDiv2.children[2].style['margin-right'] = '60px';
-centerDiv2.style.height = '80px';
+if (!isMobile)
+{
+	centerDiv2.children[3].remove();
+	centerDiv2.children[2].style['margin-right'] = '60px';
+	centerDiv2.children[1].innerHTML = 'Add a direct ancestor'.toUpperCase();
+	centerDiv2.style.height = '80px';
+}
+else centerDiv2.children[0].innerHTML = 'Add a direct ancestor'.toUpperCase();
 newSpeciesSpace.append(centerDiv2);
 
 const addLineage = g();
@@ -258,7 +269,7 @@ submit.onclick = ()=>
 				lineage: lineage,
 			})
 		})
-		.then(response =>
+		.then(async (response) =>
 		{
 			if (response.ok)
 			{
@@ -267,6 +278,9 @@ submit.onclick = ()=>
 				parentSuggestion.value = "";
 				suggestionSpace.innerHTML = "";
 				alert("New Species successfully saved to DB");
+				const theModule = await import('./startup.js');
+				const closeFunction = theModule.closeNewSpeciesOccurrence;
+				closeFunction(newSpeciesSpace);
 			}
 		})
 	}

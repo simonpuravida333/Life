@@ -20,16 +20,33 @@ function generate(elementType)
 	for (const e of elements) if (e.startsWith(elementType)) return document.createElement(e);
 } //... I only started it using in this module, which was one of the app's last additions. Why didn't I get this idea sooner?
 
+//... just using globalThis.variable = value will leave the global variables mutable. Thus I use this defineProperty function to set writable: false. ... it's strange that by default exported variables are immutable while global variables are mutable. It should be the opposite for both cases. Usually if you have global access to something, like built-in functions or constants (pi), you only want to use or read them, not change them.
+
+Object.defineProperty(globalThis, 'caps', {
+  value: capitalizeFirstLetters,
+  writable: false,
+});
+
+Object.defineProperty(globalThis, 'randomInt', {
+  value: getRndInteger,
+  writable: false,
+});
+
+Object.defineProperty(globalThis, 'g', {
+  value: generate,
+  writable: false,
+});
+
 // GLOBAL TAXA NAMES
 Object.defineProperty(globalThis, 'taxaKeys', {
   value: ["kingdom", "phylum", "class", "order", "family", "genus", "species"],
   writable: false,
 });
+
 Object.defineProperty(globalThis, 'ranks', {
   value: [0,1,2,3,4,5,6], // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
   writable: false,
 });
-//... just using globalThis.variable = value will leave the global variables mutable. This I use this defineProperty function to set writable: false.
 
 // GLOBAL MOBILE BOOLEAN (used to adapt certain code to mobile)
 const userAgent = navigator.userAgent.toLowerCase();
@@ -46,7 +63,3 @@ Object.defineProperty(globalThis, 'touch', {
   value: touchBool, // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
   writable: false,
 });
-
-globalThis.g = generate;
-globalThis.randomInt = getRndInteger;
-globalThis.caps = capitalizeFirstLetters;
