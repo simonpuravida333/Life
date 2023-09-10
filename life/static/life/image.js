@@ -259,7 +259,7 @@ function clickOnImage(theImage, GBIFResult, originOfCall)
 		{
 			let deltaX = event.changedTouches[0].clientX - trackX;
 			let deltaY = event.changedTouches[0].clientY - trackY;
-			if ((deltaX > 10 || deltaX < -10) || (deltaY > 10 || deltaY < -10)) return; // user didn't just tap but actually moved the finger (scrolled, zoomed...)
+			if ((deltaX > 10 || deltaX < -10) || (deltaY > 10 || deltaY < -10)) return; // user didn't just tap but actually moved the finger (scrolled, pinched...)
 			
 			GBIFResult.mobileFullWidthImageDiv.style.display = 'block';
 			GBIFResult.mobileFullWidthImage.src = theImage.src;

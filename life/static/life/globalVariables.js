@@ -44,7 +44,7 @@ Object.defineProperty(globalThis, 'taxaKeys', {
 });
 
 Object.defineProperty(globalThis, 'ranks', {
-  value: [0,1,2,3,4,5,6], // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
+  value: [0,1,2,3,4,5,6], // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
   writable: false,
 });
 
@@ -59,6 +59,7 @@ Object.defineProperty(globalThis, 'isMobile', {
   value: mobileBool, // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
   writable: false,
 });
+
 Object.defineProperty(globalThis, 'touch', {
   value: touchBool, // allows me to use for-of loops in JS as if it were for-ins in Python. Meaning: I don't have to describe silly for(intialize; condition; afterthought) every time I loop through taxaKeys or taxaBlocks (create.js) and need the indeces.
   writable: false,

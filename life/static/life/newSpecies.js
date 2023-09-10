@@ -6,6 +6,8 @@ const body = document.querySelector('body');
 const newSpeciesSpace = g();
 newSpeciesSpace.classList.add('blockRow');
 newSpeciesSpace.style.display = 'none';
+newSpeciesSpace.style['z-index'] = 2;
+newSpeciesSpace.style.position = 'relative';
 const centerDiv = g();
 const closeNewSpeciesSpace = g();
 const newSpeciesSpaceTitle = g();
