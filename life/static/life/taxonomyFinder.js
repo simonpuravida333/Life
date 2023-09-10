@@ -1,12 +1,23 @@
 import {newSpeciesSpace, parentSelection, parentSelectionChange} from './newSpecies.js';
 import {newOccurrenceSpace, speciesSelection, speciesSelectionChange} from './newOccurrence.js';
+import touchResponse from './swipe.js';
 var textareaNameSearch;
 
 const body = document.querySelector('body');
 const findSpace = g();
 findSpace.classList.add('blockRow');
 findSpace.style.display = 'none';
-body.prepend(findSpace);
+
+if (!isMobile)
+{
+	const topBar = newSpeciesSpace.children[0].cloneNode(true);
+	topBar.children[1].innerHTML = 'TAXONOMY NAVIGATOR';
+	topBar.children[3].onmouseover = ()=> topBar.children[3].innerHTML = '⦿';
+	topBar.children[3].onmouseout = ()=> topBar.children[3].innerHTML = '⊙';
+	topBar.children[3].onclick = ()=> findSpace.animate({opacity: [1,0]},333).onfinish = ()=> findSpace.style.display = 'none';
+	findSpace.append(topBar);
+}
+else touchResponse(findSpace);
 
 const information = g();
 information.innerHTML = 'Look for canonical name suggestions in any rank you want.<br>To refresh everything, delete the name of the highest taxonomy.';

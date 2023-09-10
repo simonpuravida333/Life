@@ -35,7 +35,7 @@ function handleEnd(element, closeElement)
 	if (fullPull && !locked)
 	{
 		element.style.display = 'none';
-		closeElement(element);
+		if (closeElement !== undefined) closeElement(element);
 		touchResponse(null);
 	}
 	element.style.left = null;

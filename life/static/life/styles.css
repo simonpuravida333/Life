@@ -7,7 +7,7 @@ body
 {
 	font-family: "Montserrat"; /* it actually looks different than to putting it in html{  } */
 	background-image: linear-gradient(90deg, #325D77, mediumaquamarine);
-	min-width: 600px;
+	min-width: 700px;
 }
 
 input, select, input[type=submit]:focus

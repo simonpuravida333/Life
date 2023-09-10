@@ -28,7 +28,7 @@ const leaf = g();
 leaf.style.position = 'absolute';
 leaf.style.bottom = '0px';
 leaf.style['border-radius'] = '0% 60% 30% 60%';
-//leaf.style.border = '10px solid #B3FFC5';
+//leaf.style.border = '10px solid #83FF97';
 //leaf.style['border-top'] = '0px';
 //leaf.style['border-left'] = '0px';
 
@@ -60,13 +60,14 @@ for (let x = 0; x < squares.length; x++)
 	const variation = randomInt(-10,10);
 	leaves[x].style.width = size;
 	leaves[x].style.height = size;
-	leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + (x<2) ? ' #438E55, #229A48, #B3FFC5)' : '#CC7D36, orange, #FFE299)';
+	leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + (x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)';
+	//leaves[x].style['box-shadow'] = '10px 10px 20px rgba(255,255,255,0.5), 10px -10px 20px rgba(255,255,255,0.5), -10px 10px 20px rgba(255,255,255,0.5), -10px -10px 20px rgba(255,255,255,0.5)';
 	squares[x].style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)';
 	const squareAni = squares[x].animate({transform: ['translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)', 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg)'], filter: ['brightness(1)', 'brightness(1.2)']},{duration: 500, easing: 'ease-in-out'});
 	squareAni.pause();
 	const textAni = texts[x].animate({opacity: [0,0,1]},500);
 	textAni.pause();
-	const leafAni = leaves[x].animate({backgroundImage: ['linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #438E55, #229A48, #B3FFC5)' : '#CC7D36, orange, #FFE299)'), 'linear-gradient(-45deg,' + ((x<2) ? ' #438E55, #229A48, #B3FFC5)' : '#CC7D36, orange, #FFE299)')]},500);
+	const leafAni = leaves[x].animate({backgroundImage: ['linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)'), 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)')], boxShadow: ['none','none', 'none', '0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0)', '10px 10px 20px rgba(255,255,255,0.3), 10px -10px 20px rgba(255,255,255,0.3), -10px 10px 20px rgba(255,255,255,0.3), -10px -10px 20px rgba(255,255,255,0.3)']},500);
 	leafAni.pause();
 	parentSquares[x].onmouseover = ()=>
 	{
@@ -82,7 +83,11 @@ for (let x = 0; x < squares.length; x++)
 		textAni.onfinish = ()=> texts[x].style.opacity = 1;
 		leafAni.playbackRate = 1;
 		leafAni.play();
-		leafAni.onfinish = ()=> leaves[x].style['background-image'] = 'linear-gradient(-45deg,' + ((x<2) ? ' #438E55, #229A48, #B3FFC5)' : '#CC7D36, orange, #FFE299)');
+		leafAni.onfinish = ()=>
+		{
+			leaves[x].style['background-image'] = 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
+			leaves[x].style['box-shadow'] = '10px 10px 20px rgba(255,255,255,0.3), 10px -10px 20px rgba(255,255,255,0.3), -10px 10px 20px rgba(255,255,255,0.3), -10px -10px 20px rgba(255,255,255,0.3)';
+		}
 	}
 	parentSquares[x].onmouseout = ()=>
 	{
@@ -95,7 +100,11 @@ for (let x = 0; x < squares.length; x++)
 		textAni.reverse();
 		textAni.onfinish = ()=> texts[x].style.opacity = 0;
 		leafAni.reverse();
-		leafAni.onfinish = ()=> leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #438E55, #229A48, #B3FFC5)' : '#CC7D36, orange, #FFE299)');
+		leafAni.onfinish = ()=>
+		{
+			leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
+			leaves[x].style['box-shadow'] = 'none';
+		}
 	}
 }
 
@@ -141,9 +150,9 @@ const blossom = g();
 blossom.style.width = '100px';
 blossom.style.height = '100px';
 blossom.style['border-radius'] = '50%';
-// blossom.style.border = '3px solid black';
+//blossom.style.border = '3px solid black';
 blossom.style.position = 'relative';
-blossom.style['margin-left'] = '60px';
+blossom.style['margin-left'] = '150px';
 blossom.style['margin-right'] = '30px';
 blossom.style['margin-bottom'] = '-10px';
 blossom.style.cursor = 'pointer';
@@ -155,7 +164,7 @@ for (let x = 0; x < 5; x++)
 {
 	petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(-15deg)';
 	blossom.append(petals[x]);
-	petalsAnis[x] = petals[x].animate({transform: ['rotate('+x*72+'deg) translateY(65%) skew(-15deg)', 'rotate('+x*72+'deg) translateY(65%) skew(0deg)']},500)
+	petalsAnis[x] = petals[x].animate({transform: ['rotate('+x*72+'deg) translateY(65%) skew(-15deg)', 'rotate('+x*72+'deg) translateY(65%) skew(0deg)'], boxShadow: ['none', 'none', 'none', '0px 0px 0px rgba(255,255,255,0.5)', '0px 10px 11px rgba(255,255,255,0.5)']},500)
 	petalsAnis[x].pause();
 }
 
@@ -177,6 +186,8 @@ blossom.append(blossomText);
 blossom.style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)';
 const blossomAni = blossom.animate({transform: ['translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)', 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(-36deg) skew(0deg)'], filter: ['brightness(1)','brightness(1.2)']},500);
 blossomAni.pause();
+const blossomTextAni = blossomText.animate({opacity: [0,0,0,1]},500);
+blossomTextAni.pause();
 blossom.onmouseover = ()=>
 {
 	blossomAni.playbackRate = 1;
@@ -190,9 +201,15 @@ blossom.onmouseover = ()=>
 	{
 		petalsAnis[x].playbackRate = 1;
 		petalsAnis[x].play();
-		petalsAnis[x].onfinish = ()=> petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(0deg)';
+		petalsAnis[x].onfinish = ()=>
+		{
+			petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(0deg)';
+			petals[x].style['box-shadow'] = '0px 10px 11px rgba(255,255,255,0.5)';
+		}
 	}
-	blossomText.animate({opacity: [0,0,0,1]},500).onfinish = ()=> blossomText.style.opacity = 1;
+	blossomTextAni.playbackRate = 1;
+	blossomTextAni.play();
+	blossomTextAni.onfinish = ()=> blossomText.style.opacity = 1;
 }
 blossom.onmouseout = ()=>
 {
@@ -206,9 +223,64 @@ blossom.onmouseout = ()=>
 	for (let x = 0; x < 5; x++)
 	{
 		petalsAnis[x].reverse();
-		petalsAnis[x].onfinish = ()=> petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(-15deg)';
+		petalsAnis[x].onfinish = ()=>
+		{
+			petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(-15deg)';
+			petals[x].style['box-shadow'] = 'none';
+		}
 	}
-	blossomText.animate({opacity: [1,0,0,0]},500).onfinish = ()=> blossomText.style.opacity = 0;
+	blossomTextAni.reverse();
+	blossomTextAni.onfinish = ()=> blossomText.style.opacity = 0;
 }
 
-export {spaceForNature, parentSquares, blossom};
+const howToSpace = g();
+howToSpace.classList.add('blockRow');
+howToSpace.style['font-family'] = 'Gaegu';
+howToSpace.style['font-size'] = '22px';
+howToSpace.style['line-height'] = '24px';
+howToSpace.style['border-left'] = '30px solid cyan';
+howToSpace.style['padding-left'] = 0;
+howToSpace.style['background-color'] = '#325D77';
+howToSpace.style.color = 'white';
+howToSpace.style.display = 'none';
+const chapterSpaces = [];
+const chapterTexts = [];
+
+for (let x = 0; x < 8; x++)
+{
+	const chapterSpace = g();
+	chapterSpace.classList.add('flexPart');
+	chapterSpace.style['margin-bottom'] = '20px';
+	chapterSpace.style['align-items'] = 'start';
+	chapterSpaces.push(chapterSpace);
+	
+	const chapterLeaf = g();
+	chapterLeaf.style['margin-top'] = '20px';
+	chapterLeaf.style.position = 'relative';
+	chapterLeaf.style.width = '50px';
+	chapterLeaf.style.height = '50px';
+	chapterLeaf.style['border-radius'] = '0% 60% 30% 60%';
+	chapterLeaf.style['background-color'] = (x<6) ? 'cyan' : 'orange';
+	chapterLeaf.style['margin-right'] = '20px';
+	chapterLeaf.style.transform = 'rotate(112.5deg)';
+	
+	const chapterText = g();
+	chapterText.style.width = '700px';
+	chapterText.style['margin-left'] = '20px';
+	chapterText.style['margin-top'] = '20px';
+	chapterTexts.push(chapterText);
+	
+	chapterSpaces[x].append(chapterLeaf, chapterText);
+	howToSpace.append(chapterSpace);
+}
+
+chapterTexts[0].innerHTML = "This app allows you to search the<br><strong style='color: cyan'><i>GLOBAL BIODIVERSITY INFORMATION FACILITY (GBIF).</strong>";
+chapterTexts[1].innerHTML = "The application helps you <strong style='color: cyan'><i>FIND ANY SPECIES OF LIFE</i></strong> by using vernacular names as queries (like <i>'blueberry'</i>). So when querying within a selected rank <i>SPECIES</i>, it will search the GBIF for <i>specieses</i> which are associated with this <i>English vernacular name</i>.<br>If you want to search for <i>canonical names</i>, set the selection option to <i>CANONICAL NAME.</i>";
+chapterTexts[2].innerHTML = "Activate the trigger right of the rank selector (query areas turn orange) to <strong><i>query for taxa of a certain rank within a higher taxon rank.</i></strong> Note that this only works with canonical names, as the GBIF needs to know the exact taxon within which it can search.<br>For example querying for 'Paradisaeidae' (FAMILY of birds of paradise) and having chosen the rank '<i><strong style='color: cyan'>EVERY SPECIES WITHIN</strong></i>' will yield <i>all SPECIES within the FAMILY rank 'Paradisaeidae'.</i> This would not work when doing a vernacular name search (<i>SPECIES</i> selected) which would only yield a smaller amount of birds of paradise (simply each one where whose name contains the query <i>'bird of paradise'</i>, and there would be plants as well among the results.";
+chapterTexts[3].innerHTML = "The <i><strong style='color: cyan'>RESULT SUMMERY AREA</i></strong> appears beneath the search field when results come in. New queries won't reset the content, they'll be added, and you can click on a summery to make the window teleport to the group of results. Holding mouse on a result summery until it turns orange will delete it.";
+chapterTexts[4].innerHTML = "The <i><strong style='color: cyan'>FILTER AREA</i></strong> is for narrowing down results. E.g. querying for the SPECIES 'strawberry' will yield 87 results, 39 of which are animals (surprised? They're strawberry-coloured, -patterned or -shaped insects, anemoa, cockles, sea squirts, fish, frogs, crabs...). Just setting the KINGDOM filter to 'Plantae', you can halve the results. This does not remove the animal results, it just hides them. Setting KINGDOM to '...' will let everything show up again, because '...' (idle filter) will set any lower rank filter to '...' as well. Next to how many results there are for any taxa, filters also show (when opening) which of the taxa are contained within the taxa selected in an upper rank filter: contained taxa are <strong style='color:orange'>bold orange</strong>. This is very useful to get a connected understanding of your results.<br>Filters always keep every taxa from every result, even if the result is not displayed right now from a set filter. This allows you to directly change the setting of the filter. Setting any filter will always pre-fill the higher filters with the ancestor lineage, and the lower filters with '...' to allow everything from this rank onwards (downwards) to be displayed."
+chapterTexts[5].innerHTML = "The actual, accessable results are always <i><strong style='color: cyan'>GROUPED BY A TITLE</i></strong>, which is your query. Clicking on the title will hide or show the entire group / query results. This may be of use when making multiple queries (having multiple groups). Groups and the upper mentioned <i>result summeries</i> are the same; delete groups by hold mouse or touch on the block in the result summery area.";
+chapterTexts[6].innerHTML = "<i><strong style='color: orange'>A NOTE ON EXTINCT SPECIES</strong></i> Extinct species do not appear among the results. Doing 'every SPECIES within' 'Cetacea' (whales) query will yield 94 species of extant whale species. If extinct species were included, the results would be more than 7 times as many. Don't worry, in the very most cases you're not missing out on interesting information. Thus far on the GBIF, exctinct species usually don't deliver more material than the canonical name.";
+chapterTexts[7].innerHTML = "<i><strong style='color: orange'>A NOTE ON USING VERNACULAR NAMES FOR QUERIES:</strong></i> Sometimes the nature of vernacular or folk names can be confusing.<br>E.g. searching for SPECIES 'whale' will yield 58 species of whale where 'whale' is part of the name, like southern right whale, bowhead whale and whaleshark, even though the latter is a shark. But if you searched for SPECIES 'dolphin' you'll be given 48 species that would not appear within the results for 'whale'. Scientifically, dolphins are whales, but in their own FAMILY rank, beneath the ORDER rank Cetacea (whales); for the same reason killer whales would be missing in the 'dolphin' results, even though Orcas belong to the FAMILY of dolphins. Likewise, searching for 'whale' in the FAMILY rank would yield ten families of whales where the dolphin family would be missing as well.";
+
+export {spaceForNature, parentSquares, blossom, howToSpace};
