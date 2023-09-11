@@ -314,7 +314,7 @@ parentSquares[1].onclick = ()=>
 		searchSection.after(findSpace);
 		findSpace.style.display = 'block';
 		findSpace.animate({opacity: [0,1]},500);
-		findTaxonomy.style['background-color'] = '#8AED97'
+		findTaxonomy.style['background-color'] = '#8AED97';
 	}
 	else
 	{
