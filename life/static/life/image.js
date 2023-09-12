@@ -265,9 +265,9 @@ function clickOnImage(theImage, GBIFResult, originOfCall)
 			GBIFResult.mobileFullWidthImage.src = theImage.src;
 			GBIFResult.mobileFullWidthImage.animate({opacity:[0,1],scale:[0.85,1]},500);
 			if (theImage.naturalWidth > GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width) GBIFResult.mobileFullWidthImage.style.width = GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width+'px'; // there didn't seem to be a CSS way to contain the image neatly within the parent div.
-			else GBIFResult.mobileFullWidthImage.style.width = theImage.naturalWidth;
-			GBIFResult.mobileFullWidthImage.style['border-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
-			GBIFResult.mobileFullWidthImage.style['outline-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
+			else GBIFResult.mobileFullWidthImage.style.width = theImage.naturalWidth+'px';
+			//GBIFResult.mobileFullWidthImage.style['border-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
+			//GBIFResult.mobileFullWidthImage.style['outline-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
 			window.onresize = ()=> // flipping screen
 			{
 				if (theImage.naturalWidth > GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width) GBIFResult.mobileFullWidthImage.style.width = GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width+'px';

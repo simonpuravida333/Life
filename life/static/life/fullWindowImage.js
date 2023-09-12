@@ -47,9 +47,10 @@ fullWindow.append(arrowRight, arrowLeft)
 const escape = g();
 escape.id = 'escape';
 escape.innerHTML = '⊙';
+escape.onmouseover = ()=> escape.innerHTML = '⦿';
+escape.onmouseout = ()=> escape.innerHTML = '⊙';
 escape.onclick = ()=> leaveFullWindow();
 svg2.id = 'svg2';
-
 /*
 const escapeBorder = g();
 escapeBorder.id = 'escapeBorder';
@@ -65,7 +66,8 @@ escape.onmouseout = ()=>
 	escapeBorder.style.border = '2px solid white';
 	escapeBorder.style.width = '45px';
 	escapeBorder.style.height = '45px';
-};*/
+};
+*/
 fullWindow.append(svg2, escape/*,escapeBorder*/);
 
 // KEY LISTENER FOR FULL WINDOW 

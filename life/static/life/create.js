@@ -337,8 +337,10 @@ function create(data, querySubmit, rankSubmit)
 		const arrow = g();
 		flexPartRanks.append(arrow);
 		arrow.classList.add('arrow');
-		arrow.innerHTML = '⦿'; // ⪡ ⪢ ⋖ ⋗⩹⩺ ≪≫ ⦾⦿⊙ ⧀⧁ ⧏⧐ ⩹⩺⪢ ⪦⪧ ⪻⪼ ⫷⫸ ▢▣ ⋘⋙  ᗞ ᗡ ᗧ
-		arrow.addEventListener('click', ()=> {GBIFResultOpenClose(GBIFResult, true)});
+		arrow.innerHTML = '⊙'; // ⪡ ⪢ ⋖ ⋗⩹⩺ ≪≫ ⦾⦿⊙ ⧀⧁ ⧏⧐ ⩹⩺⪢ ⪦⪧ ⪻⪼ ⫷⫸ ▢▣ ⋘⋙  ᗞ ᗡ ᗧ
+		arrow.onmouseover = ()=> arrow.innerHTML = '⦿';
+		arrow.onmouseout = ()=> arrow.innerHTML = '⊙';
+		arrow.onclick = ()=> GBIFResultOpenClose(GBIFResult, true);
 		GBIFResult.arrow = arrow;
 	}
 	constructFilter();

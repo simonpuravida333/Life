@@ -1,7 +1,15 @@
 const spaceForNature = g();
 spaceForNature.classList.add('flexPart');
-// spaceForNature.style.border = '2px solid black';
-spaceForNature.style['margin-bottom'] = '-30px';
+if (isMobile)
+{
+	spaceForNature.style['margin-bottom'] = '0px';
+	spaceForNature.classList.add('center');
+}
+else 
+{
+	spaceForNature.style['margin-bottom'] = '-30px';
+	spaceForNature.style['justify-content'] = 'right';
+}
 spaceForNature.style['margin-top'] = '20px';
 spaceForNature.style.position = 'relative';
 spaceForNature.style['z-index'] = 1;
@@ -60,50 +68,60 @@ for (let x = 0; x < squares.length; x++)
 	const variation = randomInt(-10,10);
 	leaves[x].style.width = size;
 	leaves[x].style.height = size;
-	leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + (x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)';
+	leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
 	//leaves[x].style['box-shadow'] = '10px 10px 20px rgba(255,255,255,0.5), 10px -10px 20px rgba(255,255,255,0.5), -10px 10px 20px rgba(255,255,255,0.5), -10px -10px 20px rgba(255,255,255,0.5)';
-	squares[x].style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)';
-	const squareAni = squares[x].animate({transform: ['translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)', 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg)'], filter: ['brightness(1)', 'brightness(1.2)']},{duration: 500, easing: 'ease-in-out'});
-	squareAni.pause();
-	const textAni = texts[x].animate({opacity: [0,0,1]},500);
-	textAni.pause();
-	const leafAni = leaves[x].animate({backgroundImage: ['linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)'), 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)')], boxShadow: ['none','none', 'none', '0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0)', '10px 10px 20px rgba(255,255,255,0.3), 10px -10px 20px rgba(255,255,255,0.3), -10px 10px 20px rgba(255,255,255,0.3), -10px -10px 20px rgba(255,255,255,0.3)']},500);
-	leafAni.pause();
-	parentSquares[x].onmouseover = ()=>
+	if (isMobile)
 	{
-		squareAni.playbackRate = 1;
-		squareAni.play();
-		squareAni.onfinish = ()=>
-		{
-			squares[x].style.filter = 'brightness(1.2)';
-			squares[x].style.transform = 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg)';
-		}
-		textAni.playbackRate = 1;
-		textAni.play();
-		textAni.onfinish = ()=> texts[x].style.opacity = 1;
-		leafAni.playbackRate = 1;
-		leafAni.play();
-		leafAni.onfinish = ()=>
-		{
-			leaves[x].style['background-image'] = 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
-			leaves[x].style['box-shadow'] = '10px 10px 20px rgba(255,255,255,0.3), 10px -10px 20px rgba(255,255,255,0.3), -10px 10px 20px rgba(255,255,255,0.3), -10px -10px 20px rgba(255,255,255,0.3)';
-		}
+		squares[x].style.transform = 'rotateZ(45deg)';
+		leaves[x].style['background-image'] = 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
+		texts[x].style.opacity = 1;
+		spaceForNature.style.zoom = 0.8;
 	}
-	parentSquares[x].onmouseout = ()=>
+	else
 	{
-		squareAni.reverse();
-		squareAni.onfinish = ()=>
+		squares[x].style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)';
+		const squareAni = squares[x].animate({transform: ['translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)', 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg)'], filter: ['brightness(1)', 'brightness(1.2)']},{duration: 500, easing: 'ease-in-out'});
+		squareAni.pause();
+		const textAni = texts[x].animate({opacity: [0,0,1]},500);
+		textAni.pause();
+		const leafAni = leaves[x].animate({backgroundImage: ['linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)'), 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)')], boxShadow: ['none','none', 'none', '0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0), 0 0 20px rgba(255,255,255,0)', '10px 10px 20px rgba(255,255,255,0.3), 10px -10px 20px rgba(255,255,255,0.3), -10px 10px 20px rgba(255,255,255,0.3), -10px -10px 20px rgba(255,255,255,0.3)']},500);
+		leafAni.pause();
+		parentSquares[x].onmouseover = ()=>
 		{
-			squares[x].style.filter = null;
-			squares[x].style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)';
+			squareAni.playbackRate = 1;
+			squareAni.play();
+			squareAni.onfinish = ()=>
+			{
+				squares[x].style.filter = 'brightness(1.2)';
+				squares[x].style.transform = 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg)';
+			}
+			textAni.playbackRate = 1;
+			textAni.play();
+			textAni.onfinish = ()=> texts[x].style.opacity = 1;
+			leafAni.playbackRate = 1;
+			leafAni.play();
+			leafAni.onfinish = ()=>
+			{
+				leaves[x].style['background-image'] = 'linear-gradient(-45deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
+				leaves[x].style['box-shadow'] = '10px 10px 20px rgba(255,255,255,0.3), 10px -10px 20px rgba(255,255,255,0.3), -10px 10px 20px rgba(255,255,255,0.3), -10px -10px 20px rgba(255,255,255,0.3)';
+			}
 		}
-		textAni.reverse();
-		textAni.onfinish = ()=> texts[x].style.opacity = 0;
-		leafAni.reverse();
-		leafAni.onfinish = ()=>
+		parentSquares[x].onmouseout = ()=>
 		{
-			leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
-			leaves[x].style['box-shadow'] = 'none';
+			squareAni.reverse();
+			squareAni.onfinish = ()=>
+			{
+				squares[x].style.filter = null;
+				squares[x].style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ('+(windDirection+variation)+'deg) skew(-15deg)';
+			}
+			textAni.reverse();
+			textAni.onfinish = ()=> texts[x].style.opacity = 0;
+			leafAni.reverse();
+			leafAni.onfinish = ()=>
+			{
+				leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
+				leaves[x].style['box-shadow'] = 'none';
+			}
 		}
 	}
 }
@@ -162,10 +180,14 @@ blossom.append(centerPetal);
 
 for (let x = 0; x < 5; x++)
 {
-	petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(-15deg)';
+	petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%)' + ((!isMobile) ? ' skew(-15deg)' : '');
 	blossom.append(petals[x]);
-	petalsAnis[x] = petals[x].animate({transform: ['rotate('+x*72+'deg) translateY(65%) skew(-15deg)', 'rotate('+x*72+'deg) translateY(65%) skew(0deg)'], boxShadow: ['none', 'none', 'none', '0px 0px 0px rgba(255,255,255,0.5)', '0px 10px 11px rgba(255,255,255,0.5)']},500)
-	petalsAnis[x].pause();
+	if (!isMobile)
+	{
+		petalsAnis[x] = petals[x].animate({transform: ['rotate('+x*72+'deg) translateY(65%) skew(-15deg)', 'rotate('+x*72+'deg) translateY(65%) skew(0deg)'], boxShadow: ['none', 'none', 'none', '0px 0px 0px rgba(255,255,255,0.5)', '0px 10px 11px rgba(255,255,255,0.5)']},500)
+		petalsAnis[x].pause();
+	}
+
 }
 
 const blossomText = g();
@@ -183,54 +205,63 @@ blossomText.style.opacity = 0;
 blossomText.style['pointer-events'] = 'none';
 blossom.append(blossomText);
 
-blossom.style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)';
-const blossomAni = blossom.animate({transform: ['translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)', 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(-36deg) skew(0deg)'], filter: ['brightness(1)','brightness(1.2)']},500);
-blossomAni.pause();
-const blossomTextAni = blossomText.animate({opacity: [0,0,0,1]},500);
-blossomTextAni.pause();
-blossom.onmouseover = ()=>
+if (isMobile)
 {
-	blossomAni.playbackRate = 1;
-	blossomAni.play();
-	blossomAni.onfinish = ()=>
-	{
-		blossom.style.filter = 'brightness(1.2)';
-		blossom.style.transform = 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(-36deg) skew(0deg)';
-	}
-	for (let x = 0; x < 5; x++)
-	{
-		petalsAnis[x].playbackRate = 1;
-		petalsAnis[x].play();
-		petalsAnis[x].onfinish = ()=>
-		{
-			petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(0deg)';
-			petals[x].style['box-shadow'] = '0px 10px 11px rgba(255,255,255,0.5)';
-		}
-	}
-	blossomTextAni.playbackRate = 1;
-	blossomTextAni.play();
-	blossomTextAni.onfinish = ()=> blossomText.style.opacity = 1;
+	blossom.style['margin-left'] = '30px';
+	blossom.style.transform = 'rotateZ(-36deg)';
+	blossomText.style.opacity = 1;
 }
-blossom.onmouseout = ()=>
+else 
 {
-	blossomAni.reverse();
-	blossom.style.filter = 'brightness(1)';
-	blossomAni.onfinish = ()=>
+	blossom.style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)';
+	const blossomAni = blossom.animate({transform: ['translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)', 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(-36deg) skew(0deg)'], filter: ['brightness(1)','brightness(1.2)']},500);
+	blossomAni.pause();
+	const blossomTextAni = blossomText.animate({opacity: [0,0,0,1]},500);
+	blossomTextAni.pause();
+	blossom.onmouseover = ()=>
 	{
-		blossom.style.filter = 'brightness(1)'
-		blossom.style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)';
-	}
-	for (let x = 0; x < 5; x++)
-	{
-		petalsAnis[x].reverse();
-		petalsAnis[x].onfinish = ()=>
+		blossomAni.playbackRate = 1;
+		blossomAni.play();
+		blossomAni.onfinish = ()=>
 		{
-			petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(-15deg)';
-			petals[x].style['box-shadow'] = 'none';
+			blossom.style.filter = 'brightness(1.2)';
+			blossom.style.transform = 'translate3d(0%, 0%, 0) rotateX(0deg) rotateY(0deg) rotateZ(-36deg) skew(0deg)';
 		}
+		for (let x = 0; x < 5; x++)
+		{
+			petalsAnis[x].playbackRate = 1;
+			petalsAnis[x].play();
+			petalsAnis[x].onfinish = ()=>
+			{
+				petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(0deg)';
+				petals[x].style['box-shadow'] = '0px 10px 11px rgba(255,255,255,0.5)';
+			}
+		}
+		blossomTextAni.playbackRate = 1;
+		blossomTextAni.play();
+		blossomTextAni.onfinish = ()=> blossomText.style.opacity = 1;
 	}
-	blossomTextAni.reverse();
-	blossomTextAni.onfinish = ()=> blossomText.style.opacity = 0;
+	blossom.onmouseout = ()=>
+	{
+		blossomAni.reverse();
+		blossom.style.filter = 'brightness(1)';
+		blossomAni.onfinish = ()=>
+		{
+			blossom.style.filter = 'brightness(1)'
+			blossom.style.transform = 'translate3d(20%, 20%, 0) rotateX(36deg) rotateY(-36deg) rotateZ(75deg) skew(-15deg)';
+		}
+		for (let x = 0; x < 5; x++)
+		{
+			petalsAnis[x].reverse();
+			petalsAnis[x].onfinish = ()=>
+			{
+				petals[x].style.transform = 'rotate('+x*72+'deg) translateY(65%) skew(-15deg)';
+				petals[x].style['box-shadow'] = 'none';
+			}
+		}
+		blossomTextAni.reverse();
+		blossomTextAni.onfinish = ()=> blossomText.style.opacity = 0;
+	}
 }
 
 const chapterTexts =

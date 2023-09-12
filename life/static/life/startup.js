@@ -15,7 +15,7 @@ let isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
 console.log ("Runs on WebKit / Blink: "+isWebKit);
 if (!isWebKit) window.alert("Dear user,\nSome of the styling of Life is only supported in browsers that run on WebKit / Blink.\n(Safari, Google Chrome, Microsoft Edge, Opera...)"); // ...nested CSS description that is.
 
-console.log(document.styleSheets)
+//console.log(document.styleSheets)
 for (const sheet of document.styleSheets)
 {
 	if (sheet.href === null) continue; // for Opera.
@@ -106,7 +106,9 @@ canonicalName.innerHTML= 'CANONICAL NAME';
 
 rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canonicalName)
 
-searchSection.id = 'searchSection';
+searchSection.classList.add('blockRow', 'flexPart');
+searchSection.style['z-index'] = 2;
+searchSection.style.position = 'relative';
 textareaNameSearch.id = 'textareaNameSearch';
 rankCondition.classList.add('select');
 withinSearch.id = 'withinSearch';
@@ -364,7 +366,7 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 		field.style['background-color'] = '#2BAF60';
 		field.style.color = 'white';
 	}
-	for (const x in ranks) fieldLabels[x].style.color = '#2BAF60'; 
+	if (inputFields.length > 0) for (const x in ranks) fieldLabels[x].style.color = '#2BAF60'; 
 }
 
 // DEBUG //
@@ -397,7 +399,7 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 //search('toucan','species');
 //search('macaw','species');
 //search('blueberry','species');
-search('emu', 'species');
+//search('emu', 'species');
 
 // +++ within search +++
 //withinSearchActivated = true;

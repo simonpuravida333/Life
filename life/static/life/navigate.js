@@ -86,11 +86,12 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 	{
 		r.arrow.animate(fadeOut,fadeTime/2);
 		r.resultOpened = true;
-		r.arrow.innerHTML = '⊙';
 		r.line1.style.display = 'block';
 		r.description.style.display = 'flex';
 		r.line2.style.display = 'block';
 		r.images.style.display = 'block';
+		r.mobileFullWidthImageDiv.style.display = 'block';
+		r.mobileFullWidthImageDiv.animate(fadeIn, fadeTime);
 		
 		b[taxaKeys.indexOf(r.targetRank)].animate(fadeOut,fadeTime/2).onfinish = ()=>
 		{
@@ -201,7 +202,7 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 			}
 		}
 		r.resultOpened = false;
-		r.arrow.innerHTML = '⦿';
+		r.mobileFullWidthImageDiv.animate(fadeOut, fadeTime).onfinish = ()=> r.mobileFullWidthImageDiv.style.display = 'none';
 	}
 	calledFromArrow = false;
 }

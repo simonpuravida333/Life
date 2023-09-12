@@ -1,3 +1,8 @@
+body
+{
+	min-width: 700px;
+}
+
 ::-webkit-scrollbar {
   width: 14px;
 }
@@ -39,8 +44,8 @@
 	border-left: 10px solid;
 	border-right: 10px solid;
 	*/
-	border-top: 10px solid;
-	border-bottom: 10px solid;
+	border-top: 10px;
+	border-bottom: 10px;
 	border-radius: 10px;
 	margin: 10px;
 }
@@ -56,7 +61,6 @@
 	&:hover
 	{
 		color: #15BFEA;
-		font-size: 50px;
 	}
 
 }
@@ -75,55 +79,6 @@
 .description
 {
 	align-items: normal;
-}
-
-.baseBlock
-{
-	font-size: 20px;
-	border-radius: 7px 25px 7px 25px;
-	cursor: pointer;
-	margin: 5px;
-	padding: 15px;
-	padding-left: 20px;
-	padding-right: 30px;
-	color: white;
-	font-size: 17px;
-	&.summery
-	{
-		background-color: #409CB5;
-		&:hover
-		{
-			background-color: #86DBEF;
-			color: #684B33;
-		}
-	}
-}
-
-.filter /* for .select */
-{
-	border: none;
-	border-left: 4px solid #2BAF60;
-	border-right: 4px solid #2BAF60;
-	border-bottom: 10px solid #2BAF60;
-	stroke-linecap: round;
-	border-radius: 4px 4px 20px 20px;
-	font-size: 20px;
-	padding: 10px;
-	margin: 15px;
-	text-align: center;
-	font-weight: 500;
-	font-style: italic;
-	color: #684B33;
-	
-	&:hover
-	{
-		cursor: pointer;
-		font-weight: 600;
-		border-color: #67D694;
-	}
-	&:focus
-	{
-	}	
 }
 
 .horizontalLine
@@ -175,18 +130,6 @@
 }
 
 /* IDs */
-#searchSection
-{
-	background-color: white; /* #9FF1FF; /* #093C48 */
-	border-radius: 20px;
-	margin: 30px;
-	padding: 10px;
-	display: flex;
-	flex-wrap: 	wrap;
-	position: relative;
-	z-index: 2;
-}
-
 #textareaNameSearch
 {
 	color: white;
@@ -283,9 +226,7 @@
 	
 	&:hover
 	{
-		/*font-weight: bold;*/
 		color: orange;
-		font-size: 50px;
 		cursor: pointer;
 	}
 }

@@ -59,8 +59,8 @@ function constructFilter()
 	for (const index of ranks) // add '...' for inactive filter, and 'No Rank.'
 	{
 		const opt = g('o');
-		opt.value = '...'
-		opt.innerHTML = '...'
+		opt.value = '...';
+		opt.innerHTML = '.&nbsp;&nbsp;.&nbsp;&nbsp;.';
 		allRankFilters[index].append(opt);
 		if (index === 0 || index === 6) continue; // 'No rank.' doesn't exist for kingdom, neither does it for species (if you find a species result, then it obviously exists). In between though appropriate ranks is still very much an ongoing debate of classification in the life science community.
 		const opt2 = g('o');
