@@ -263,14 +263,15 @@ for (const rank of taxaKeys)
 	selectTitle.innerHTML = rank.toUpperCase();
 	selectTitle.classList.add('selectTitle');
 	const rankFilter = g('s');
-	rankFilter.classList.add('select', 'filter');
+	rankFilter.classList.add('filter');
 	rankFilter.addEventListener('change', ()=> selectRank(taxaKeys.indexOf(rank)));
 	allRankFilters.push(rankFilter);
 	container.append(selectTitle, rankFilter);
 	filterArea.append(container);
-	
-	rankFilter.addEventListener('mouseover',()=>{if (rankFilter !== document.activeElement) rankFilter.animate([{backgroundColor: '#2BAF60' },{backgroundColor: '#8AED97' }],fadeTime)});
-	rankFilter.addEventListener('mouseout',()=>{if (rankFilter !== document.activeElement) rankFilter.animate([{backgroundColor: '#8AED97' },{backgroundColor: '#2BAF60' }],fadeTime)});
+	/*
+	rankFilter.addEventListener('mouseover', ()=>{if (rankFilter !== document.activeElement) rankFilter.animate([{backgroundColor: '#2BAF60' },{backgroundColor: '#8AED97' }],fadeTime)});
+	rankFilter.addEventListener('mouseout', ()=>{if (rankFilter !== document.activeElement) rankFilter.animate([{backgroundColor: '#8AED97' },{backgroundColor: '#2BAF60' }],fadeTime)});
+	*/
 }
 // END FILTER AREA
 
@@ -396,6 +397,7 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 //search('toucan','species');
 //search('macaw','species');
 //search('blueberry','species');
+search('emu', 'species');
 
 // +++ within search +++
 //withinSearchActivated = true;

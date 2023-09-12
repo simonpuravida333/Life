@@ -233,6 +233,28 @@ blossom.onmouseout = ()=>
 	blossomTextAni.onfinish = ()=> blossomText.style.opacity = 0;
 }
 
+const chapterTexts =
+{
+	1: "This app allows you to search the<br><strong style='color: cyan'><i>GLOBAL BIODIVERSITY INFORMATION FACILITY (GBIF).</strong>",
+	title1: "<strong>TITLE</strong>",
+	2: "The application helps you <strong style='color: cyan'><i>FIND ANY SPECIES OF LIFE</i></strong> by using vernacular names as queries (like <i>'blueberry'</i>). So when querying within a selected rank <i>SPECIES</i>, it will search the GBIF for <i>specieses</i> which are associated with this <i>English vernacular name</i>.<br>If you want to search for <i>canonical names</i>, set the selection option to <i>CANONICAL NAME.</i>",
+	title2: "<strong>INTRODUCTION</strong>",
+	3: "Activate the trigger right of the rank selector (query areas turn orange) to <strong><i>query for taxa of a certain rank within a higher taxon.</i></strong> Note that this only works with canonical names, as the GBIF needs to know the exact taxon within which it can search.<br>For example querying for 'Paradisaeidae' (FAMILY of birds of paradise) and having chosen the rank '<i><strong style='color: cyan'>EVERY SPECIES WITHIN</strong></i>' will yield <i><strong>all</strong></i> SPECIES within the FAMILY rank 'Paradisaeidae'.This would not work when doing a vernacular name search (<i>SPECIES</i> selected) which would yield a smaller amount of birds of paradise; simply each one where the name contains the query <i>'bird of paradise'</i>, and there would be plants as well among the results.",
+	title3: "<strong>EVERY SPECIES WITHIN</strong>",
+	4: "The <i><strong style='color: cyan'>RESULT SUMMERY AREA</i></strong> appears beneath the search field when results come in. New queries won't reset the content, they'll be added, and you can click on a summery to make the window teleport to the group of results. Holding mouse on a result summery until it turns orange will delete it.",
+	title4: "<strong>RESULT SUMMERY</strong>",
+	5: "The <i><strong style='color: cyan'>FILTER AREA</i></strong> is for narrowing down results. E.g. querying for the SPECIES 'strawberry' will yield 87 results, 39 of which are animals (surprised? They're strawberry-coloured, -patterned or -shaped insects, anemoa, cockles, sea squirts, fish, frogs, crabs...). Just setting the KINGDOM filter to 'Plantae', you can halve the results. This does not remove the animal results, it just hides them. Setting KINGDOM to '...' will let everything show up again, because '...' (idle filter) will set any lower rank filter to '...' as well. Next to how many results there are for any taxa, filters also show (when opening) which of the taxa are contained within the taxa selected in an upper rank filter: contained taxa are <strong style='color:orange'>bold orange</strong>. This is very useful to get a connected understanding of your results.<br>Filters always keep every taxa from every result, even if the result is not displayed right now from a set filter. This allows you to directly change the setting of the filter. Setting any filter will always pre-fill the higher filters with the ancestor lineage, and the lower filters with '...' to allow everything from this rank onwards (downwards) to be displayed.",
+	title5: "<strong>FILTER</strong>",
+	6: "The actual, accessable results are always <i><strong style='color: cyan'>GROUPED BY A TITLE</i></strong>, which is your query. Clicking on the title will hide or show the entire group / query results. This may be of use when making multiple queries (having multiple groups). Groups and the upper mentioned <i>result summeries</i> are the same; delete groups by hold mouse or touch on the block in the result summery area.",
+	title6: "<strong>RESULT GROUPS</strong>",
+	7: "<i><strong style='color: orange'>A NOTE ON EXTINCT SPECIES:</strong></i> Extinct species do not appear among the results. Doing 'every SPECIES within' 'Cetacea' (whales) query will yield 94 species of extant whale species. If extinct species were included, the results would be more than 7 times as many. Don't worry, in the very most cases you're not missing out on interesting information. Thus far on the GBIF, exctinct species usually don't deliver more material than the canonical name.",
+	title7: "<strong>A NOTE ON EXTINCT SPECIES</strong>",
+	8: "<i><strong style='color: orange'>A NOTE ON USING VERNACULAR NAMES FOR QUERIES:</strong></i> Sometimes the nature of vernacular or folk names can be confusing.<br>E.g. searching for SPECIES 'whale' will yield 58 species of whale where 'whale' is part of the name, like southern right whale, bowhead whale and whaleshark, even though the latter is a shark. But if you searched for SPECIES 'dolphin' you'll be given 48 species that would not appear within the results for 'whale'. Scientifically, dolphins are whales, but in their own FAMILY rank, beneath the ORDER rank Cetacea (whales); for the same reason killer whales would be missing in the 'dolphin' results, even though Orcas belong to the FAMILY of dolphins. Likewise, searching for 'whale' in the FAMILY rank would yield ten families of whales where the dolphin family would be missing as well.",
+	title8: "<strong>A NOTE ON USING VERNACULAR NAMES FOR QUERIES</strong>",
+	9: "<i><strong style='color: orange'>A NOTE ON OCCURRENCES:</strong></i> Occurrences are sightings of species that get fed to the GBIF from all around the world, to create a picture about the numbers, distribution and conservation status. Many come from biologists, zoologist and conservationists, but citizen scientist may also play their part. Occurrences can be sighting descriptions only, without media, some are audio files, but this app merely loads occurrences that have images (so far), as the focus is on entertaining education. <i><strong style='color: orange'>IN THIS APP OCCURRENCES APPEAR AS IMAGES</strong></i> and the data is shown when hovering over an image. Yet the purpose of GBIF occurrences images is data collection solely, which includes scans of recordings from centuries ago and photos of preserved specimens from museums, though rarer.<br>Most however are sightings in nature, which include dead animals. Thus <i><strong style='color: orange'>PLEASE BE ADVISED</strong></i>, that there can be photos of animals which may be disturbing for some. When querying for 'whale', among the results will be photos of dead beached whales where you can see cut patterns on the back from a ship's rotor blades, or beached whales that have no skin anymore, after days of laying in the sun, scathed by the sand and picked by birds. Some have an opened body or may be in a state of progressed decomposition, so that they will only be identifiable by a trained eye. Others may be dissected onsite for scientific reasons. Most images however are of live species and give a colorful, visual viewer experience.",
+	title9: "<strong>A NOTE ON OCCURRENCES</strong>",
+}
+
 const howToSpace = g();
 howToSpace.classList.add('blockRow');
 howToSpace.style['font-family'] = 'Gaegu';
@@ -243,16 +265,16 @@ howToSpace.style['padding-left'] = 0;
 howToSpace.style['background-color'] = '#325D77';
 howToSpace.style.color = 'white';
 howToSpace.style.display = 'none';
-const chapterSpaces = [];
-const chapterTexts = [];
 
-for (let x = 0; x < 9; x++)
+//for (let x = 1; x <= Object.keys(chapterTexts).length/2; x++)
+let chaptersAmount = 0;
+for (const key in chapterTexts) if (!isNaN(key)) chaptersAmount = key;
+for (let x = 1; x <= chaptersAmount; x++)
 {
 	const chapterSpace = g();
 	chapterSpace.classList.add('flexPart');
 	chapterSpace.style['margin-bottom'] = '20px';
 	chapterSpace.style['align-items'] = 'start';
-	chapterSpaces.push(chapterSpace);
 	
 	const chapterLeaf = g();
 	chapterLeaf.style['margin-top'] = '20px';
@@ -260,28 +282,66 @@ for (let x = 0; x < 9; x++)
 	chapterLeaf.style.width = '50px';
 	chapterLeaf.style.height = '50px';
 	chapterLeaf.style['border-radius'] = '0% 60% 30% 60%';
-	chapterLeaf.style['background-color'] = (x<6) ? 'cyan' : 'orange';
+	chapterLeaf.style['background-color'] = (chapterTexts['title'+x].indexOf('NOTE') === -1) ? 'cyan' : 'orange';
 	chapterLeaf.style['margin-right'] = '20px';
 	chapterLeaf.style.transform = 'rotate(112.5deg)';
+	chapterLeaf.style.cursor = 'pointer';
+	chapterLeaf.onmouseover = ()=> chapterLeafGlow(true);
+	chapterLeaf.onmouseout = ()=> chapterLeafGlow(false);
 	
 	const chapterText = g();
 	chapterText.style.width = '700px';
 	chapterText.style['margin-left'] = '20px';
 	chapterText.style['margin-top'] = '20px';
-	chapterTexts.push(chapterText);
+	chapterText.innerHTML = chapterTexts['title'+x]
+	chapterText.onmouseover = ()=> chapterLeafGlow(true);
+	chapterText.onmouseout = ()=> chapterLeafGlow(false);
 	
-	chapterSpaces[x].append(chapterLeaf, chapterText);
+	const chapterLeafAni = chapterLeaf.animate({boxShadow: ['none', '10px 0px 10px rgba(255,255,255,0.5), -10px 0px 10px rgba(255,255,255,0.5), 0px -10px 10px rgba(255,255,255,0.5)']},333);
+	chapterLeafAni.pause();
+	function chapterLeafGlow(over)
+	{
+		if (over)
+		{
+			chapterLeafAni.playbackRate = 1;
+			chapterLeafAni.play();
+			chapterLeaf.style['box-shadow'] = '10px 0px 10px rgba(255,255,255,0.5), -10px 0px 10px rgba(255,255,255,0.5), 0px -10px 10px rgba(255,255,255,0.5)';
+		}
+		else
+		{
+			chapterLeafAni.reverse();
+			chapterLeaf.style['box-shadow'] = 'none';
+		}
+	}
+	
+	let title = true;
+	chapterLeaf.onclick = ()=> 
+	{
+		if (title)
+		{
+			chapterText.innerHTML = chapterTexts[x];
+			title = false;
+			chapterText.onclick = null;
+			chapterText.style.cursor = null;
+			chapterText.animate({opacity: [0,1]},333);
+		}
+		else
+		{
+			title = true;
+			chapterText.onclick = ()=> chapterLeaf.click();
+			chapterText.style.cursor = 'pointer';
+			chapterText.animate({opacity: [1,0]},333).onfinish = ()=> chapterText.innerHTML = chapterTexts['title'+x];
+		}
+	}
+	if (x === 1) chapterLeaf.click();
+	else
+	{
+		chapterText.onclick = ()=> chapterLeaf.click();
+		chapterText.style.cursor = 'pointer';
+	}
+	
+	chapterSpace.append(chapterLeaf, chapterText);
 	howToSpace.append(chapterSpace);
 }
-
-chapterTexts[0].innerHTML = "This app allows you to search the<br><strong style='color: cyan'><i>GLOBAL BIODIVERSITY INFORMATION FACILITY (GBIF).</strong>";
-chapterTexts[1].innerHTML = "The application helps you <strong style='color: cyan'><i>FIND ANY SPECIES OF LIFE</i></strong> by using vernacular names as queries (like <i>'blueberry'</i>). So when querying within a selected rank <i>SPECIES</i>, it will search the GBIF for <i>specieses</i> which are associated with this <i>English vernacular name</i>.<br>If you want to search for <i>canonical names</i>, set the selection option to <i>CANONICAL NAME.</i>";
-chapterTexts[2].innerHTML = "Activate the trigger right of the rank selector (query areas turn orange) to <strong><i>query for taxa of a certain rank within a higher taxon rank.</i></strong> Note that this only works with canonical names, as the GBIF needs to know the exact taxon within which it can search.<br>For example querying for 'Paradisaeidae' (FAMILY of birds of paradise) and having chosen the rank '<i><strong style='color: cyan'>EVERY SPECIES WITHIN</strong></i>' will yield <i>all SPECIES within the FAMILY rank 'Paradisaeidae'.</i> This would not work when doing a vernacular name search (<i>SPECIES</i> selected) which would yield a smaller amount of birds of paradise; simply each one where the name contains the query <i>'bird of paradise'</i>, and there would be plants as well among the results.";
-chapterTexts[3].innerHTML = "The <i><strong style='color: cyan'>RESULT SUMMERY AREA</i></strong> appears beneath the search field when results come in. New queries won't reset the content, they'll be added, and you can click on a summery to make the window teleport to the group of results. Holding mouse on a result summery until it turns orange will delete it.";
-chapterTexts[4].innerHTML = "The <i><strong style='color: cyan'>FILTER AREA</i></strong> is for narrowing down results. E.g. querying for the SPECIES 'strawberry' will yield 87 results, 39 of which are animals (surprised? They're strawberry-coloured, -patterned or -shaped insects, anemoa, cockles, sea squirts, fish, frogs, crabs...). Just setting the KINGDOM filter to 'Plantae', you can halve the results. This does not remove the animal results, it just hides them. Setting KINGDOM to '...' will let everything show up again, because '...' (idle filter) will set any lower rank filter to '...' as well. Next to how many results there are for any taxa, filters also show (when opening) which of the taxa are contained within the taxa selected in an upper rank filter: contained taxa are <strong style='color:orange'>bold orange</strong>. This is very useful to get a connected understanding of your results.<br>Filters always keep every taxa from every result, even if the result is not displayed right now from a set filter. This allows you to directly change the setting of the filter. Setting any filter will always pre-fill the higher filters with the ancestor lineage, and the lower filters with '...' to allow everything from this rank onwards (downwards) to be displayed."
-chapterTexts[5].innerHTML = "The actual, accessable results are always <i><strong style='color: cyan'>GROUPED BY A TITLE</i></strong>, which is your query. Clicking on the title will hide or show the entire group / query results. This may be of use when making multiple queries (having multiple groups). Groups and the upper mentioned <i>result summeries</i> are the same; delete groups by hold mouse or touch on the block in the result summery area.";
-chapterTexts[6].innerHTML = "<i><strong style='color: orange'>A NOTE ON EXTINCT SPECIES</strong></i> Extinct species do not appear among the results. Doing 'every SPECIES within' 'Cetacea' (whales) query will yield 94 species of extant whale species. If extinct species were included, the results would be more than 7 times as many. Don't worry, in the very most cases you're not missing out on interesting information. Thus far on the GBIF, exctinct species usually don't deliver more material than the canonical name.";
-chapterTexts[7].innerHTML = "<i><strong style='color: orange'>A NOTE ON USING VERNACULAR NAMES FOR QUERIES:</strong></i> Sometimes the nature of vernacular or folk names can be confusing.<br>E.g. searching for SPECIES 'whale' will yield 58 species of whale where 'whale' is part of the name, like southern right whale, bowhead whale and whaleshark, even though the latter is a shark. But if you searched for SPECIES 'dolphin' you'll be given 48 species that would not appear within the results for 'whale'. Scientifically, dolphins are whales, but in their own FAMILY rank, beneath the ORDER rank Cetacea (whales); for the same reason killer whales would be missing in the 'dolphin' results, even though Orcas belong to the FAMILY of dolphins. Likewise, searching for 'whale' in the FAMILY rank would yield ten families of whales where the dolphin family would be missing as well.";
-chapterTexts[8].innerHTML = "<i><strong style='color: orange'>A NOTE ON OCCURRENCES:</strong></i> Occurrences are sightings of species that get fed to the GBIF from all around the world, to create a picture about the numbers, distribution and conservation status. Many come from biologists, zoologist and conservationists, but citizen scientist may also play their part. Occurrences can be sighting descriptions only, without media, some are audio files, but this app merely loads occurrences that have images (so far), as the focus is on entertaining education. <i><strong style='color: orange'>IN THIS APP OCCURRENCES APPEAR AS IMAGES</strong></i> and the data is shown when hovering over an image. Yet the purpose of GBIF occurrences images is data collection solely, which includes scans of recordings from centuries ago and photos of preserved specimens from museums, though rarer.<br>Most however are sightings in nature, which include dead animals. Thus <i><strong style='color: orange'>PLEASE BE ADVISED</strong></i>, that there can be photos of animals which may be disturbing for some. When querying for 'whale', among the results will be photos of dead beached whales where you can see cut patterns on the back from a ship's rotor blades, or beached whales that have no skin anymore, after days of laying in the sun, scathed by the sand and picked by birds. Some have an opened body or may be in a state of progressed decomposition, so that they will only be identifiable by a trained eye. Others may be dissected onsite for scientific reasons. Most images however are of live species and give a colorful, visual viewer experience."
 
 export {spaceForNature, parentSquares, blossom, howToSpace};

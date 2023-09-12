@@ -18,9 +18,9 @@ function generate(elementType)
 	else elementType = elementType.toLowerCase();
 	const elements = ['img','input','textarea','button','select','option','a'];
 	for (const e of elements) if (e.startsWith(elementType)) return document.createElement(e);
-} //... I only started it using in this module, which was one of the app's last additions. Why didn't I get this idea sooner?
+}
 
-//... just using globalThis.variable = value will leave the global variables mutable. Thus I use this defineProperty function to set writable: false. ... it's strange that by default exported variables are immutable while global variables are mutable. It should be the opposite for both cases. Usually if you have global access to something, like built-in functions or constants (pi), you only want to use or read them, not change them.
+//... just using globalThis.variable = value will leave the global variables mutable. Thus I use this defineProperty function to set writable: false. ... it's strange that by default exported variables are immutable while global variables are mutable. It should be the opposite for both cases. Usually if you have global access to something, like built-in functions or constants (pi), you only want to use or read them. But you may want to expand a variable via export to a few more modules and keep. 
 
 Object.defineProperty(globalThis, 'caps', {
   value: capitalizeFirstLetters,
