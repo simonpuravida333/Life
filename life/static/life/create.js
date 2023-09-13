@@ -396,8 +396,8 @@ function createSummary(nothingFetched, querySubmit)
 		let moment = 0;
 		let backgroundColorAni;
 		let fontColorAni;
-		statBlock.addEventListener('mouseover', ()=> statBlock.animate([{backgroundColor: '#409CB5'},{backgroundColor: '#86DBEF'}],fadeTime));
-		statBlock.addEventListener('mouseout', ()=> statBlock.animate([{backgroundColor: '#86DBEF'},{backgroundColor: '#409CB5'}],fadeTime));
+		statBlock.addEventListener('mouseover', ()=> statBlock.animate([{backgroundColor: '#4C9590'},{backgroundColor: '#8FE2FF'}],fadeTime));
+		statBlock.addEventListener('mouseout', ()=> statBlock.animate([{backgroundColor: '#8FE2FF'},{backgroundColor: '#4C9590'}],fadeTime));
 		resultOverview.append(statBlock);
 		
 		if (touch)

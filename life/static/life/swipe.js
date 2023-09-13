@@ -12,7 +12,7 @@ export default function touchResponse(element, closeElement)
 	}
 	else
 	{
-		body.ontouchstart = (event)=>{handleStart(event, element)};
+		body.ontouchstart = (event)=>{handleStart(event)};
 	 	body.ontouchend = ()=>{handleEnd(element, closeElement)};
 	 	body.ontouchcancel = ()=>{handleCancel(element)};
 	 	body.ontouchmove = (event)=>{handleMove(event, element)};
@@ -25,7 +25,7 @@ let moment = 0;
 const pullLimit = 300;
 let locked = false;
 
-function handleStart(event, element)
+function handleStart(event)
 {
 	startPosition = event.changedTouches[0].clientX;
 }
@@ -57,7 +57,7 @@ function lockUnlock()
 }
 
 function handleMove(event, element)
-{
+{	
 	if (event.touches.length > 1)
 	{
 		moment = new Date().getTime();

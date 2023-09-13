@@ -1,12 +1,12 @@
 import {newSpeciesSpace, parentSelection, parentSelectionChange} from './newSpecies.js';
 import {newOccurrenceSpace, speciesSelection, speciesSelectionChange} from './newOccurrence.js';
 import touchResponse from './swipe.js';
-var textareaNameSearch;
+var inputSearch;
 
 const body = document.querySelector('body');
-const findSpace = g();
-findSpace.classList.add('blockRow');
-findSpace.style.display = 'none';
+const taxaNavigator = g();
+taxaNavigator.classList.add('blockRow');
+taxaNavigator.style.display = 'none';
 
 const topBar = newSpeciesSpace.children[0].cloneNode(true);
 if (!isMobile)
@@ -14,21 +14,20 @@ if (!isMobile)
 	topBar.children[1].innerHTML = 'TAXONOMY NAVIGATOR';
 	topBar.children[3].onmouseover = ()=> topBar.children[3].innerHTML = '⦿';
 	topBar.children[3].onmouseout = ()=> topBar.children[3].innerHTML = '⊙';
-	topBar.children[3].onclick = ()=> findSpace.animate({opacity: [1,0]},333).onfinish = ()=> findSpace.style.display = 'none';
-	findSpace.append(topBar);
+	topBar.children[3].onclick = ()=> taxaNavigator.animate({opacity: [1,0]},333).onfinish = ()=> taxaNavigator.style.display = 'none';
+	taxaNavigator.append(topBar);
 }
 else 
 {
-	touchResponse(findSpace);
 	topBar.children[0].innerHTML = 'TAXONOMY NAVIGATOR';
-	findSpace.append(topBar);
+	taxaNavigator.append(topBar);
 }
 
 const information = g();
 information.innerHTML = 'Look for canonical name suggestions in any rank you want.<br>To refresh everything, delete the name of the highest taxonomy.';
 information.style['text-align'] = 'center';
 information.style['font-size'] = '18px';
-findSpace.append(information);
+taxaNavigator.append(information);
 
 // RANKS FINDER
 const findRanks = new Array(7);
@@ -41,7 +40,7 @@ constructInputFields();
 async function constructInputFields()
 {
 	const startupModule = await import('./startup.js'); // startup.js loads last.
-	textareaNameSearch = startupModule.textareaNameSearch;
+	inputSearch = startupModule.inputSearch;
 	
 	for (const rank of ranks)
 	{
@@ -52,11 +51,13 @@ async function constructInputFields()
 		title.style['text-align'] = 'center';
 		title.innerHTML = taxaKeys[rank].toUpperCase();
 		findRanks[rank] = g('in');
-		findRanks[rank].classList.add('findRank');
+		findRanks[rank].classList.add('input', 'findRank');
+		if (rank % 2 === 0) findRanks[rank].style['border-radius'] = '5px 40px 5px 40px';
+		else findRanks[rank].style['border-radius'] = '40px 5px 40px 5px';
 		spacesForSuggestions[rank] = g();
 		spacesForSuggestions[rank].classList.add('flexPart');
 		rankDivisions[rank].append(title, findRanks[rank], spacesForSuggestions[rank]);
-		findSpace.append(rankDivisions[rank]);
+		taxaNavigator.append(rankDivisions[rank]);
 		//division.style.width = findRanks[rank].getBoundingClientRect().width+20+'px';
 		//division.style.margin = "0 auto";
 	}
@@ -492,8 +493,8 @@ function getClickedSelection(selection)
 		speciesSelection.value = (selection.canonicalName !== undefined) ? selection.canonicalName : selection.scientificName;
 		speciesSelectionChange();
 	}
-	else textareaNameSearch.value = selection.key;
+	else inputSearch.value = selection.key;
 	return selection;
 }
 
-export {findSpace, filterResults, suggestionTitle, createSuggestionBlock, suggestionBlockClickStyling};
+export {taxaNavigator, filterResults, suggestionTitle, createSuggestionBlock, suggestionBlockClickStyling};

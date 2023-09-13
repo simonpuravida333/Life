@@ -1,3 +1,5 @@
+import touchResponse from './swipe.js'
+
 const spaceForNature = g();
 spaceForNature.classList.add('flexPart');
 if (isMobile)
@@ -288,12 +290,13 @@ const chapterTexts =
 
 const howToSpace = g();
 howToSpace.classList.add('blockRow');
+howToSpace.style.display = 'relative';
 howToSpace.style['font-family'] = 'Gaegu';
 howToSpace.style['font-size'] = '27px';
 howToSpace.style['line-height'] = '30px';
 howToSpace.style['border-left'] = '30px solid cyan';
 howToSpace.style['padding-left'] = 0;
-howToSpace.style['background-color'] = '#325D77';
+howToSpace.style['background-color'] = '#4C9590';
 howToSpace.style.color = 'white';
 howToSpace.style.display = 'none';
 
@@ -373,6 +376,30 @@ for (let x = 1; x <= chaptersAmount; x++)
 	
 	chapterSpace.append(chapterLeaf, chapterText);
 	howToSpace.append(chapterSpace);
+}
+
+blossom.onclick = ()=>
+{
+	if (howToSpace.style.display === 'none')
+	{
+		howToSpace.animate({opacity: [0,1]},500);
+		howToSpace.style.display = 'block';
+		if (isMobile) touchResponse(howToSpace);
+	}
+	else howToSpace.animate({opacity: [1,0]},333).onfinish = ()=> howToSpace.style.display = 'none';
+}
+
+if (!isMobile)
+{
+	const close = g();
+	close.innerHTML = '⊙';
+	close.style.color = 'cyan';
+	close.classList.add('closeNewSpeciesSpace');
+	close.style.float = 'right';
+	close.onmouseover = ()=> close.innerHTML = '⦿';
+	close.onmouseout = ()=> close.innerHTML = '⊙';
+	close.onclick = ()=> blossom.click();
+	howToSpace.prepend(close);
 }
 
 export {spaceForNature, parentSquares, blossom, howToSpace};

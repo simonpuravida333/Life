@@ -4,7 +4,7 @@ import search from './search.js';
 import {fullWindow, goLeft, goRight} from './fullWindowImage.js';
 import {fadeOut, fadeTime} from './animation.js';
 import {selectRank} from './filter.js';
-import {findSpace} from './taxonomyFinder.js';
+import {taxaNavigator} from './taxonomyFinder.js';
 import {newSpeciesSpace, closeNewSpeciesSpace} from './newSpecies.js';
 import {newOccurrenceSpace, closeNewOccurrence} from './newOccurrence.js';
 import touchResponse from './swipe.js'
@@ -39,11 +39,11 @@ window.addEventListener('keydown', (event)=>
 	const arrowDown = 40;
 		
 	// SEARCH ELEMENT
-	if (key === enterKey && textareaNameSearch.value.trim() !== "" && (textareaNameSearch === document.activeElement || rankCondition === document.activeElement))
+	if (key === enterKey && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
 	{
-		search(textareaNameSearch.value.trim(), rankCondition.value);
-		search(textareaNameSearch.value.trim(), rankCondition.value, true);
-		textareaNameSearch.value="";
+		search(inputSearch.value.trim(), rankCondition.value);
+		search(inputSearch.value.trim(), rankCondition.value, true);
+		inputSearch.value="";
 	}
 	if (key === arrowDown && rankCondition.value === 'species')
 	{
@@ -65,7 +65,7 @@ window.addEventListener('keydown', (event)=>
 
 // SEARCH SECTION
 const searchSection = g();
-const textareaNameSearch = g('in');
+const inputSearch = g('in');
 const rankCondition = g('s');
 const withinSearch = g();
 const withinSearchCore = g();
@@ -109,8 +109,9 @@ rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canoni
 searchSection.classList.add('blockRow', 'flexPart');
 searchSection.style['z-index'] = 2;
 searchSection.style.position = 'relative';
-textareaNameSearch.id = 'textareaNameSearch';
-rankCondition.classList.add('select');
+inputSearch.classList.add('interactionField', 'inputSearch');
+if (isMobile) inputSearch.style.width = '100%';
+rankCondition.classList.add('interactionField', 'rankSelect');
 withinSearch.id = 'withinSearch';
 withinSearchCore.id = 'withinSearchCore';
 searchGo.classList.add('searchGo', 'go');
@@ -124,41 +125,32 @@ newSpecies.innerHTML = 'NEW SPECIES';
 newOccurrence.innerHTML = 'NEW OCCURRENCE';
 howTo.innerHTML = "?";
 //howTo.addEventListener('click', ()=>
-blossom.onclick = ()=>
-{
-	if (howToSpace.style.display === 'none')
-	{
-		howToSpace.animate({opacity: [0,1]},500);
-		howToSpace.style.display = 'block';
-	}
-	else howToSpace.animate({opacity: [1,0]},333).onfinish = ()=> howToSpace.style.display = 'none';
-}
 
 withinSearch.append(withinSearchCore);
-searchSection.append(textareaNameSearch, rankCondition, withinSearch/*, searchGo, findTaxonomy, newSpecies, newOccurrence, howTo*/); // purpose of commented-out buttons replaced with elements from graphics.js (parentSquares[] elements and blossom element). All the original buttons are left throughout this module; only their activation (append and attached functions) is commented-out; in case of quick re-activation being desired.
+searchSection.append(inputSearch, rankCondition, withinSearch/*, searchGo, findTaxonomy, newSpecies, newOccurrence, howTo*/); // purpose of commented-out buttons replaced with elements from graphics.js (parentSquares[] elements and blossom element). All the original buttons are left throughout this module; only their activation (append and attached functions) is commented-out; in case of quick re-activation being desired.
 body.append(howToSpace, spaceForNature, searchSection);
 
-textareaNameSearch.addEventListener('mouseover',()=>
+inputSearch.addEventListener('mouseover',()=>
 {
-	if (textareaNameSearch !== document.activeElement) 
+	if (inputSearch !== document.activeElement) 
 	{
-		if (!withinSearchActivated) textareaNameSearch.animate([{backgroundColor: '#409CB5' },{backgroundColor: '#8FE2FF' }],fadeTime);
-		else textareaNameSearch.animate({backgroundColor: ['orange','white']},fadeTime);
+		if (!withinSearchActivated) inputSearch.animate([{backgroundColor: '#4C9590' },{backgroundColor: '#8FE2FF' }],fadeTime);
+		else inputSearch.animate({backgroundColor: ['orange','white']},fadeTime);
 	}
 });
-textareaNameSearch.addEventListener('mouseout',()=>
+inputSearch.addEventListener('mouseout',()=>
 {
-	if (textareaNameSearch !== document.activeElement)
+	if (inputSearch !== document.activeElement)
 	{
-		if (!withinSearchActivated) textareaNameSearch.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#409CB5' }],fadeTime);
-		else textareaNameSearch.animate({backgroundColor: ['white','orange']},fadeTime);
+		if (!withinSearchActivated) inputSearch.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#4C9590' }],fadeTime);
+		else inputSearch.animate({backgroundColor: ['white','orange']},fadeTime);
 	}
 });
 rankCondition.addEventListener('mouseover',()=>
 {
 	if (rankCondition !== document.activeElement)
 	{
-		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#409CB5','#8FE2FF']},fadeTime);
+		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#4C9590','#8FE2FF']},fadeTime);
 		else rankCondition.animate({backgroundColor: ['orange','white']},fadeTime);
 	}
 });
@@ -166,7 +158,7 @@ rankCondition.addEventListener('mouseout',()=>
 {
 	if (rankCondition !== document.activeElement)
 	{
-		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#8FE2FF','#409CB5']},fadeTime);
+		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#8FE2FF','#4C9590']},fadeTime);
 		else rankCondition.animate({backgroundColor: ['white','orange']},fadeTime);
 	}
 });
@@ -181,11 +173,11 @@ newOccurrence.addEventListener('mouseout', ()=> newOccurrence.animate([{backgrou
 
 withinSearch.addEventListener('mouseover', ()=>
 { 
-	if (!withinSearchActivated) withinSearch.animate({borderColor: ['#409CB5','orange']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = 'orange';
+	if (!withinSearchActivated) withinSearch.animate({borderColor: ['#4C9590','orange']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = 'orange';
 });
 withinSearch.addEventListener('mouseout', ()=>
 { 
-	if (!withinSearchActivated) withinSearch.animate({borderColor: ['orange','#409CB5']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = '#409CB5';
+	if (!withinSearchActivated) withinSearch.animate({borderColor: ['orange','#4C9590']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = '#4C9590';
 });
 withinSearch.addEventListener('click', ()=>
 {
@@ -196,23 +188,23 @@ withinSearch.addEventListener('click', ()=>
 		limitOptions(true);
 		withinSearchCore.style.display = 'block';
 		withinSearchCore.animate({opacity: [0,1], width: ['0px','22px'],height: ['0px','22px'], margin: ['18px','5px']},fadeTime/2);
-		rankCondition.classList.add('withinOptions');
-		textareaNameSearch.classList.add('textareaWithinSearch');
+		rankCondition.classList.add('withinRankSelect');
+		inputSearch.classList.add('inputWithinSearch');
 		withinSearch.style['border-color'] = 'orange';
 		rankCondition.style.width = '280px';
 		rankCondition.animate({opacity: [1,0]},333).onfinish = ()=> rankCondition.animate({opacity: [0,1]},333);
-		textareaNameSearch.animate({opacity: [1,0]},333).onfinish = ()=> {textareaNameSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(rankCondition, textareaNameSearch)}
+		inputSearch.animate({opacity: [1,0]},333).onfinish = ()=> {inputSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(rankCondition, inputSearch)}
 	}
 	else
 	{
 		limitOptions(false);
 		withinSearchCore.animate({opacity: [1,0],width: ['22px','0px'],height:['22px','0px'], margin: ['5px','18px']},fadeTime/2).onfinish=()=> withinSearchCore.style.display = 'none';
-		rankCondition.classList.remove('withinOptions');
-		textareaNameSearch.classList.remove('textareaWithinSearch');
-		withinSearch.style['border-color'] = '#409CB5';
+		rankCondition.classList.remove('withinRankSelect');
+		inputSearch.classList.remove('inputWithinSearch');
+		withinSearch.style['border-color'] = '#4C9590';
 		rankCondition.style.width = '140px';
 		rankCondition.animate({opacity: [1,0]},333).onfinish = ()=> rankCondition.animate({opacity: [0,1]},333);
-		textareaNameSearch.animate({opacity: [1,0]},333).onfinish = ()=> {textareaNameSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(textareaNameSearch, rankCondition)}
+		inputSearch.animate({opacity: [1,0]},333).onfinish = ()=> {inputSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(inputSearch, rankCondition)}
 	}
 });
 
@@ -301,27 +293,28 @@ searchSection.addEventListener('change', ()=>
 //searchGo.onclick = ()=>
 parentSquares[0].onclick = ()=>
 {
-	if (textareaNameSearch.value.trim() !== "")
+	if (inputSearch.value.trim() !== "")
 	{
-		search(textareaNameSearch.value.trim(), rankCondition.value);
-		search(textareaNameSearch.value.trim(), rankCondition.value, true);
-		textareaNameSearch.value="";
+		search(inputSearch.value.trim(), rankCondition.value);
+		search(inputSearch.value.trim(), rankCondition.value, true);
+		inputSearch.value="";
 	}
 }
 
 //findTaxonomy.onclick = ()=>
 parentSquares[1].onclick = ()=>
 {
-	if (findSpace.style.display === 'none')
+	if (taxaNavigator.style.display === 'none')
 	{
-		searchSection.after(findSpace);
-		findSpace.style.display = 'block';
-		findSpace.animate({opacity: [0,1]},500);
+		searchSection.after(taxaNavigator);
+		taxaNavigator.style.display = 'block';
+		taxaNavigator.animate({opacity: [0,1]},500);
 		findTaxonomy.style['background-color'] = '#8AED97';
+		touchResponse(taxaNavigator);
 	}
 	else
 	{
-		findSpace.animate({opacity: [1,0]},500).onfinish = ()=> findSpace.style.display = 'none';
+		taxaNavigator.animate({opacity: [1,0]},500).onfinish = ()=> taxaNavigator.style.display = 'none';
 		findTaxonomy.style['background-color'] = null;
 	}
 }
@@ -341,7 +334,7 @@ if (!isMobile)
 
 function closeNewSpeciesOccurrence(space) // new species OR new occurrence
 {
-	if (findSpace.style.display === 'block') parentSquares[1].click(); //findTaxonomy.click();
+	if (taxaNavigator.style.display === 'block') parentSquares[1].click(); //findTaxonomy.click();
 	space.style.display = 'none';
 	searchSection.style.display = 'flex';
 	searchSection.animate({opacity: [0,1]},500);
@@ -353,7 +346,7 @@ function closeNewSpeciesOccurrence(space) // new species OR new occurrence
 
 function openNewSpeciesOccurrence(space) // new species OR new occurrence
 {
-	if (findSpace.style.display === 'block') parentSquares[1].click(); //findTaxonomy.click();
+	if (taxaNavigator.style.display === 'block') parentSquares[1].click(); //findTaxonomy.click();
 	space.style.display = 'block';
 	space.animate({opacity: [0,1]},500);
 	if (isMobile) touchResponse(space, closeNewSpeciesOccurrence);
@@ -400,13 +393,14 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 //search('macaw','species');
 //search('blueberry','species');
 //search('emu', 'species');
+//search('takahe', 'species');
 
 // +++ within search +++
 //withinSearchActivated = true;
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {searchSection, textareaNameSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, closeNewSpeciesOccurrence};
+export {searchSection, inputSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, closeNewSpeciesOccurrence};
 
 // modules work like curly braces, so declaring variables keeps them confined to the scope of a module. Exported variables are read only, meaning exported 'var' and 'let' are (basically or actually) 'const' in other modules. To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which make the object global. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window. BUT: globalThis is the standard meanwhile, the only one that will work in all kinds of environments from browsers to Node.js and more.
 // Another solution is to export a function that allows to manipulate module-wide variables in another module, though this is less recommended.

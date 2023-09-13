@@ -5,14 +5,10 @@
 /* CLASSES */
 .resultImage
 {
-	height: 200px;
-	/*
-	outline: 3px solid;
-	outline-offset: -4px;
-	*/
-	border-top: 10px;
-	border-bottom: 10px;
-	border-radius: 10px;
+	height: 250px;
+	border-top: 12px solid;
+	border-bottom: 12px solid;
+	border-radius: 12px;
 	margin: 5px;
 }
 
@@ -79,60 +75,6 @@
 }
 
 /* IDs */
-#searchSection
-{
-	width: 100%;
-	background-color: white; /* #9FF1FF; /* #093C48 */
-	border-radius: 40px;
-	padding: 10px;
-	display: flex;
-	flex-wrap: 	wrap;
-	position: relative;
-	z-index: 2;
-}
-
-#textareaNameSearch
-{
-	color: white;
-	background-color: #409CB5; /*#45B6DD; /* #66547F; */
-	font-family: 'Gaegu';
-	font-size: 25px;
-	font-weight: bold;
-	height: 50px;
-	width: 100%;
-	border-radius: 40px;
-	margin: 10px;
-	text-align: left;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 20px;
-	padding-right: 20px;
-	border: none;
-	
-	&:focus
-	{
-		background-color:#8FE2FF;
-		color: #684B33;
-	}
-	&.textareaWithinSearch
-	{
-		background-color: orange;
-		&:focus
-		{
-			background-color: white;
-		}
-	}
-}
-
-#howToText
-{
-	color: #684B33;
-	margin: 10px;
-	text-align: justify;
-	font-weight: 500;
-	font-size: 20px;
-}
-
 #svg2
 {
 	z-index: 3;

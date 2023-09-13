@@ -3,7 +3,7 @@ import {countryCodesOnly, countryNamesOnly} from './officialDesignations.js';
 
 const body = document.querySelector('body');
 
-// let's do some recycling:
+// let's do some recycling > CLONING THE "NEW SPECIES" LAYOUT
 // UPPER PART FROM "NEW SPECIES"
 const guideText = g();
 const submit = newSpeciesSpace.children[5].cloneNode(true);
@@ -97,7 +97,7 @@ for (const d in data)
 	div.innerHTML = "+ "+data[d][0];
 	div.classList.add('suggestionBlock', 'brightHover');
 	if (d === 'mediaLinks') div.style['background-color'] = 'orange';
-	else div.style['background-color'] = '#409CB5';
+	else div.style['background-color'] = '#4C9590';
 	div.style.opacity = 1;
 	div.style.color = 'white';
 	div.onclick = ()=> openInput((d === 'mediaLinks') ? div.cloneNode(true) : div, d);
@@ -154,7 +154,7 @@ function openInput(div, dataKey)
 		countrySuggestion.style.display = 'none';
 		countrySuggestion.style.position = 'absolute';
 		countrySuggestion.style['background-color'] = 'white';
-		countrySuggestion.style.color = '#409CB5';
+		countrySuggestion.style.color = '#4C9590';
 		countrySuggestion.style.padding = '10px';
 		countrySuggestion.style['border-radius'] = '10px';
 		countrySuggestion.style.opacity = 1;	
@@ -258,7 +258,7 @@ function openInput(div, dataKey)
 			}
 			dataEntry.remove();
 			if (dataKey === 'country') countrySuggestion.remove();
-			div.style['background-color'] = '#409CB5';
+			div.style['background-color'] = '#4C9590';
 			
 			if (dataKey === 'mediaLinks' && enteredData['mediaLinks'] !== undefined)
 			{
@@ -319,7 +319,7 @@ function sendToBackend()
 		ok.input.animate({backgroundColor: ['#FF6680', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#FF6680']}, 1000);
 		notYet = true;
 	}
-	if (!hasSpecies) speciesSelection.animate({backgroundColor: ['#409CB5', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#409CB5']}, 1000);
+	if (!hasSpecies) speciesSelection.animate({backgroundColor: ['#4C9590', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#4C9590']}, 1000);
 	if (notYet || !hasSpecies) return;
 	
 	// CLEANING DATA
@@ -357,7 +357,7 @@ function sendToBackend()
 		enteredData['month'] = parseInt(enteredData.date.slice(5,7));
 		enteredData['day'] = parseInt(enteredData.date.slice(8));
 	}
-	console.log(enteredData);
+	console.log('ENTERED DATA:\n' + enteredData);
 	fetch('/life/occurrence/newAddition',
 	{
 		method: 'POST',

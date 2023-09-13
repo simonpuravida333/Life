@@ -1,4 +1,4 @@
-import {findSpace, filterResults, suggestionTitle, createSuggestionBlock, suggestionBlockClickStyling} from './taxonomyFinder.js';
+import {taxaNavigator, filterResults, suggestionTitle, createSuggestionBlock, suggestionBlockClickStyling} from './taxonomyFinder.js';
 
 const body = document.querySelector('body');
 
@@ -129,14 +129,14 @@ const parentSelection = g('in');
 parentSelection.classList.add('input');
 parentSelection.placeholder = 'Delphinus';
 const parentSuggestionTitle = parentSelectionTitle.cloneNode(true);
-parentSuggestionTitle.style.color = '#409CB5';
+parentSuggestionTitle.style.color = '#4C9590';
 parentSuggestionTitle.innerHTML = 'Look for a GENUS / direct Ancestor';
 const parentSuggestion = parentSelection.cloneNode(true);
 parentSelection.classList.add('parent');
 parentSuggestion.classList.add('newSpeciesInput');
 parentSuggestion.placeholder = 'Delph...';
 const advancedSearch = submit.cloneNode(true);
-advancedSearch.style['background-color'] = '#409CB5';
+advancedSearch.style['background-color'] = '#4C9590';
 advancedSearch.innerHTML = 'Advanced Search';
 const subDiv = g();
 subDiv.append(parentSelectionTitle, parentSelection, parentSuggestionTitle, parentSuggestion, advancedSearch);
@@ -216,7 +216,7 @@ submit.onclick = ()=>
 	}
 	else if (!isUniqueLocalAndGBIF || canonicalName.value.trim() === '')
 	{
-		canonicalName.animate({backgroundColor: ['#409CB5', '#FFB56C', 'orange', '#FFB56C', 'orange' , '#FFB56C', '#409CB5']},1000)
+		canonicalName.animate({backgroundColor: ['#4C9590', '#FFB56C', 'orange', '#FFB56C', 'orange' , '#FFB56C', '#4C9590']},1000)
 		return;
 	}
 		
@@ -324,16 +324,16 @@ advancedSearch.onclick = ()=> getFindSpace(advancedSearch, newSpeciesSpace);
 
 function getFindSpace(trigger, beforeElement)
 {
-	if (findSpace.style.display !== 'block')
+	if (taxaNavigator.style.display !== 'block')
 	{
-		beforeElement.after(findSpace);
-		findSpace.style.display = 'block';
-		findSpace.animate({opacity: [0,1]},500);
+		beforeElement.after(taxaNavigator);
+		taxaNavigator.style.display = 'block';
+		taxaNavigator.animate({opacity: [0,1]},500);
 		trigger.style.filter = 'brightness(1.2)'
 	}
 	else
 	{
-		findSpace.animate({opacity: [1,0]},500).onfinish = ()=> findSpace.style.display = 'none';
+		taxaNavigator.animate({opacity: [1,0]},500).onfinish = ()=> taxaNavigator.style.display = 'none';
 		trigger.style.filter = null;
 	}
 }

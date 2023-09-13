@@ -4,25 +4,30 @@ body
 }
 
 ::-webkit-scrollbar {
-  width: 14px;
+  width: 18px;
 }
 
 /* Track */ 
 ::-webkit-scrollbar-track {
-  /*box-shadow: inset 0 0 5px grey; */ 
-  border-radius:14px;
+  background: rgba(255,255,255,0);
+  outline: none;
+  border-radius:9px;
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: white;
-  border-radius: 14px;
+  border-radius: 9px;
 }
 
-/* Handle on hover */
+/* Handle on hover *//*
 ::-webkit-scrollbar-thumb:hover {
   background: #bbbbbb;
   cursor: pointer;
+}*/
+
+::-webkit-scrollbar-track:hover {
+	background: mediumaquamarine;
 }
 
 ::-webkit-resizer
@@ -35,18 +40,9 @@ body
 .resultImage
 {
 	height: 500px;
-	
-	/*
-	outline: 1px solid;
-	outline-offset: -9px;
-	*/
-	/*
-	border-left: 10px solid;
-	border-right: 10px solid;
-	*/
-	border-top: 10px;
-	border-bottom: 10px;
-	border-radius: 10px;
+	border-top: 12px solid;
+	border-bottom: 12px solid;
+	border-radius: 12px;
 	margin: 10px;
 }
 
@@ -130,57 +126,6 @@ body
 }
 
 /* IDs */
-#textareaNameSearch
-{
-	color: white;
-	background-color: #409CB5; /*#45B6DD; /* #66547F; */
-	font-family: 'Gaegu';
-	font-size: 25px;
-	font-weight: bold;
-	height: 50px;
-	width: 350px;
-	border-radius: 40px;
-	margin: 10px;
-	text-align: left;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 20px;
-	padding-right: 20px;
-	border: none;
-	
-	&:hover
-	{
-		background-color: #8FE2FF;
-	}
-	&:focus
-	{
-		background-color:#8FE2FF;
-		color: #684B33;
-	}
-	&.textareaWithinSearch
-	{
-		background-color: orange;
-		&:hover
-		{
-			background-color: white;
-			color: #684B33;
-		}
-		&:focus
-		{
-			background-color: white;
-		}
-	}
-}
-
-#howToText
-{
-	color: #684B33;
-	margin: 10px;
-	text-align: justify;
-	width: 600px;
-	font-weight: 500;
-}
-
 #svg2
 {
 	z-index: 3;
@@ -191,7 +136,6 @@ body
 }
 
 /* FULL WINDOW MODE, WHICH DOESN'T EXIST IN MOBILE */
-
 #fullWindow
 {
 	background-color: rgba(0,25,50,0.8);
