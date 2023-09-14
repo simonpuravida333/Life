@@ -42,7 +42,7 @@ window.addEventListener('keydown', (event)=>
 	if (key === enterKey && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
 	{
 		search(inputSearch.value.trim(), rankCondition.value);
-		search(inputSearch.value.trim(), rankCondition.value, true);
+		if (rankCondition.value !== 'highestRank' && rankCondition.value !== 'allRanks' && rankCondition.value !== 'any') search(inputSearch.value.trim(), rankCondition.value, true);
 		inputSearch.value="";
 	}
 	if (key === arrowDown && rankCondition.value === 'species')
@@ -296,7 +296,7 @@ parentSquares[0].onclick = ()=>
 	if (inputSearch.value.trim() !== "")
 	{
 		search(inputSearch.value.trim(), rankCondition.value);
-		search(inputSearch.value.trim(), rankCondition.value, true);
+		if (rankCondition.value !== 'highestRank' && rankCondition.value !== 'allRanks' && rankCondition.value !== 'any') search(inputSearch.value.trim(), rankCondition.value, true);
 		inputSearch.value="";
 	}
 }

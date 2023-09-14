@@ -311,7 +311,7 @@ function FORMER_fetchChildren(parent, childRank) // works perfectly
 	})
 }
 
-function fetchGrandchildren(grandparent, theRank)
+function fetchGrandchildren(grandparent, theRank) // this function has become obsolete
 {
 	console.log("- - - FETCHING GRAND CHILDREN - - -")
 	fetch('https://api.gbif.org/v1/species/search?higherTaxonKey='+grandparent.key+'&rank='+taxaKeys[theRank]+'&limit=1000&status=ACCEPTED&isExtinct=false')
