@@ -247,11 +247,6 @@ function imagePlacement()
 		console.log("RENDERED Image Aspect Ratio: "+(fullWindow.clientHeight*imageAspectRatio)/fullWindow.clientHeight);
 	}
 	
-	console.log(fullWindow.offsetTop)
-	console.log(fullWindow.offsetLeft)
-	console.log(fullWindowImage.offsetTop)
-	console.log(fullWindowImage.offsetLeft)
-	
 	// ... fullWindowImage.style['aspect-ratio'] = aspectRatio ...doesn't work really (maybe only with div containers?). That's why I had to come up with my own full-screen logic upper. For displaying full-screen, it all comes down to knowing the aspect ratios of the window and the image.
 }
 
