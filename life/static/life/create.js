@@ -10,10 +10,11 @@ import {displayRank, GBIFResultOpenClose} from './navigate.js';
 
 const body = document.querySelector('body');
 const allGBIFResults = [];
-const allQueriesGroups = []; // this one will also have all the GBIFResults as allGBIFResults does, but collected as groups. I still decided to also keep allGBIFResults, because it makes going through all elements easier. In allQueriesGroups I would always have to use two loops, the outer one going from group to group, the inner going through the GBIFResults. That's a hassle, and so I just keep both arrays. And thankfully so, in the end only one case came up where I have to synchronize them (when removing a group, in createSummery()).
+const allQueriesGroups = []; // this one will also hold all the GBIFResults as allGBIFResults does, but collected as groups. I still decided to also keep allGBIFResults, because it makes going through all elements easier. In allQueriesGroups I would always have to use two loops, the outer one going from group to group, the inner going through the GBIFResults. That's a hassle, and so I just keep both arrays. And thankfully so, in the end only one case came up where I have to synchronize them (when removing a group, in createSummery()).
 
 function create(data, querySubmit, rankSubmit)
 {
+	
 	if (resultOverview.style.opacity < 0.9) resultOverview.animate(fadeIn, fadeTime).onfinish = ()=>resultOverview.style.opacity = 1;
 	if (filterArea.style.opacity < 0.9) filterArea.animate(fadeIn, fadeTime).onfinish = ()=> filterArea.style.opacity = 1; // why 0.9? becuase maybe the user is so fast and hits enter on a pre-typed text just after having deleted a group. It's highly unlikely though.
 	
@@ -112,7 +113,7 @@ function create(data, querySubmit, rankSubmit)
 	allQueriesGroups.push(queryGroup); // ...AND ARRAY THAT HOLDS ALL THE GROUP OBJECTS
 	
 	// ALPHABETICALLY SORT DATA
-	const twoDArray = []; // in JS you can't directly insantiate multiple-dimension arrays like "array = [][]", instead you have to construct them like objects, because that's what arrays are in JS.
+	const twoDArray = []; // in JS you can't directly instantiate multiple-dimension arrays like "array = [][]", instead you have to construct them like objects, because that's what arrays are in JS.
 	for (const eachResult of data) twoDArray.push([eachResult.canonicalName, eachResult]);
 	twoDArray.sort(); // will automatically sort the array by reading the first slot of the first dimension.
 	data = [];
@@ -293,7 +294,6 @@ function create(data, querySubmit, rankSubmit)
 				console.log(taxaKeys[y].toUpperCase() +" rank does not exist for "+data[x][rankSubmit]+", "+data[x][rankSubmit+"Key"]+", "+rankSubmit.toUpperCase());
 				taxaBlocks[y].innerHTML = "<strong>"+taxaKeys[y].toUpperCase()+"</strong>:<br><i>No rank.</i>";
 				taxaBlocks[y].style['cursor'] = 'auto'; 
-				// Sometimes there just isn't the correct rank; the GBIF decided on the seven most basic / most backbone ranks. In truth there many more ranks, e.g. while the GBIF simply has ORDER, in biology there're also (wikipedia) (from top downwards): Magnorder (magnus, 'large, great, important'), Superorder (super, 'above'), Grandorder (grand, 'large'), Mirorder	(mirus, 'wonderful, strange'), then actual ORDER, Suborder (sub, 'under'), Infraorder	(infra, 'below'), Parvorder	(parvus, 'small, unimportant'). An example would be Cetacea (whales): in GBIF they appear as an ORDER, but are actually an Infraorder. Some in-between ranks like toothed whales (Odontoceti) simply don't exist on the GBIF, even though it's a vast Parvorder that contains all the whales that have teeth, like Dolphins; and the FAMILY of dolphins (Delphinidae) has a Superfamily Delphinoidea and a Subfamily Delphininae... so while infraorder 'Whales' are moved to ORDER, sometimes taxonomy ranks are so off the 7 basic ranks which GBIF provides, that classifications simply aren't present on GBIF, like toothed whales.
 			}
 			
 			if (taxaBlocks[y].innerHTML.search('No Rank.') === -1)
@@ -449,7 +449,7 @@ function createSummary(nothingFetched, querySubmit)
 					}
 				}
 								
-				for (let x = 0; x < allQueriesGroups.length; x++) if (group === allQueriesGroups[x]) allQueriesGroups.splice(x,1); // there shouldn't be any more references to the group object, so the garbage collector should remove it in the next interval.
+				for (let x = 0; x < allQueriesGroups.length; x++) if (group === allQueriesGroups[x]) allQueriesGroups.splice(x,1); // there shouldn't be any more references to the group object, so the garbage collector will remove it in the next interval.
 				
 				constructFilter();
 			}
@@ -458,7 +458,7 @@ function createSummary(nothingFetched, querySubmit)
 				backgroundColorAni.cancel();
 				fontColorAni.cancel();
 				statBlock.style.color = null;
-				statBlock.style['background-color'] = null; // removes the added styling from mousedown. As I explain in displayRank() below: the styling attributes from classlist.add are seperate from directly-set styling attributes in JS (element.style.something...). Testing reveals that directly set-styling in JS ALWAYS has precedence over the classList styling; even if the classList is added later, it does not overwrite JS-coded styling. So here I remove the attributes again, instead of manually setting the same attributes of the classList attributes in JS directly, to reverse it to the original (classList / CSS) style. This allows the hover style to be back in place. If I would here manually set the attributes from classList (like statBlock.style.color = 'white') it would look alright, but the hover would be gone. Also it's cleaner to remove it by setting it null, or you'd have to deal with two concurrent stylings.
+				statBlock.style['background-color'] = null;
 				let zoom = 1;
 				if (isMobile) zoom = body.style.zoom;
 				window.scrollTo(0, group.head.offsetTop*zoom);

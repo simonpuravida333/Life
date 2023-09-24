@@ -65,11 +65,14 @@ for (let x = 0; x < squares.length; x++)
 	squares[x].append(texts[x]);
 	parentSquares[x].append(squares[x])
 	spaceForNature.append(parentSquares[x]);
-	//const size = randomInt(90,110)+'px';
+	//const sizeVariation = randomInt(90,110); // the random size works, but it doesn't scale the text, which is appended to the square, not the leaf.
+	//const size = sizeVariation+'px';
 	const size = '100px';
+	//const margin = 100-sizeVariation+'px';
 	const variation = randomInt(-10,10);
 	leaves[x].style.width = size;
 	leaves[x].style.height = size;
+	//leaves[x].style.margin = margin;
 	leaves[x].style['background-image'] = 'linear-gradient('+(-45-15-variation)+'deg,' + ((x<2) ? ' #3C7F45, #5FCE79, #83FF97)' : '#CC7D36, orange, #FFE299)');
 	//leaves[x].style['box-shadow'] = '10px 10px 20px rgba(255,255,255,0.5), 10px -10px 20px rgba(255,255,255,0.5), -10px 10px 20px rgba(255,255,255,0.5), -10px -10px 20px rgba(255,255,255,0.5)';
 	if (isMobile)
@@ -286,6 +289,10 @@ const chapterTexts =
 	title8: "<strong>A NOTE ON USING VERNACULAR NAMES FOR QUERIES</strong>",
 	9: "<i><strong style='color: orange'>A NOTE ON OCCURRENCES:</strong></i> Occurrences are sightings of species that get fed to the GBIF from all around the world, to create a picture about the numbers, distribution and conservation status. Many come from biologists, zoologist and conservationists, but citizen scientist may also play their part. Occurrences can be sighting descriptions only, without media, some are audio files, but this app merely loads occurrences that have images (so far), as the focus is on entertaining education. <i><strong style='color: orange'>IN THIS APP OCCURRENCES APPEAR AS IMAGES</strong></i> and the data is shown when hovering over an image. Yet the purpose of GBIF occurrences images is data collection solely, which includes scans of recordings from centuries ago and photos of preserved specimens from museums, though rarer.<br>Most however are sightings in nature, which include dead animals. Thus <i><strong style='color: orange'>PLEASE BE ADVISED</strong></i>, that there can be photos of animals which may be disturbing for some. When querying for 'whale', among the results will be photos of dead beached whales where you can see cut patterns on the back from a ship's rotor blades, or beached whales that have no skin anymore, after days of laying in the sun, scathed by the sand and picked by birds. Some have an opened body or may be in a state of progressed decomposition, so that they will only be identifiable by a trained eye. Others may be dissected onsite for scientific reasons. Most images however are of live species and give a colorful, visual viewer experience.",
 	title9: "<strong>A NOTE ON OCCURRENCES</strong>",
+	10: "Sometimes there just isn't the correct rank; the GBIF decided on the seven most canon / most backbone ranks; but it really just is an approximation to a much more complex tree of life. In truth there many more ranks, e.g. while the GBIF simply has ORDER, in biology there're also (wikipedia) (from top downwards): Magnorder (magnus, 'large, great, important'), Superorder (super, 'above'), Grandorder (grand, 'large'), Mirorder	(mirus, 'wonderful, strange'), then actual ORDER, Suborder (sub, 'under'), Infraorder	(infra, 'below'), Parvorder	(parvus, 'small, unimportant'). An example would be Cetacea (whales): on the GBIF they appear as an ORDER, but are actually an Infraorder. Some in-between ranks like toothed whales (Odontoceti) simply don't exist on the GBIF, even though it's a vast Parvorder that contains all the whales that have teeth, like Dolphins; and the FAMILY of dolphins (Delphinidae) has a Superfamily Delphinoidea and a Subfamily Delphininae...<br>So while infraorder 'Whales' are moved to ORDER, sometimes taxonomy ranks are so off the 7 basic ranks the GBIF provides, that classifications simply aren't present on the GBIF, like toothed whales. In other cases of more simple forms of life, like in certain fungi, nature just doesn't provide enough to have six branches of categorizations. So between species and kingdom, there may just be one or two other ranks.",
+	title10: "<strong>A NOTE ON MISSING RANKS</strong>",
+	11: "The GBIF also stores every known synonym, which are former canonical names or names that were established for some time in some place but never became canon. They are important to keep track of as one may still come upon them in older scientific literature. On the GBIF, each synonym is treated as a full taxon object just like the accepted canonical name, complete with key IDs, ancestry linage and all the standard object data. In this app however with a focus on education and entertainment, synonyms are also being filtered out.",
+	title11: "<strong>A NOTE ON SYNONYMS<strong>",
 }
 
 const howToSpace = g();
@@ -296,7 +303,7 @@ howToSpace.style['font-size'] = '27px';
 howToSpace.style['line-height'] = '30px';
 howToSpace.style['border-left'] = '30px solid cyan';
 howToSpace.style['padding-left'] = 0;
-howToSpace.style['background-color'] = '#4C9590';
+howToSpace.style['background-color'] = '#325D77';
 howToSpace.style.color = 'white';
 howToSpace.style.display = 'none';
 
@@ -328,8 +335,8 @@ for (let x = 1; x <= chaptersAmount; x++)
 	chapterText.style['margin-left'] = '20px';
 	chapterText.style['margin-top'] = '20px';
 	chapterText.innerHTML = chapterTexts['title'+x]
-	chapterText.onmouseover = ()=> chapterLeafGlow(true);
-	chapterText.onmouseout = ()=> chapterLeafGlow(false);
+	//chapterText.onmouseover = ()=> chapterLeafGlow(true);
+	//chapterText.onmouseout = ()=> chapterLeafGlow(false);
 	
 	const chapterLeafAni = chapterLeaf.animate({boxShadow: ['none', '10px 0px 10px rgba(255,255,255,0.5), -10px 0px 10px rgba(255,255,255,0.5), 0px -10px 10px rgba(255,255,255,0.5)']},333);
 	chapterLeafAni.pause();

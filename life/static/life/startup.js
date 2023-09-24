@@ -82,7 +82,7 @@ for (const key of taxaKeys)
 	let opt = g('o');
 	opt.value = key;
 	opt.innerHTML = key.toUpperCase();
-	if(key == 'species') opt.selected=true;
+	if(key === 'species') opt.selected=true;
 	rankCondition.append(opt);
 }
 const seperation = g('o');

@@ -193,7 +193,7 @@ select
 	color: #2BAF60;
 	&.newSpeciesLabel
 	{
-		color: orange;
+		color: #4C9590;
 	}
 }
 
@@ -247,19 +247,39 @@ select
 	}
 	&.newSpeciesInput
 	{
+		background-color: #325D77;
+		color: white;
 		display: block;
 		&::placeholder
 		{
-			color: #4C9590;
+			color: #325D77;
+		}
+		&:hover
+		{
+			&::placeholder
+			{
+				color: white;
+				opacity: 0.4;
+			}
 		}
 	}
 	&.newSpeciesTextArea
 	{
+		background-color: #325D77;
+		color: white;
 		height: 250px;
 		line-height: 27px;
 		&::placeholder
 		{
-			color: #4C9590;
+			color: #325D77;
+		}
+		&:hover
+		{
+			&::placeholder
+			{
+				color: white;
+				opacity: 0.4;
+			}
 		}
 	}
 	&.parent

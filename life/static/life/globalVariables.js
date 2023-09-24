@@ -11,6 +11,11 @@ function getRndInteger(min, max)
 	return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
+function getRndFloat(min, max)
+{
+	return Math.random() * (max - min) + min;
+}
+
 // GLOBAL ELEMENT GENERATOR
 function generate(elementType)
 {
@@ -29,6 +34,11 @@ Object.defineProperty(globalThis, 'caps', {
 
 Object.defineProperty(globalThis, 'randomInt', {
   value: getRndInteger,
+  writable: false,
+});
+
+Object.defineProperty(globalThis, 'randomFloat', {
+  value: getRndFloat,
   writable: false,
 });
 

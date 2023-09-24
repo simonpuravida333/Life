@@ -12,7 +12,7 @@ const centerDiv = g();
 const closeNewSpeciesSpace = g();
 const newSpeciesSpaceTitle = g();
 newSpeciesSpaceTitle.classList.add('newSpeciesTitle');
-newSpeciesSpaceTitle.innerHTML = 'Add a new Species to the GBIF'.toUpperCase();
+newSpeciesSpaceTitle.innerHTML = 'Add a new Species'.toUpperCase();
 if (!isMobile)
 {
 	centerDiv.classList.add('flexPart', 'center');

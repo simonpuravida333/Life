@@ -33,7 +33,7 @@ speciesSelection.placeholder = 'Delphinus Delphis';
 const newOccurrenceSpace = newSpeciesSpace.cloneNode(true);
 while (newOccurrenceSpace.children.length > 1) newOccurrenceSpace.children[1].remove();
 const topTitle = (isMobile) ? newOccurrenceSpace.children[0].children[0] : newOccurrenceSpace.children[0].children[1];
-topTitle.innerHTML = 'add a new occurrence to the GBIF'.toUpperCase();
+topTitle.innerHTML = 'add a new occurrence'.toUpperCase();
 const closeNewOccurrence = (!isMobile) ? newOccurrenceSpace.children[0].children[3] : null;
 if (!isMobile)
 {
@@ -107,6 +107,7 @@ for (const d in data)
 	{
 		const hoverDiv = g();
 		hoverDiv.classList.add('baseBlock', 'hoverHelp');
+		hoverDiv.style['background-color'] = '#325D77';
 		hoverDiv.innerHTML = data[d][1];
 		body.append(hoverDiv);
 		div.onmouseover = ()=>
@@ -154,7 +155,7 @@ function openInput(div, dataKey)
 		countrySuggestion.style.display = 'none';
 		countrySuggestion.style.position = 'absolute';
 		countrySuggestion.style['background-color'] = 'white';
-		countrySuggestion.style.color = '#4C9590';
+		countrySuggestion.style.color = '#325D77';
 		countrySuggestion.style.padding = '10px';
 		countrySuggestion.style['border-radius'] = '10px';
 		countrySuggestion.style.opacity = 1;	
@@ -290,6 +291,8 @@ function	speciesSelectionChange()
 		return;
 	}
 	
+	// ADD LOCAL DJANGO CHECK
+	
 	fetch('https://api.gbif.org/v1/species?name='+speciesSelection.value.trim()+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c')
 	.then(response => response.json())
 	.then(incoming => 
@@ -319,7 +322,7 @@ function sendToBackend()
 		ok.input.animate({backgroundColor: ['#FF6680', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#FF6680']}, 1000);
 		notYet = true;
 	}
-	if (!hasSpecies) speciesSelection.animate({backgroundColor: ['#4C9590', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#4C9590']}, 1000);
+	if (!hasSpecies) speciesSelection.animate({backgroundColor: ['#325D77', '#FF8398', '#ff1d34', '#FF8398' , '#ff1d34', '#FF8398', '#325D77']}, 1000);
 	if (notYet || !hasSpecies) return;
 	
 	// CLEANING DATA

@@ -61,9 +61,16 @@ async function constructInputFields()
 		//division.style.width = findRanks[rank].getBoundingClientRect().width+20+'px';
 		//division.style.margin = "0 auto";
 	}
-
-	for (const rank of ranks	) rankDivisions[rank].children[1].oninput=(action)=>
+	
+	const typeMoments = [];
+	
+	for (const rank of ranks	) rankDivisions[rank].children[1].oninput= async (action)=>
 	{
+		typeMoments.push(new Date().getTime());
+		let avg = 0;
+		for (let x = 0; x< typeMoments.length-1; x++) avg += typeMoments[x+1] - typeMoments[x];
+		console.log(avg/typeMoments.length);
+		
 		for (let space = rank; space < ranks.length; space++) spacesForSuggestions[space].innerHTML = ""; // removes suggestions every time you change the string
 		if (findRanks[rank].value === "")
 		{
@@ -88,7 +95,7 @@ async function constructInputFields()
 			findRanks[counter].style.display = 'none';
 		}
 
-		fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=50&rank='+taxaKeys	[rank]+'&q='+findRanks[rank].value)
+		fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=50&rank='+taxaKeys[rank]+'&q='+findRanks[rank].value)
 		.then(response => response.json())
 		.then(suggestions =>
 		{
@@ -116,7 +123,7 @@ async function constructInputFields()
 					getClickedSelection(suggestions[suggestion]);
 				}
 			}
-		})
+		});
 	}
 }
 
