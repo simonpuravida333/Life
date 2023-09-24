@@ -131,16 +131,16 @@ export default function fetchEverything(GBIFResult, y)
 			{
 				if (description.description.indexOf("There is no information available for this species.") !== -1) continue; // There may still be descriptions that start with "There is no information available for this species, but / other than...", so the comma ',' would save it from getting kicked out.
 				const theDescription = g();
-				theDescription.innerHTML = "<br><strong>"+ description.type.toUpperCase().replace("_"," ")+"</strong><br>"+description.description;
+				theDescription.innerHTML = "<strong>"+ description.type.toUpperCase().replace("_"," ")+"</strong><br>"+description.description+"<br><br>";
 				allDescriptions.append(theDescription);
 			}
 			const superElement = g();
 			superElement.classList.add('baseBlock');
 			superElement.style['background-color'] = `hsl(${theColor}, 60%, 60%)`;
 			superElement.style.cursor = 'default';
-			const elementTitle = g();
-			elementTitle.innerHTML = '<strong>DESCRIPTIONS</strong>';
-			superElement.append(elementTitle, allDescriptions);
+			//const elementTitle = g();
+			//elementTitle.innerHTML = '<strong>DESCRIPTIONS</strong>';
+			superElement.append(/*elementTitle,*/ allDescriptions);
 			
 			const resizeObserver = new ResizeObserver((entries) =>
 			{

@@ -8,12 +8,13 @@ from .models import Kingdom, Phylum, ClassRank, Order, Family, Genus, Species, S
 
 # caution: mind the difference of 'class' and 'classRank' between JSON strings and code respectively (on both stack-ends)
 higherTaxaClasses = [Kingdom, Phylum, ClassRank, Order, Family, Genus]
+higherTaxa = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus']
 allRanks = ['kingdom', 'phylum', 'classRank', 'order', 'family', 'genus', 'theSpecies', 'kingdomKey', 'phylumKey', 'classRankKey', 'orderKey', 'familyKey', 'genusKey', 'speciesKey']
 speciesFields = ['canonicalName', 'theSpecies', 'key', 'speciesKey', 'rank', 'taxonomicStatus', 'nameType', 'parent', 'parentKey', 'kingdom', 'phylum', 'classRank', 'order', 'family', 'genus', 'kingdomKey', 'phylumKey', 'classRankKey', 'orderKey', 'familyKey', 'genusKey', 'localDjangoDB']
 occurrencesFields = ['waterBody', 'continent', 'country', 'countryCode', 'locality', 'elevation', 'depth', 'decimalLatitude', 'decimalLongitude', 'basisOfRecord', 'identifiedBy', 'recordedBy', 'isInCluster', 'individualCount', 'sex', 'identificationRemarks', 'establishmentMeans', 'iucnRedListCategory', 'eventTime', 'day', 'month', 'year']
 JSONSpeciesFields = ['canonicalName', 'vernacularNames', 'synonyms', 'distributions', 'description', 'mediaLinks']
 JSONOccurrenceFields = ['waterBody', 'locality', 'identifiedBy', 'recordedBy', 'identificationRemarks', 'elevation', 'depth', 'decimalLongitude', 'decimalLatitude', 'individualCount', 'continent', 'basisOfRecord', 'isInCluster', 'sex', 'establishmentMeans', 'iucnRedListCategory', 'countryCode', 'country', 'eventTime', 'year', 'month', 'day']
-JSONRanksToGenus = ["kingdom", "phylum", "class", "order", "family", "genus"]
+JSONHigherTaxa = ["kingdom", "phylum", "class", "order", "family", "genus"]
 JSONRanks = ["kingdom", "phylum", "class", "order", "family", "genus", "species"]
 JSONRanksKeys = ["kingdomKey", "phylumKey", "classKey", "orderKey", "familyKey", "genusKey", "speciesKey"]
 imageFileTypes = ["jpg","jpeg","jpe","jif","jfif","jfi","webp","gif","png","apgn","bmp","dib"]
@@ -111,10 +112,10 @@ def saveSpecies(data, lineage):
 		setattr(species, taxa, lineage[taxa]['canonicalName'])
 		setattr(species, taxa+'Key', lineage[taxa]['key'])
 	
-	for x in range(len(JSONRanksToGenus)-1, -1, -1):
-		if JSONRanksToGenus[x] in lineage:
-			species.parent = lineage[JSONRanksToGenus[x]]['canonicalName']
-			species.parentKey = lineage[JSONRanksToGenus[x]]['key']
+	for x in range(len(JSONHigherTaxa)-1, -1, -1):
+		if JSONHigherTaxa[x] in lineage:
+			species.parent = lineage[JSONHigherTaxa[x]]['canonicalName']
+			species.parentKey = lineage[JSONHigherTaxa[x]]['key']
 			break
 			
 	species.save()

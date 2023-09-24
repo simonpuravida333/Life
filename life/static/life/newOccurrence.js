@@ -291,24 +291,33 @@ function	speciesSelectionChange()
 		return;
 	}
 	
-	// ADD LOCAL DJANGO CHECK
+	speciesSelection.style['background-color'] = '#ff444e';
+	theSpecies = null;
+	hasSpecies = false;
 	
-	fetch('https://api.gbif.org/v1/species?name='+speciesSelection.value.trim()+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c')
+	fetch('/life/species?name='+speciesSelection.value.trim())
 	.then(response => response.json())
 	.then(incoming => 
 	{
-		if (incoming.results[0] === undefined || incoming.results[0].rank !== 'SPECIES')
-		{
-			speciesSelection.style['background-color'] = '#ff444e';
-			theSpecies = null;
-			hasSpecies = false;
-		}
-		else
+		if (incoming.results[0] !== undefined) if (incoming.results[0].rank === 'SPECIES')
 		{
 			theSpecies = incoming.results[0];
 			speciesSelection.style['background-color'] = null;
 			hasSpecies = true;
+			return;
 		}
+			
+		fetch('https://api.gbif.org/v1/species?name='+speciesSelection.value.trim()+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c')
+		.then(response => response.json())
+		.then(incoming => 
+		{
+			if (incoming.results[0] !== undefined) if (incoming.results[0].rank === 'SPECIES')
+			{
+				theSpecies = incoming.results[0];
+				speciesSelection.style['background-color'] = null;
+				hasSpecies = true;
+			}
+		});
 	});
 }
 
