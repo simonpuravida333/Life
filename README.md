@@ -14,8 +14,10 @@ Go to the root of the folder and enter the command:
 
 #### And you're good to go :)
 
-### VIDEO GUIDE ABOUT THE FUNCTIONALITY OF LIFE
+
+
+#### VIDEO GUIDE ABOUT THE FUNCTIONALITY OF LIFE
 https://youtu.be/QZl-F8OFy-Q
 
-### QUICK VIDEO BRIEFING ABOUT TAXONOMY TERMINOLOGY
+#### QUICK VIDEO BRIEFING ABOUT TAXONOMY TERMINOLOGY
 https://youtu.be/buld3ph_Uvs
