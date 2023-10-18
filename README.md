@@ -12,9 +12,9 @@ Go to the root of the folder and enter the command:
 ### python manage.py runserver
 #### in the browser search bar add '/life' to your local server address
 
+#### you also need this package installed: https://pypi.org/project/django-cors-headers/
+
 #### And you're good to go :)
-
-
 
 #### VIDEO GUIDE ABOUT THE FUNCTIONALITY OF LIFE
 https://youtu.be/QZl-F8OFy-Q
