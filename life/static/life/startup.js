@@ -11,9 +11,7 @@ import touchResponse from './swipe.js'
 
 const body = document.querySelector('body');
 
-let isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
-console.log ("Runs on WebKit / Blink: "+isWebKit);
-if (!isWebKit) window.alert("Dear user,\nSome of the styling of Life is only supported in browsers that run on WebKit / Blink.\n(Safari, Google Chrome, Microsoft Edge, Opera...)"); // ...nested CSS description that is.
+// let isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
 
 //console.log(document.styleSheets)
 for (const sheet of document.styleSheets)

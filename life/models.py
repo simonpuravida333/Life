@@ -115,7 +115,7 @@ class Species(AllRanks):
 	taxonomicStatus = models.CharField(max_length = 32, choices = status)
 	nameType = models.CharField(max_length = 32, choices = nameType)
 	
-	#PARENTS: user doesn't need to know every parent, they can directly refer it to ranks higher than Genus. That is if the user doesn't know some ranks (maybe only knows that it is a mammal), and also for the case that there is no particular rank fitting within the 7 GBIF ranks.
+	#PARENTS: doesn't need all ranks, it can directly refer it to ranks higher than Genus.
 	parent = models.CharField(max_length=256, null = True)
 	parentKey = models.IntegerField(null = True)
 
