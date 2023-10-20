@@ -25,7 +25,7 @@ function generate(elementType)
 	for (const e of elements) if (e.startsWith(elementType)) return document.createElement(e);
 }
 
-//... just using globalThis.variable = value will leave the global variables mutable. Thus I use this defineProperty function to set writable: false. ... it's strange that by default exported variables are immutable while global variables are mutable. It should be the opposite for both cases. Usually if you have global access to something, like built-in functions or constants (pi), you only want to use or read them.
+//... just using globalThis.variable = value will leave the global variables mutable. Thus I use this defineProperty function to set writable: false. ... it's strange that by default exported variables are immutable while global variables are mutable. It should be the opposite for both cases.
 
 Object.defineProperty(globalThis, 'caps', {
   value: capitalizeFirstLetters,
@@ -61,7 +61,7 @@ Object.defineProperty(globalThis, 'ranks', {
 
 // GLOBAL MOBILE BOOLEAN (used to adapt certain code to mobile)
 const userAgent = navigator.userAgent.toLowerCase();
-let mobileBool = /iPhone|Android/i.test(navigator.userAgent);
+const mobileBool = /iPhone|Android/i.test(navigator.userAgent);
 const tabletBool = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent); // credits: eyehunts.com > https://tutorial.eyehunts.com/js/javascript-detect-mobile-or-tablet-html-example-code/
 const touchBool = mobileBool || tabletBool;
 if (mobileBool && tabletBool) isMobile = false; // assuming it's an Android tablet

@@ -14,7 +14,6 @@ const allQueriesGroups = []; // this one will also hold all the GBIFResults as a
 
 function create(data, querySubmit, rankSubmit)
 {
-	
 	if (resultOverview.style.opacity < 0.9) resultOverview.animate(fadeIn, fadeTime).onfinish = ()=>resultOverview.style.opacity = 1;
 	if (filterArea.style.opacity < 0.9) filterArea.animate(fadeIn, fadeTime).onfinish = ()=> filterArea.style.opacity = 1; // why 0.9? becuase maybe the user is so fast and hits enter on a pre-typed text just after having deleted a group. It's highly unlikely though.
 	
@@ -25,10 +24,9 @@ function create(data, querySubmit, rankSubmit)
 	}
 	
 	console.log(querySubmit, rankSubmit, data);
+	
 	let withinHigherTaxa = false;
 	if (rankSubmit.search('within') !== -1) withinHigherTaxa = true;
-	
-	//console.log(data);
 	
 	// CREATE GROUP TITLE SECTION / BEGINNING OF GROUP (OF RESULTS)
 	const newGroup = g();
@@ -51,8 +49,8 @@ function create(data, querySubmit, rankSubmit)
 	newGroup.append(circle1, line1, groupTitle, line2, circle2);
 	const groupResults = g();
 	body.append(newGroup, groupResults);
-			
-	groupTitle.addEventListener('click', () =>
+	
+	groupTitle.onclick = () =>
 	{
 		if (groupResults.style.display !== 'none')
 		{
@@ -65,7 +63,7 @@ function create(data, querySubmit, rankSubmit)
 				circle2.animate(fadeIn,fadeTime).onfinish = ()=> circle1.style.opacity = 1;
 				line2.style.display = 'none';
 				groupResults.animate(fadeOut,500).onfinish = ()=> groupResults.style.display = 'none';
-			};
+			}
 		} 
 		else 
 		{
@@ -85,20 +83,20 @@ function create(data, querySubmit, rankSubmit)
 				}
 			}
 		}
-	});
+	}
 	const theAni = groupTitle.animate({letterSpacing: ['0.2em','0.35em']},{duration: fadeTime, easing: 'ease-in-out'});
 	theAni.pause();
-	groupTitle.addEventListener('mouseover', () =>
+	groupTitle.onmouseover = () =>
 	{
-		if (theAni.playbackRate === -1) theAni.playbackRate = 1; // reverse() function mulitplies playbackRate with -1. So once the mouseout is triggered, it will be reversed here in the second mouseover use. Meaning every second usage of mouse over / out it would be inverted without this check.
+		if (theAni.playbackRate === -1) theAni.playbackRate = 1; // reverse() function multiplies playbackRate with -1. So once the mouseout is triggered, it will be reversed here in the second mouseover use. Meaning every second usage of mouse over / out it would be inverted without this check.
 		theAni.play();
 		theAni.onfinish = ()=> groupTitle.style['letter-spacing'] = '0.35em';
-	});
-	groupTitle.addEventListener('mouseout', () =>
+	}
+	groupTitle.onmouseout = () =>
 	{
 		theAni.reverse();
 		theAni.onfinish = ()=> groupTitle.style['letter-spacing'] = '0.2em';
-	});
+	}
 	// END GROUP TITLE SECTION
 	
 	// OBJECT THAT SAVES THE GROUP + SOME DATA
@@ -108,7 +106,7 @@ function create(data, querySubmit, rankSubmit)
 		group: groupResults,
 		name: querySubmit,
 		searchParameter: rankSubmit,
-		GBIFResults: [], // the objects
+		GBIFResults: [], // the objects / children / group content
 	}
 	allQueriesGroups.push(queryGroup); // ...AND ARRAY THAT HOLDS ALL THE GROUP OBJECTS
 	
@@ -120,6 +118,7 @@ function create(data, querySubmit, rankSubmit)
 	for (const eachArr of twoDArray) data.push(eachArr[1]);
 	// END SORT
 	
+	// GOING THROUGH AND CREATING THE INDIVIDUAL RESULTS (WITHIN A GROUP)
 	for (let x = 0; x < data.length; x++)
 	{	
 		// FILTER
@@ -128,19 +127,18 @@ function create(data, querySubmit, rankSubmit)
 		// ENDFILTER
 
 		rankSubmit = data[x].rank.toLowerCase(); // to get a rank, onto which create.js relies, in case user queried with 'any', 'canonicalName', 'highestRank', or 'keyID'
-		// 'targetRank' in the GBIFResult object is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (upper ranks ORDER, CLASS... are hidden), meaning FAMILY is the lowest rank / is the targetRank
+		// 'targetRank' in the GBIFResult object is the rank the user searched for: the lowest rank (target) is always displayed, also when the GBIF result is closed. If you searched for a FAMILY, the FAMILY taxaBlock is always displayed (higher ranks ORDER, CLASS... are hidden), meaning FAMILY is the lowest rank / is the targetRank
 		
 		// THE BASIC AREA FOR EACH RESULT
 		const blockRow = g();
 		blockRow.classList.add('blockRow');
-		//body.append(blockRow);
 		groupResults.append(blockRow);
 		
 		// THE COMPONENTS ON THE BASIC AREA - MADE UP OF THREE PARTS (ROWS)
 		
 		// the UPPER PART that shows interatable taxaBlocks ranks from KINGDOM up to SPECIES
 		const flexPartRanks = g();
-		// the MIDDLE PART that displays text information for a rank (clicked on a taxaBlock)
+		// the MIDDLE PART that displays text information for a rank (when clicked on a taxaBlock)
 		const line1 = g();
 		const flexPartDescription = g();
 		const line2 = g();
@@ -190,7 +188,7 @@ function create(data, querySubmit, rankSubmit)
 			functionAddNextOccurrence: null,
 			downloadedAllOccurrences: false,
 			functionCheckCurrentlyFetching: null,
-		};
+		}
 		
 		const rankProperties =
 		{
@@ -287,7 +285,7 @@ function create(data, querySubmit, rankSubmit)
 				GBIFResult[taxaKeys[y]].canonicalName = data[x][taxaKeys[y]];
 				GBIFResult[taxaKeys[y]].info = rankDescriptionContent;
 							
-				taxaBlocks[y].addEventListener('click',()=>{displayRank(GBIFResult, y)});
+				taxaBlocks[y].onclick = ()=> displayRank(GBIFResult, y);
 			}
 			else
 			{
@@ -301,7 +299,7 @@ function create(data, querySubmit, rankSubmit)
 				const theAni = taxaBlocks[y].animate(brightenHover(GBIFResult[taxaKeys[y]].color), fadeTime);
 				theAni.pause();
 				
-				taxaBlocks[y].addEventListener('mouseover', () =>
+				taxaBlocks[y].onmouseover = () =>
 				{
 					rankClassification.style['color'] = 'deepskyblue';
 					if (!GBIFResult[taxaKeys[y]].opened)
@@ -310,28 +308,26 @@ function create(data, querySubmit, rankSubmit)
 						theAni.play();
 						theAni.onfinish = ()=> taxaBlocks[y].style['background-color'] = 'hsl('+GBIFResult[taxaKeys[y]].color+', 70%, 70%)';
 					} 
-				})
-				taxaBlocks[y].addEventListener('mouseout', () =>
+				}
+				taxaBlocks[y].onmouseout = () =>
 				{
 					rankClassification.style['color'] = 'white';
 					if (!GBIFResult[taxaKeys[y]].opened)
 					{
 						theAni.reverse();
 						theAni.onfinish = ()=>{taxaBlocks[y].style['background-color'] = 'hsl('+GBIFResult[taxaKeys[y]].color+', 50%, 50%)'};
-						// I tried plugging into element.animate(brightenHover, {fill: "backwards", duration: fadeTime}), I also tried animationDirection: "reverse", but none of these worked.
-						// hint: you can't directly use onfinish on animation.cancel(), animation.reverse() or animation.finish() (which skips to finish). So you have to put the animation into a variable and expand it seperately with reverse() and onfinish.
-					} 
-				})
+					}
+				}
 			}
 			
 			flexPartRanks.append(taxaBlocks[y]);
 			if (taxaKeys[y] !== rankSubmit)
 			{
 				taxaBlocks[y].style.display = "none";
-				rankClassification.style.color = "rgba(255,255,255,0)"; //...became a necessity for animation, see description in else-part of GBIFResultOpenClose()
+				rankClassification.style.color = "rgba(255,255,255,0)"; //...became a necessity for animation, see description in else-part of GBIFResultOpenClose() in navigate.js
 				rankName.style.color = "rgba(255,255,255,0)";
 			}
-			if (taxaKeys[y] === rankSubmit) break; // if searched in rank GENUS, it will only create ranks until GENUS.
+			if (taxaKeys[y] === rankSubmit) break; // if e.g. searched in rank GENUS, it will only create ranks until GENUS.
 		}
 		
 		const arrow = g();
@@ -359,7 +355,7 @@ function createSummary(nothingFetched, querySubmit)
 		resultOverview.style.display = 'flex';
 		resultOverview.append(statBlock);
 		info.innerHTML = "Nothing found for <i><strong>"+querySubmit+"</i></strong>";
-		statBlock.animate({backgroundColor: ['rgba(255,80,50,1)','rgba(255,80,50,0.65)','rgba(255,80,50,1)','rgba(255,50,50,0)']},3000).onfinish =()=>
+		statBlock.animate({backgroundColor: ['rgba(255,80,50,1)','rgba(255,80,50,0.65)','rgba(255,80,50,1)','rgba(255,50,50,0)']},3000).onfinish = ()=>
 		{
 			statBlock.style.opacity = 0;
 			if (resultOverview.children.length === 1)
@@ -396,8 +392,8 @@ function createSummary(nothingFetched, querySubmit)
 		let moment = 0;
 		let backgroundColorAni;
 		let fontColorAni;
-		statBlock.addEventListener('mouseover', ()=> statBlock.animate([{backgroundColor: '#4C9590'},{backgroundColor: '#8FE2FF'}],fadeTime));
-		statBlock.addEventListener('mouseout', ()=> statBlock.animate([{backgroundColor: '#8FE2FF'},{backgroundColor: '#4C9590'}],fadeTime));
+		statBlock.onmouseover = ()=> statBlock.animate([{backgroundColor: '#4C9590'},{backgroundColor: '#8FE2FF'}],fadeTime);
+		statBlock.onmouseout = ()=> statBlock.animate([{backgroundColor: '#8FE2FF'},{backgroundColor: '#4C9590'}],fadeTime);
 		resultOverview.append(statBlock);
 		
 		if (touch)
@@ -453,7 +449,7 @@ function createSummary(nothingFetched, querySubmit)
 				
 				constructFilter();
 			}
-			else
+			else // user has just tapped / not holding mouse / touch on button => window moves to the result
 			{
 				backgroundColorAni.cancel();
 				fontColorAni.cancel();

@@ -29,7 +29,7 @@ speciesSuggestionTitle.innerHTML = 'Look for a Species...';
 suggestionInput.placeholder = 'Delph...';
 speciesSelection.placeholder = 'Delphinus Delphis';
 
-// let's wipe most of the area, except the upper title, and add everything manually, so that we idea of how which elements are added where:
+// let's wipe most of the area, except the upper title, and add everything manually, so that we have an idea of how which elements are added where:
 const newOccurrenceSpace = newSpeciesSpace.cloneNode(true);
 while (newOccurrenceSpace.children.length > 1) newOccurrenceSpace.children[1].remove();
 const topTitle = (isMobile) ? newOccurrenceSpace.children[0].children[0] : newOccurrenceSpace.children[0].children[1];
@@ -152,13 +152,7 @@ function openInput(div, dataKey)
 	if (dataKey === 'country')
 	{
 		countrySuggestion = g();
-		countrySuggestion.style.display = 'none';
-		countrySuggestion.style.position = 'absolute';
-		countrySuggestion.style['background-color'] = 'white';
-		countrySuggestion.style.color = '#325D77';
-		countrySuggestion.style.padding = '10px';
-		countrySuggestion.style['border-radius'] = '10px';
-		countrySuggestion.style.opacity = 1;	
+		countrySuggestion.classList.add('countrySuggestion');
 		body.append(countrySuggestion);
 		input.addEventListener('focusout', ()=> setTimeout(()=>{countrySuggestion.style.display = 'none';},500)) // without the delay it is not possible to click on a country.
 	}
@@ -188,9 +182,9 @@ function openInput(div, dataKey)
 		
 		if (dataKey === 'country')
 		{
-			if (entry.length >= 4)
+			if (entry.length >= 3)
 			{
-				countrySuggestion.innerHTML = '<strong>';
+				countrySuggestion.innerHTML = '';
 				countrySuggestion.style.display = 'block';
 				countrySuggestion.style.left = input.offsetLeft + 'px';
 				countrySuggestion.style.width = input.getBoundingClientRect().width+'px';
@@ -201,7 +195,7 @@ function openInput(div, dataKey)
 		{
 			for (const choice of data[dataKey][2])
 			{
-				if (dataKey === 'country' && entry.length >= 4 && choice.toLowerCase().includes(entry.toLowerCase()))
+				if (dataKey === 'country' && entry.length >= 3 && choice.toLowerCase().includes(entry.toLowerCase()))
 				{
 					const c = g();
 					c.innerHTML = choice;
@@ -218,6 +212,7 @@ function openInput(div, dataKey)
 					countrySuggestion.append(c);
 					countrySuggestion.style.top = input.offsetTop - 20 - countrySuggestion.getBoundingClientRect().height + 'px';
 				}
+				
 				if (entry === choice.toLowerCase())
 				{
 					ok.ok = true;
@@ -225,6 +220,7 @@ function openInput(div, dataKey)
 				}
 				else ok.ok = false;
 			}
+			if (dataKey === 'country' && countrySuggestion.innerHTML === '') countrySuggestion.style.display = 'none';
 		}
 		else if (data[dataKey][2] === 'number')
 		{

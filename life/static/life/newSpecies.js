@@ -155,12 +155,12 @@ canonicalName.oninput = ()=>
 	if (canonicalName.value.trim() === "")
 	{
 		canonicalName.style['background-color'] = null;
-		isUniqueLocalAndGBIF = true; // in case the user saves with a vernacular name(s) only.
+		isUniqueLocalAndGBIF = true;
 		return;
 	}
 	fetch('https://api.gbif.org/v1/species?name='+canonicalName.value.trim()+'&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c')
 	.then(response => response.json())
-	.then(incoming =>{isUniqueCanonicalName((incoming.results[0] === undefined) ? true : false, null)}); // I can't comprehend why, but for canonical names, the GBIF will actually send a results-array back, even though every canonical name is unique, and there would only be one result. It should actually be doing the same as with key queries, where it directly sends back the single species (any taxa), and not within a result array.
+	.then(incoming =>{isUniqueCanonicalName((incoming.results[0] === undefined) ? true : false, null)}); // I can't comprehend why, but for canonical names the GBIF will actually send a results-array back, even though every canonical name is unique, and there would only be one result. It should actually be doing the same as with key queries, where it directly sends back the single species (any taxa), and not within a result array.
 	fetch('/life/species?name='+canonicalName.value.trim())
 	.then(response => response.json())
 	.then(incoming =>{isUniqueCanonicalName(null, (incoming.results[0] === undefined) ? true : false)});
@@ -291,7 +291,7 @@ submit.onclick = ()=>
 parentSuggestion.oninput = ()=> provideSuggestions(parentSuggestion, suggestionSpace, "", getClickedSuggestion); // GBIF sets rank to genus by default, which is what we want here.
 function provideSuggestions(inputElement, areaForSuggestions, rank, clickOnSuggestionFun)
 {
-	areaForSuggestions.innerHTML = ""; // removes suggestions every time you change the string
+	areaForSuggestions.innerHTML = "";
 	if (inputElement.value.trim() === "") return;
 	fetch('https://api.gbif.org/v1/species/suggest?datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c&limit=50&q='+inputElement.value+((rank !== '') ? '&rank='+rank : '' ))
 	.then(response => response.json())

@@ -59,7 +59,7 @@ export default function search(querySubmit, rankSubmit, localDjangoDB)
 		let rankConditionFetchParam;
 		if (rankSubmit === 'any') rankConditionFetchParam = "";
 		else rankConditionFetchParam = "&rank="+rankSubmit;
-		fetchThis = (localDjangoDB) ? '/life/species/search?q='+ querySubmit + '&qField=VERNACULAR&limit=1000' : 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&isExtinct=false&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c'; // no rank necessary for localDjangoDB, as we only provide Species
+		fetchThis = (localDjangoDB) ? '/life/species/search?q='+ querySubmit + '&qField=VERNACULAR&limit=1000' : 'https://api.gbif.org/v1/species/search?q='+querySubmit+rankConditionFetchParam+'&qField=VERNACULAR&limit=1000&status=ACCEPTED&isExtinct=false&datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c';
 		console.log('vernacular name query');
 	}
 	if (!withinSearchActivated) checkResponse(fetchThis, querySubmit, rankSubmit);
@@ -109,6 +109,6 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 			// The test case that broke it: searching for the scientific name 'lemur' will yield the GENUS 'Lemur', which contains the famous (and only) SPECIES 'ring-tailed lemur'. But in fact there're 14 more genera (plural GENUS) of lemur, with 8 FAMILIES and around a 100 SPECIES. Among the 15 genera just happened to be one with the sole scientific name 'Lemur' ...because it found a scientific name for lemur, with the implementation you couldn't do any other query. And there would be a second find: an insect called "Lemur Hübner" (scientific name) or just 'Lemur' (canonical name). Thus the "scientific name" condition had to be a selectable option after all.
 		}
 		if (rankSubmit === 'keyID') create([incoming], querySubmit, rankSubmit); // when searching for a key ID, it'll not send an array with objects, but the species object directly. So for the create function it gets put in an array.
-		else create(incoming.results, querySubmit, rankSubmit); // gbif may respond with metadata object about the set, with the array of target objects being in '.results'.
+		else create(incoming.results, querySubmit, rankSubmit);
 	})
 }

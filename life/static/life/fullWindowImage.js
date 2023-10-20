@@ -6,11 +6,11 @@ const body = document.querySelector('body');
 const fullWindow = g();
 fullWindow.id = 'fullWindow';
 body.append(fullWindow);
-fullWindow.addEventListener('wheel', (event)=>
+fullWindow.onwheel = (event) =>
 {
 	if (event.deltaY > 0) goRight();
 	else goLeft();
-});
+}
 
 // THE FULL-WINDOW IMAGE
 const fullWindowImage = g('i'); // the fullWindow mode only has one image, of which the src gets changed on changing the image.
@@ -23,7 +23,7 @@ arrow.classList.add('fullWindowImageNavigationArrow');
 const arrowLeft = arrow.cloneNode();
 const arrowRight = arrow.cloneNode();
 arrowLeft.style['z-index'] = 3; 
-arrowRight.style['z-index'] = 4; 
+arrowRight.style['z-index'] = 4; // because of the SVG loading animation (svg2) that only appears around arrowRight and is already at z-index 3. It would block interaction if arrowRight wasn't set highter. fullWindow is z-index 1, fullWindowImage is z-index 2.
 arrowLeft.innerHTML = '⪡';
 
 arrowLeft.style.left = '5%';
@@ -40,9 +40,9 @@ arrowLeft.onmouseout = ()=>
 	arrowLeft.style.color = 'white';
 	arrowLeft.style.cursor = 'default';
 };
-arrowLeft.addEventListener('click', ()=> goLeft());
-arrowRight.addEventListener('click', ()=> goRight());
-fullWindow.append(arrowRight, arrowLeft)
+arrowLeft.onclick = ()=> goLeft();
+arrowRight.onclick = ()=> goRight();
+fullWindow.append(arrowRight, arrowLeft);
 
 const escape = g();
 escape.id = 'escape';
@@ -148,7 +148,7 @@ function fullWindowNavigationStates(state)
 	}
 }
 
-// 'present' means 'global' within this module. But since 'global' usually means app-wide, it's 'present' here.
+// tracking data as the user navigates through images
 var presentImageIndex = 0;
 var presentImgObject = null;
 var presentObject = null;
@@ -166,7 +166,7 @@ async function goRight()
 			fullWindowNavigationStates('atEndDownloadMore');
 			svg2.animate(fadeIn, fadeTime).onfinish = ()=> svg2.style.opacity = 1;
 			const theReturn = await presentImgObject.functionAddNextOccurrence();
-			if (!theReturn) while(!(await presentImgObject.functionCheckCurrentlyFetching())) console.log('addNextImage() IS IN LOCK!'); // this check-loop alls the svg2 to keep animating while the new image is being fetched. This case happens if it is triggered by scrolling right in the opened GBIFResult, and then clicking on the latest image (opening fullWindow) trying to go right in fullWindow. If it wasn't for this check, svg2 would just appear for a short flicker moment and then disappear as theReturn is a false. In other words: both, svg and svg2 are synchronized and appear for the same time.
+			if (!theReturn) while(!(await presentImgObject.functionCheckCurrentlyFetching())) console.log('addNextImage() IS IN LOCK!'); // this check-loop allows the svg2 to keep animating while the new image is being fetched. This case happens if it is triggered by scrolling right in the opened GBIFResult, and then clicking on the latest image (opening fullWindow) trying to go right in fullWindow. If it wasn't for this check, svg2 would just appear for a short flicker moment and then disappear as theReturn is a false. In other words: both, svg and svg2 are synchronized and appear for the same time.
 			svg2.animate(fadeOut, fadeTime).onfinish = ()=> svg2.style.opacity = 0;
 			lockedFetchNext = false;
 			if (presentImageIndex === presentImgObject.images.length-2) // if user has not gone off leftwards to look at the already loaded images while the next one is being fetched: it will set the new images to be displayed.
@@ -258,4 +258,5 @@ window.addEventListener('resize', ()=>
 		imagePlacement();
 	}
 });
+
 export {fullWindow, nextImageFullWindow, goLeft, goRight};

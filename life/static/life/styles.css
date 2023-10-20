@@ -456,6 +456,18 @@ select
 	}	
 }
 
+.countrySuggestion
+{
+	display: none;
+	position: absolute;
+	background-color: white;
+	color: #325D77;
+	padding: 10px;
+	border-radius: 10px;
+	z-index: 3;
+}
+
+
 /* IDs */
 #plusSign
 {

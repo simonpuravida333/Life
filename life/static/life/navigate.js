@@ -12,7 +12,7 @@ function displayRank(GBIFResult, y)
 		r.line2.style['border-color'] = r.taxaBlocks[taxaKeys.indexOf(r.targetRank)].style['background-color'];
 	}
 	
-	if (r.resultOpened || (!r[r.targetRank].opened && !r.resultOpened)) // this if-else makes certain that you can open a GBIFResult by directly clicking on the targetRank taxaBlock, the only taxaBlock visible when GBIFResult is closed. Hence it must also make certain that you don't close the targetRank when you click on it while the GBIFResult is closed, but that in this case it stays opened (because earlier you left the targetRank opened when you closed the GBIFResult over the 'arrow').
+	if (r.resultOpened || (!r[r.targetRank].opened && !r.resultOpened)) // this if-else makes certain that you can open a GBIFResult by directly clicking on the targetRank taxaBlock, the only taxaBlock visible when GBIFResult is closed. Hence it must also make certain that it doesn't close the targetRank when you click on it while the GBIFResult is closed, but that in this case it stays opened (because earlier you left the targetRank opened when you closed the GBIFResult over the 'arrow').
 	{
 		if (r[taxaKeys[y]].opened) r[taxaKeys[y]].opened = false;
 		else r[taxaKeys[y]].opened = true;
@@ -34,9 +34,9 @@ function displayRank(GBIFResult, y)
 	}
 	
 	let multiplicator = 0;
-	if (r[taxaKeys[y]].info.className === 'rankDescription' && r[taxaKeys[y]].openedFirstTime) // the second if-condition makes certain that it doesn't instantly get hidden, when opening it for the first time. So for the first click, it goes to the 'else' and replaces 'rankDescription' with 'rankDescription', but that's not a problem.
+	if (r[taxaKeys[y]].info.className === 'rankDescription' && r[taxaKeys[y]].openedFirstTime) // the second if-condition makes certain that it doesn't instantly get hidden, when opening it for the first time. So for the first click, it goes to the 'else' and literally replaces 'rankDescription' with 'rankDescription', but that's not a problem.
 	{
-		for (const contentBlock of r[taxaKeys[y]].info.children) // cycles through the description blocks (center part) of a rank object like species
+		for (const contentBlock of r[taxaKeys[y]].info.children) // cycles through the description blocks (center part) of a rank object like SPECIES
 		{
 			contentBlock.style.opacity = 1;
 			setTimeout(()=>
@@ -100,11 +100,11 @@ function GBIFResultOpenClose(GBIFResult, calledFromArrow, targetRankOpenedBefore
 			
 			for (const y of ranks)
 			{
-				if (r[taxaKeys[y]].opened) // checks which one were opened before to brigthen the taxaBlock background
+				if (r[taxaKeys[y]].opened) // checks which one were opened before to brighten the taxaBlock background
 				{
 					b[y].animate(brighten(r[taxaKeys[y]].color, true),fadeTime).onfinish = ()=>	b[y].style['background-color'] = 'hsl('+r[taxaKeys[y]].color+', 70%, 70%)';
 				}	
-				if (taxaKeys[y] === r.targetRank)  // there only as many blocks until targetRank.
+				if (taxaKeys[y] === r.targetRank)  // there're only as many blocks until targetRank.
 				{
 					setTimeout(()=>
 					{

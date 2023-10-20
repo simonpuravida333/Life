@@ -17,18 +17,18 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 	async function checkWidth() // automatically fills the horizontal space with images when clicking on a GBIF rank object.
 	{
 		if (((r.images.scrollWidth === r.images.offsetWidth && r.images.scrollWidth !== 0 && r.images.offsetWidth !== 0) || originOfCall === 'MEDIA') && counter < allImageSources.links.length)
-		// it will always load all MEDIA images, which are often just two or three images.
-		// ...but it will dynamically add OCCURRENCE (simultaneously): for as long as the content fills less than the width of the div (r.images, minus padding) it appears in, scrollWidth has the width of offsetWidth (= there's no scrolling). Only if content takes more space than its div, then: scrollWidth > offsetWidth. So we assume that if offset and scroll are the same, it means that not enough images have loaded yet to fill the horizontal space.
+		// it will always load all MEDIA images, which, if there are any, are usually just two or three images.
+		// ...but it will dynamically add OCCURRENCE (simultaneously): for as long as the content fills less than the width of the div (r.images, minus padding) it appears in: scrollWidth has the width of offsetWidth (= there's no scrolling). Only if content takes more space than its div, then: scrollWidth > offsetWidth. So we assume that if offset and scroll are the same, it means that not enough images have loaded yet to fill the horizontal space.
 		// the !== 0 condition is important because if you open the GBIF and then quickly close it (before scrollWidth becomes more than offsetWidth) both, scrollWidth and offsetWidth are === 0 again, fulfilling the first condition, and thus fetching OCCURRENCE images forever into a closed GBIF result.
 		{
 			if (originOfCall === 'OCCURRENCE') console.log("TRYING TO AUTO-ADD OCCURRENCE IMAGES");
 			else console.log("TRYING TO AUTO-ADD MEDIA IMAGES");
-			let promise = await addNextImage();
-			if (!promise) setTimeout(checkWidth,500); // it's false if unlockAddImage is false in addNextImage(), and will fall through the function instantly, returning to here. The setTimeout prevents a fast cpu-hijacking loop.
+			let foundImage = await addNextImage();
+			if (!foundImage) setTimeout(checkWidth,500); // it's false if unlockAddImage is false in addNextImage(), and will fall through the function instantly, returning to here. The setTimeout prevents a fast cpu-hijacking loop.
 			else checkWidth();
 		}
 	}
-	r.images.addEventListener('scroll', () => // loads more images whenever the user scrolls to right limit.
+	r.images.onscroll = ()=> // loads more images whenever the user scrolls to right limit.
 	{
 		// console.log("scrollWidth: "+r.images.scrollWidth);
 		// console.log("offsetWidth "+r.images.offsetWidth);
@@ -39,11 +39,11 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 			unlockPushRight = false;
 			addNextImage();
 		}
-	});
+	}
 	
 	async function addNextImage()
 	{
-		if (unlockAddImage) // this prevents concurrent calls from preview mode and full-window mode, which would cause it to load the same image multiple times: The user pushes right in the preview mode and triggers a call, and while it is still loading clicks on the latest image and clicks on arrowRight in full-window mode, triggering the same call.
+		if (unlockAddImage) // this prevents concurrent calls from preview mode and full-window mode, which would cause it to load the same image multiple times: The user pushes right in the preview mode and triggers a fetch, and while it is still loading clicks on the latest image and clicks on arrowRight in full-window mode, triggering the same call.
 		{	
 			unlockAddImage = false;
 			while(true)
@@ -75,7 +75,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		{
 			r.images.append(svg);
 			svg.animate(fadeIn, fadeTime);
-		} // if not -1, it means it didn't fetch an image in the previous getImage() call, so is still in the addNextImage() loop (animation fades out and gets removed when theImage is an image (is not false)). If it wasn't for this if-check, the animation would slightly flicker, as for every 404 when it runs through here, it's (re)appending and fading in the animation that is alreaedy there. Job if this if-check: while addNextImage loops through 404s, the animation stays a continuous loading animation until it finds an image.
+		} // if not -1, it means it didn't fetch an image in the previous getImage() call, so is still in the addNextImage() loop (animation fades out and gets removed when theImage is an image (is not false)). If it wasn't for this if-check, the animation would slightly flicker, as for every image-link-404 when it runs through here, it's (re)appending and fading-in the animation that is actually already there. Purpose of this if-check: while addNextImage loops through 404s, the animation stays a continuous loading animation until it finds an image.
 		r.images.scrollLeft = r.images.scrollWidth-r.images.offsetWidth-2; // makes the loading animation visible / moves the scroll (almost) to right end.
 		
 		console.log("FETCHING IMAGE");
@@ -84,7 +84,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		console.log("FETCHING DONE! After "+(new Date().getTime() - moment)+"ms");
 		
 		// console.log(Object.prototype.toString.call(theImage));
-		// console.log(theImage instanceof Error) // old design.
+		// console.log(theImage instanceof Error) // previous design. It now just returns a false.
 
 		if (!(!theImage)) await waitForAni();
 		else
@@ -100,9 +100,9 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 			await thePromise;
 			svg.remove();
 			// the interpreter doesn't wait for .onfinish.
-			// earlier I had  all the code beneath be within an anonymous function attached to '.onfinish'. The problem is that JS doesn't wait for svg.animate.onfinish, the interpreter just moves on. This worked as long as it was downloading the images, meaning they took time to arrive, but it would become iffy when images have been cached by the browser before. Let's say there are 20 images coming from fetch.js, it would run through getImage 20 times, each image taking around 10ms - 20ms with an SSD to be called from the cache, the fadeOut animation takes 333ms though (test case: 'Poecilotriccus luluae', canonical name). Placing console.logs revealed that all the content in this if-statement would stack up 20 times, then be called long after all the getImage runtimes were closed. That means that peripheral information like allImageSources.descriptions[counter] would be undefined by then ('counter' is gone), because the anonymous function kicked off by '.onfinish' is now just floating alone in the runtime. So yes, yet another async function. All it does is waiting for the animation. This is important to have svg.remove() happen before image appears.
+			// earlier I had all the code beneath be within an anonymous function attached to '.onfinish'. Animations are asynchronous, the interpreter just moves on. This worked as long as it was downloading the images, meaning they took enough time to arrive for the 333ms fade animation of the loading animation, but it would become iffy when images have been cached by the browser before. Let's say there are 20 images coming from fetch.js, it would run through getImage 20 times, each image taking around 10ms - 20ms with an SSD to be called from the cache. Placing console.logs revealed that all the content in this if-statement would stack up 20 times, then be called long after all the getImage runtimes were closed. So yes, yet another async function. All it does is waiting for the animation. This is important to have svg.remove() happen before image appears.
 			
-			// image.src gets added to an array for full-window display. Image in r.images and on full-window display demand different display attributes. The browser will know that it is the same cached image (and not download it a second time).
+			// image.src gets added to an array for full-window display (r.imagesObject.images). Image in r.images and on full-window display demand different display attributes. The browser will know that it is the same cached image (and not download it a second time).
 
 			if (originOfCall === 'MEDIA') // MEDIA images added to the left end, OCCURRENCES to the right.
 			{
@@ -150,7 +150,7 @@ function displayImages(allImageSources, GBIFResult, originOfCall, y)
 		const thePromise = new Promise(resolve =>
 		{	
 			let timeout;
-			if (originOfCall === 'OCCURRENCE') // MEDIA images, hosted on the GBIF, are allowed to take longer. They can be big. What matters is that occurrence images keep coming in.
+			if (originOfCall === 'OCCURRENCE') // MEDIA images are allowed to take longer (and often do), they can be big. What matters is that occurrence images keep coming in.
 			{
 				const start = new Date().getTime();
 				timeout = setInterval(()=>
@@ -223,15 +223,16 @@ function renderImageText(theImage, theText, frameColor)
 		renderedText.style.top = mouse.clientY+window.scrollY-renderedText.clientHeight/2+10+'px';
 		renderedText.style.left = mouse.clientX+50+'px';
 	}
-	theImage.addEventListener('mouseover',()=>
+	
+	theImage.onmouseover = ()=>
 	{
 		isHovering = true;
 		renderedText.style.display = 'block';
 		theImage.style['cursor'] = 'cell';
 		renderedText.style.color = 'rgba(255, 255, 255, 0)';
 		renderedText.animate(fadeIn, 200).onfinish = ()=> {renderedText.style.opacity = 1; renderedText.animate(fontOpacityZeroToFull(255,255,255,true), 200).onfinish= ()=> renderedText.style.color = 'rgba(255, 255, 255, 1)';};
-	});
-	theImage.addEventListener('mouseout',()=>
+	}
+	theImage.onmouseout = ()=>
 	{
 		isHovering = false;
 		theImage.style['cursor'] = 'auto';
@@ -240,22 +241,22 @@ function renderImageText(theImage, theText, frameColor)
 			renderedText.style.opacity = 0;
 			if (!isHovering) renderedText.style.display = 'none'; // if you make quick movements leaving the image surface and going over it again, you may be back on the image surface under 200ms. So if it wasn't for this if-check it would then make display= none, even if you were hovering again.
 		}
-	});
+	}
 }
 
 function clickOnImage(theImage, GBIFResult, originOfCall)
 {
-	if (touch)
+	if (touch) // for mobile, it's its whole image-full-screen implementation. Meaning no fullWindowImage.js for touch === true.
 	{
 		if (GBIFResult.mobileFullWidthImage.src === theImage.src) return; 
 		let trackX = 0;
 		let trackY = 0;
-		theImage.addEventListener('touchstart',(event)=>
+		theImage.ontouchstart = (event)=>
 		{
 			trackX = event.changedTouches[0].clientX;
 			trackY = event.changedTouches[0].clientY;
-		});
-		theImage.addEventListener('touchend',(event)=>
+		}
+		theImage.ontouchend = (event)=>
 		{
 			let deltaX = event.changedTouches[0].clientX - trackX;
 			let deltaY = event.changedTouches[0].clientY - trackY;
@@ -268,13 +269,13 @@ function clickOnImage(theImage, GBIFResult, originOfCall)
 			else GBIFResult.mobileFullWidthImage.style.width = theImage.naturalWidth+'px';
 			//GBIFResult.mobileFullWidthImage.style['border-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
 			//GBIFResult.mobileFullWidthImage.style['outline-color'] = `hsl(${GBIFResult.species.color}, 60%, 60%)`;
-			window.onresize = ()=> // flipping screen
+			window.addEventListener('resize', ()=> // flipping screen
 			{
 				if (theImage.naturalWidth > GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width) GBIFResult.mobileFullWidthImage.style.width = GBIFResult.mobileFullWidthImageDiv.getBoundingClientRect().width+'px';
-			}
-		});
+			});
+		}
 	}
-	else theImage.addEventListener('click',()=> nextImageFullWindow(true, 0, Array.prototype.indexOf.call(GBIFResult.images.children, theImage), GBIFResult));
+	else theImage.onclick = ()=> nextImageFullWindow(true, 0, Array.prototype.indexOf.call(GBIFResult.images.children, theImage), GBIFResult);
 	
 	if (fullWindow.style.display === 'block' && originOfCall === 'MEDIA') nextImageFullWindow(false, 1); // automatically prepends MEDIA image without user noticing it when you're in fullWindow mode.
 }

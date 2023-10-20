@@ -14,13 +14,13 @@ function constructFilter()
 		while (allRankFilters[index].children.length > 0) allRankFilters[index].children[0].remove(); // removes all the selectable option elements.
 	}
 	
-	for (let every in allRanksOfAllResults) delete allRanksOfAllResults[every]; // look at this fuss, just to keep global (modul-wide, actually) 'const'.
+	for (let every in allRanksOfAllResults) delete allRanksOfAllResults[every];
 	for (let every in howManySpecies) delete howManySpecies[every];
 	console.log('FILTERS REFRESHED!');
 	// END REFRESH
 	
 	const everyArrayOfOptions = []; // an array that holds seven rank-arrays, each with all the filter options / canonicalNames of that rank
-	for (const index of ranks) everyArrayOfOptions[index] = []; // gets all the options (or rather the string for 'value') for each rankFilter. The sole job of this array is to allow select-options to conveniently get sorted alphabetically, or I would have created the options directly (instead of first putting them into this array).
+	for (const index of ranks) everyArrayOfOptions[index] = []; // gets all the options (or rather the string for 'value') for each rankFilter. The sole job of this array is to allow select-options to conveniently get sorted alphabetically.
 	// END REFRESH
 
 	for (const result of allGBIFResults) // fills allRanksOfAllResults with an array for every result. The array arrayOfRanks holds every canonicalName of every rank from kingdom to targetRank
@@ -62,7 +62,7 @@ function constructFilter()
 		opt.value = '...';
 		opt.innerHTML = '.&nbsp;&nbsp;.&nbsp;&nbsp;.';
 		allRankFilters[index].append(opt);
-		if (index === 0 || index === 6) continue; // 'No rank.' doesn't exist for kingdom, neither does it for species (if you find a species result, then it obviously exists). In between though appropriate ranks is still very much an ongoing debate of classification in the life science community.
+		if (index === 0 || index === 6) continue; // 'No rank.' doesn't exist for kingdom, neither does it for species (if you find a species result, then it obviously exists). In between though, appropriate ranks are still very much an ongoing debate of classification in the life science community.
 		const opt2 = g('o');
 		opt2.value = 'No rank.';
 		opt2.innerHTML = '<i>No rank.</i>';
@@ -111,7 +111,7 @@ function selectRank(rankIndex) // this function is called every time the user se
 	highlightOptionsLowerRanks(rankIndex);
 }
 
-function filterResults() // select the results accordingly to the set filter.
+function filterResults() // select the results according to the set filter.
 {	
 	let filterParameter = '...';
 	let taxaKey = '';

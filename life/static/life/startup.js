@@ -13,7 +13,6 @@ const body = document.querySelector('body');
 
 // let isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
 
-//console.log(document.styleSheets)
 for (const sheet of document.styleSheets)
 {
 	if (sheet.href === null) continue; // for Opera.
@@ -53,7 +52,7 @@ window.addEventListener('keydown', (event)=>
 	}
 	if (key === arrowDown && rankCondition.value === 'allRanks')
 	{
-		setTimeout(()=> {rankCondition.value = 'canonicalName'; rankCondition.style['width'] = '240px';}, 10); // despite having a change-listener, when using the keyboard, the width doesn't adjust in these two cases, but works for 'highest rank' (??).
+		setTimeout(()=> {rankCondition.value = 'canonicalName'; rankCondition.style['width'] = '240px';}, 10);
 	}
 	if (key === arrowUp && rankCondition.value === 'canonicalName')
 	{
@@ -102,7 +101,7 @@ const canonicalName = g('o');
 canonicalName.value = 'canonicalName';
 canonicalName.innerHTML= 'CANONICAL NAME';
 
-rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canonicalName)
+rankCondition.append(seperation, any, highestRank, allRanks, seperation2, canonicalName);
 
 searchSection.classList.add('blockRow', 'flexPart');
 searchSection.style['z-index'] = 2;
@@ -128,56 +127,44 @@ withinSearch.append(withinSearchCore);
 searchSection.append(inputSearch, rankCondition, withinSearch/*, searchGo, findTaxonomy, newSpecies, newOccurrence, howTo*/); // purpose of commented-out buttons replaced with elements from graphics.js (parentSquares[] elements and blossom element). All the original buttons are left throughout this module; only their activation (append and attached functions) is commented-out; in case of quick re-activation being desired.
 body.append(howToSpace, spaceForNature, searchSection);
 
-inputSearch.addEventListener('mouseover',()=>
+inputSearch.onmouseover = ()=> {if (inputSearch !== document.activeElement)
 {
-	if (inputSearch !== document.activeElement) 
-	{
-		if (!withinSearchActivated) inputSearch.animate([{backgroundColor: '#4C9590' },{backgroundColor: '#8FE2FF' }],fadeTime);
-		else inputSearch.animate({backgroundColor: ['orange','white']},fadeTime);
-	}
-});
-inputSearch.addEventListener('mouseout',()=>
+	if (!withinSearchActivated) inputSearch.animate([{backgroundColor: '#4C9590' },{backgroundColor: '#8FE2FF' }],fadeTime);
+	else inputSearch.animate({backgroundColor: ['orange','white']},fadeTime);
+}}
+inputSearch.onmouseout = ()=> {if (inputSearch !== document.activeElement)
 {
-	if (inputSearch !== document.activeElement)
-	{
-		if (!withinSearchActivated) inputSearch.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#4C9590' }],fadeTime);
-		else inputSearch.animate({backgroundColor: ['white','orange']},fadeTime);
-	}
-});
-rankCondition.addEventListener('mouseover',()=>
+	if (!withinSearchActivated) inputSearch.animate([{backgroundColor: '#8FE2FF' },{backgroundColor: '#4C9590' }],fadeTime);
+	else inputSearch.animate({backgroundColor: ['white','orange']},fadeTime);
+}}
+rankCondition.onmouseover = ()=> {if (rankCondition !== document.activeElement)
 {
-	if (rankCondition !== document.activeElement)
-	{
-		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#4C9590','#8FE2FF']},fadeTime);
-		else rankCondition.animate({backgroundColor: ['orange','white']},fadeTime);
-	}
-});
-rankCondition.addEventListener('mouseout',()=>
+	if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#4C9590','#8FE2FF']},fadeTime);
+	else rankCondition.animate({backgroundColor: ['orange','white']},fadeTime);
+}}
+rankCondition.onmouseout = ()=> {if (rankCondition !== document.activeElement)
 {
-	if (rankCondition !== document.activeElement)
-	{
-		if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#8FE2FF','#4C9590']},fadeTime);
-		else rankCondition.animate({backgroundColor: ['white','orange']},fadeTime);
-	}
-});
-searchGo.addEventListener('mouseover', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
-searchGo.addEventListener('mouseout', ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
-findTaxonomy.addEventListener('mouseover', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)});
-findTaxonomy.addEventListener('mouseout', ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)});
-newSpecies.addEventListener('mouseover', ()=> newSpecies.animate([{backgroundColor: 'orange'},{backgroundColor: '#ffe164'}],fadeTime).onfinish = ()=>{newSpecies.style['background-color'] = '#ffe164';});
-newSpecies.addEventListener('mouseout', ()=> newSpecies.animate([{backgroundColor: '#ffe164'},{backgroundColor: 'orange'}],fadeTime).onfinish = ()=>{newSpecies.style['background-color'] = null;});
-newOccurrence.addEventListener('mouseover', ()=> newOccurrence.animate([{backgroundColor: 'orange'},{backgroundColor: '#ffe164'}],fadeTime).onfinish = ()=>{newOccurrence.style['background-color'] = '#ffe164';});
-newOccurrence.addEventListener('mouseout', ()=> newOccurrence.animate([{backgroundColor: '#ffe164'},{backgroundColor: 'orange'}],fadeTime).onfinish = ()=>{newOccurrence.style['background-color'] = null});
+	if (!withinSearchActivated) rankCondition.animate({backgroundColor:[ '#8FE2FF','#4C9590']},fadeTime);
+	else rankCondition.animate({backgroundColor: ['white','orange']},fadeTime);
+}}
+searchGo.onmouseover = ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)}
+searchGo.onmouseout = ()=> {if (searchGo !== document.activeElement) searchGo.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)}
+findTaxonomy.onmouseover = ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#2BAF60'},{backgroundColor: '#8AED97'}],fadeTime)}
+findTaxonomy.onmouseout = ()=> {if (findTaxonomy !== document.activeElement) findTaxonomy.animate([{backgroundColor: '#8AED97'},{backgroundColor: '#2BAF60'}],fadeTime)}
+newSpecies.onmouseover = ()=> newSpecies.animate([{backgroundColor: 'orange'},{backgroundColor: '#ffe164'}],fadeTime).onfinish = ()=>{newSpecies.style['background-color'] = '#ffe164';}
+newSpecies.onmouseout = ()=> newSpecies.animate([{backgroundColor: '#ffe164'},{backgroundColor: 'orange'}],fadeTime).onfinish = ()=>{newSpecies.style['background-color'] = null;}
+newOccurrence.onmouseover = ()=> newOccurrence.animate([{backgroundColor: 'orange'},{backgroundColor: '#ffe164'}],fadeTime).onfinish = ()=>{newOccurrence.style['background-color'] = '#ffe164';}
+newOccurrence.onmouseout = ()=> newOccurrence.animate([{backgroundColor: '#ffe164'},{backgroundColor: 'orange'}],fadeTime).onfinish = ()=>{newOccurrence.style['background-color'] = null}
 
-withinSearch.addEventListener('mouseover', ()=>
+withinSearch.onmouseover = ()=>
 { 
 	if (!withinSearchActivated) withinSearch.animate({borderColor: ['#4C9590','orange']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = 'orange';
-});
-withinSearch.addEventListener('mouseout', ()=>
+}
+withinSearch.onmouseout = ()=>
 { 
 	if (!withinSearchActivated) withinSearch.animate({borderColor: ['orange','#4C9590']},fadeTime).onfinish = ()=> withinSearch.style['border-color'] = '#4C9590';
-});
-withinSearch.addEventListener('click', ()=>
+}
+withinSearch.onclick = ()=>
 {
 	withinSearchActivated ^= true;
 	
@@ -204,7 +191,7 @@ withinSearch.addEventListener('click', ()=>
 		rankCondition.animate({opacity: [1,0]},333).onfinish = ()=> rankCondition.animate({opacity: [0,1]},333);
 		inputSearch.animate({opacity: [1,0]},333).onfinish = ()=> {inputSearch.animate({opacity: [0,1]},333); searchSection.insertBefore(inputSearch, rankCondition)}
 	}
-});
+}
 
 function limitOptions(limit)
 {
@@ -256,7 +243,7 @@ for (const rank of taxaKeys)
 	selectTitle.classList.add('selectTitle');
 	const rankFilter = g('s');
 	rankFilter.classList.add('filter');
-	rankFilter.addEventListener('change', ()=> selectRank(taxaKeys.indexOf(rank)));
+	rankFilter.onchange = ()=> selectRank(taxaKeys.indexOf(rank));
 	allRankFilters.push(rankFilter);
 	container.append(selectTitle, rankFilter);
 	filterArea.append(container);
@@ -267,26 +254,14 @@ for (const rank of taxaKeys)
 }
 // END FILTER AREA
 
-searchSection.addEventListener('change', ()=>
+searchSection.onchange = ()=>
 {
-	if (rankCondition.value === 'seperation')
-	{
-		rankCondition.value = 'species';
-	}
-	if (rankCondition.value === 'highestRank')
-	{
-		rankCondition.style.width = '200px';
-	}
-	else if (rankCondition.value === 'allRanks')
-	{
-		rankCondition.style.width = '160px';
-	}
-	else if (rankCondition.value === 'canonicalName')
-	{
-		rankCondition.style.width = '240px';
-	}
+	if (rankCondition.value === 'seperation') rankCondition.value = 'species';
+	if (rankCondition.value === 'highestRank') rankCondition.style.width = '200px';
+	else if (rankCondition.value === 'allRanks') rankCondition.style.width = '160px';
+	else if (rankCondition.value === 'canonicalName') rankCondition.style.width = '240px';
 	else if (!withinSearchActivated) rankCondition.style = null;
-});
+}
 
 //searchGo.onclick = ()=>
 parentSquares[0].onclick = ()=>
@@ -400,4 +375,4 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 
 export {searchSection, inputSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, closeNewSpeciesOccurrence};
 
-// To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which make the same object global. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window (because if you're in the outermost scope, you are in the window-object, thus self === window). BUT: globalThis is the standard meanwhile, the only one that will work in all kinds of environments from browsers to Node.js and more.
+// To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which make the same object global. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window (because if you're in the outermost scope, you are in the window-object, thus self === window). Important: globalThis is the standard meanwhile, the only one that will work in all kinds of environments from browsers to Node.js and more.

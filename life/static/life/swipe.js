@@ -2,7 +2,7 @@ const body = document.querySelector('body');
 
 export default function touchResponse(element, closeElement)
 {
-	if (element === null) // important to detach listener after closing a star.
+	if (element === null)
 	{
 		body.ontouchstart = null;
 		body.ontouchend = null;

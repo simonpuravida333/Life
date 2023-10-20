@@ -15,13 +15,9 @@ if (!isMobile)
 	topBar.children[3].onmouseover = ()=> topBar.children[3].innerHTML = '⦿';
 	topBar.children[3].onmouseout = ()=> topBar.children[3].innerHTML = '⊙';
 	topBar.children[3].onclick = ()=> taxaNavigator.animate({opacity: [1,0]},333).onfinish = ()=> taxaNavigator.style.display = 'none';
-	taxaNavigator.append(topBar);
 }
-else 
-{
-	topBar.children[0].innerHTML = 'TAXONOMY NAVIGATOR';
-	taxaNavigator.append(topBar);
-}
+else topBar.children[0].innerHTML = 'TAXONOMY NAVIGATOR';
+taxaNavigator.append(topBar);
 
 const information = g();
 information.innerHTML = 'Look for canonical name suggestions in any rank you want.<br>To refresh everything, delete the name of the highest taxonomy.';
@@ -69,9 +65,9 @@ async function constructInputFields()
 		typeMoments.push(new Date().getTime());
 		let avg = 0;
 		for (let x = 0; x< typeMoments.length-1; x++) avg += typeMoments[x+1] - typeMoments[x];
-		console.log(avg/typeMoments.length);
+		//console.log(avg/typeMoments.length);
 		
-		for (let space = rank; space < ranks.length; space++) spacesForSuggestions[space].innerHTML = ""; // removes suggestions every time you change the string
+		for (let space = rank; space < ranks.length; space++) spacesForSuggestions[space].innerHTML = "";
 		if (findRanks[rank].value === "")
 		{
 			for (const counter of ranks) if (counter > rank)
@@ -80,10 +76,11 @@ async function constructInputFields()
 				findRanks[counter].style.display = 'block';
 				rankDivisions[counter].children[0].style.opacity = 0;
 				findRanks[counter].style.opacity = 0;
-				setTimeout(()=>{
+				setTimeout(()=>
+				{
 					rankDivisions[counter].children[0].animate({opacity: [0,1]},500).onfinish = ()=> rankDivisions[counter].children[0].style.opacity = 1;
 					findRanks[counter].animate({opacity: [0,1]},500).onfinish = ()=> findRanks[counter].style.opacity = 1;
-				},200*(counter-rank-1))
+				},200*(counter-rank-1));
 				findRanks[counter].value = "";		
 			}
 			return;
@@ -118,7 +115,7 @@ async function constructInputFields()
 				aSuggestion.onclick = ()=>
 				{
 					suggestionBlockClickStyling(aSuggestion, previousClick);
-					for (const space in spacesForSuggestions) if (space != rank) spacesForSuggestions[space].innerHTML = ""; // clears suggestion collections of other ranks if you type into a different rank (to get new suggestions). // while (spacesForSuggestions[space].children.length > 0)spacesForSuggestions[space].children[0].remove();  // caution: rank is an integer while space is a stringified integer (for-in loop). So it needs implicit comparision.
+					for (const space in spacesForSuggestions) if (space != rank) spacesForSuggestions[space].innerHTML = ""; // clears suggestion collections of other ranks if you type into a different rank (to get new suggestions). // caution: rank is an integer while space is a stringified integer (for-in loop). So it needs implicit comparision. // while (spacesForSuggestions[space].children.length > 0)spacesForSuggestions[space].children[0].remove();
 					setSelection(suggestions[suggestion]);
 					getClickedSelection(suggestions[suggestion]);
 				}
@@ -277,8 +274,8 @@ function FORMER_fetchChildren(parent, childRank) // works perfectly
 		}
 		const variousRanks = {};
 		// GBIF may send more distant generations / ranks of children. There are two kinds of more distant children: first are the important ones that are direct children but more distant children. You can see that when looking through the result object of children where as a parent a more distant generation / rank is given. Second, there are "overspill-children": if there are less direct children than the fetch-limit-parameter, GBIF will simply send additional children of the next / lower rank. In this case they aren't direct children, but grand-children. ...I was first oblivious to this fact, not knowing that the GBIF always uses the limit, even if it isn't given as a parameter, as it was in my case: so it uses the default limit of 20. I was assuming it would yield every direct child. But when I looked over the results I became suspicious that it would find 16 classes for phylum 'Chordata' plus 4 orders that all began with 'A'. Remembering that the standard limit (for other fetch calls) was twenty, it dawned to me that it doesn't at all send me a complete direct children package. So now I've set a limit and put it to max (1000) of which I only take the most direct ones, making certain I get all of them.
-		// In case there are no direct children (rank missing) but more distant children that have not directly set a distant parent (the ones that wouldn't appear for children-fetch), I use fetchGrandchildren (and grand-grand...) which uses a different API call.
-		// IMPORTANT: sometimes GBIF sends multiple distant direct children of various distant ranks, like species and genera with same one parent phylum.
+		// In case there are no direct children (rank missing) but more distant children that have not directly set a distant parent (the ones that wouldn't appear for children-fetch), I use fetchGrandchildren (and grand-grand...) which uses a different API call. // NOTE: fetchGrandchildren is deactivated. As this module evolved it became obsolete.
+		// IMPORTANT: sometimes GBIF sends multiple distant direct children of various distant ranks, like species and genera within same one parent phylum.
 		for (const child of children) variousRanks[child.rank] = [];
 		for (const child of children) variousRanks[child.rank].push(child);			
 		let highestRank = 6; // remember, the higher the rank, the lower the number: kingdom = 0, species = 6. What we are doing here is to find the least-distant children. So if within a phylum we get genera and species as children, we want the genera first, that would be the highest rank among the children.
@@ -355,7 +352,7 @@ function makeChildren(children, theRank)
 		colorDegree += 4;
 		const aChild = createSuggestionBlock(colorDegree);
 		childrenDivs.push(aChild);
-		if (children[child].canonicalName === undefined) aChild.innerHTML = children[child].scientificName; // viruses, bacteria often don't have canonical names; their names may sound like generic designations.
+		if (children[child].canonicalName === undefined) aChild.innerHTML = children[child].scientificName; // viruses, bacteria often don't have canonical names; their names may look like generic designations.
 		else aChild.innerHTML = children[child].canonicalName;
 		spacesForSuggestions[theRank].append(aChild);
 		if (child >= showLimit) aChild.style.display = 'none';
@@ -392,7 +389,7 @@ function makeChildren(children, theRank)
 		number.style['font-size'] = '30px';
 		showMore.append(plus, number)
 		spacesForSuggestions[theRank].append(showMore);
-		showMore.addEventListener('click', ()=> showMoreChildren(false));
+		showMore.onclick = ()=> showMoreChildren(false);
 		
 		showAll = g();
 		showAll.innerHTML = 'Show All';
@@ -402,7 +399,7 @@ function makeChildren(children, theRank)
 		showAll.style.margin = '0px';
 		showAll.style['margin-left'] = '40px';
 		spacesForSuggestions[theRank].append(showAll);
-		showAll.addEventListener('click', ()=> showMoreChildren(true));
+		showAll.onclick = ()=> showMoreChildren(true);
 	}
 
 	function showMoreChildren(all)

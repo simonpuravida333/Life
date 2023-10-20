@@ -1,5 +1,7 @@
 import touchResponse from './swipe.js'
 
+// this module contains individually created ("scripted" that is) graphics. As they appear only once, and as I was designing and figuiring out on the fly, all the styling is set in JS, just in this module.
+
 const spaceForNature = g();
 spaceForNature.classList.add('flexPart');
 if (isMobile)
@@ -131,7 +133,7 @@ for (let x = 0; x < squares.length; x++)
 	}
 }
 
-texts[0].innerHTML = 'GO'
+texts[0].innerHTML = 'GO';
 texts[0].style['font-size'] = '55px';
 texts[1].innerHTML = 'LO\nCATE';
 texts[1].style['line-height'] = '25px';
