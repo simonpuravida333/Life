@@ -67,7 +67,8 @@ function handleMove(event, element)
 	lockUnlock();
 	let delta = event.changedTouches[0].clientX - startPosition;
 	if (delta > 0) return;
-	element.style.left = delta+'px';
+	//element.style.left = delta+'px';
+	element.style.opacity = 1 - 300/delta;
 	delta = delta*-1;
 	element.style.opacity = (pullLimit-delta)/pullLimit;
 	if (delta > pullLimit)

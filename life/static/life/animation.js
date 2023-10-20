@@ -55,7 +55,7 @@ shape2.animate(loadRotate, loadTiming);
 
 const colorTransitions = ['hsl(25,100%,57.5%)','hsl(50,100%,45%)','hsl(75,100%,45%)','hsl(100,100%,45%)','hsl(125,100%,45%)','hsl(150,100%,45%)','hsl(175,100%,45%)','hsl(200,100%,60%)','hsl(175,100%,45%)','hsl(150,100%,45%)','hsl(125,100%,45%)','hsl(100,100%,45%)','hsl(75,100%,45%)','hsl(50,100%,45%)','hsl(25,100%,57.5%)'];
 const loadColorTransition = { stroke: colorTransitions };
-// just going from hsl(25... to hsl(100... directly won't make it move through the spectrum. It just jumps from orange to blue, with some grey as a transitional colour, and not a mix of both (green), which I was assuming and hoping for first. Thinking about it, it's probably because orange and blue are complimentary colours, so they cancel each other out, leaving it colourless in the transition. After all it's light that gets added up (additive colour), that's why; in case of subtractive colours (like watercolours on paper) it would indeed be green in between.
+// just going from hsl(25... to hsl(100... directly won't make it move through the spectrum. It just jumps from orange to blue, with some grey as a transitional colour, and not a mix of both (green), which I was assuming and hoping for first. Thinking about it, it's probably because orange and blue are complimentary colours, so they cancel each other out, leaving it colourless in the transition. After all it's light that gets added up (additive colour); in case of subtractive colours (like watercolours on paper) it would indeed be green in between.
 
 const loadTiming2 =
 {

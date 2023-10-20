@@ -60,7 +60,7 @@ submit.onclick = sendToBackend;
 
 const enteredData = {};
 const allOKs = [];
-const data = { // third slot is the condition for submit that must be met
+const data = { // third slot / index 2 is the condition for submit that must be met
 	// ANY LETTER STRING
 	waterBody: ['Water body', 'Name an ocean, ocean region, lake...', /[a-z]{2,}/i],
 	locality: ['Locality', 'Name a place, like the name of a mountain, bay, county...', /[a-z]{2,}/i], // "NY"
