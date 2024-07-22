@@ -6,8 +6,7 @@ You can also add your own new specieses and occurrences (sightings), which get s
 
 New visual design. It's mobile responsive.
 
-To run it, you need python and Django.
-#### you also need this package installed: https://pypi.org/project/django-cors-headers/
+To run it, you need python and Django. You also need this package installed: https://pypi.org/project/django-cors-headers/
 
 Go to the root of the folder and enter the command:
 
