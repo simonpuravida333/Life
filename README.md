@@ -7,12 +7,12 @@ You can also add your own new specieses and occurrences (sightings), which get s
 New visual design. It's mobile responsive.
 
 To run it, you need python and Django.
+#### you also need this package installed: https://pypi.org/project/django-cors-headers/
+
 Go to the root of the folder and enter the command:
 
 ### python manage.py runserver
 #### in the browser search bar add '/life' to your local server address
-
-#### you also need this package installed: https://pypi.org/project/django-cors-headers/
 
 #### And you're good to go :)
 
