@@ -38,8 +38,7 @@ window.addEventListener('keydown', (event)=>
 	// SEARCH ELEMENT
 	if (key === enterKey && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
 	{
-		search(inputSearch.value.trim(), rankCondition.value);
-		if (rankCondition.value !== 'highestRank' && rankCondition.value !== 'allRanks' && rankCondition.value !== 'any') search(inputSearch.value.trim(), rankCondition.value, true);
+		doubleSearch(inputSearch.value.trim(), rankCondition.value)
 		inputSearch.value="";
 	}
 	if (key === arrowDown && rankCondition.value === 'species')
@@ -193,9 +192,22 @@ withinSearch.onclick = ()=>
 	}
 }
 
-var serversResponded = []
-function foundAnything(anything)
+function doubleSearch(input, rank)
 {
+	foundAnything(undefined, true)
+	search(input, rank); // GBIF
+	if (rank !== 'highestRank' && rank !== 'allRanks' && rank !== 'any') search(input, rank, true); // DJANGO
+}
+
+var serversResponded = []
+function foundAnything(anything, reset)
+{
+	if (reset)
+	{
+		serversResponded = [];
+		return
+	}
+	
 	serversResponded.push(anything)
 	if (serversResponded.length == 2)
 	{
@@ -282,8 +294,7 @@ parentSquares[0].onclick = ()=>
 {
 	if (inputSearch.value.trim() !== "")
 	{
-		search(inputSearch.value.trim(), rankCondition.value);
-		if (rankCondition.value !== 'highestRank' && rankCondition.value !== 'allRanks' && rankCondition.value !== 'any') search(inputSearch.value.trim(), rankCondition.value, true);
+		doubleSearch(inputSearch.value.trim(), rankCondition.value);
 		inputSearch.value="";
 	}
 }

@@ -9,11 +9,11 @@ body
 
 /* Track */ 
 ::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0);
+  background: mediumaquamarine;
   outline: none;
-  border-radius:9px;
+
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: white;
@@ -25,11 +25,11 @@ body
   background: #bbbbbb;
   cursor: pointer;
 }*/
-
+/*
 ::-webkit-scrollbar-track:hover {
 	background: mediumaquamarine;
 }
-
+*/
 ::-webkit-resizer
 {
 	background-color: white;

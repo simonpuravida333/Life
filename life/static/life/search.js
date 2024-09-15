@@ -35,6 +35,8 @@ export default function search(querySubmit, rankSubmit, localDjangoDB)
 		if (isNaN(querySubmit) === false) checkResponse(((localDjangoDB) ? '/life/species/search?higherTaxonKey='+querySubmit+'&limit=1000' : 'https://api.gbif.org/v1/species/search?higherTaxonKey='+querySubmit+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED'), querySubmit, 'within '+rankSubmit); // for the DjangoDB fetch we don't need to specify a rank as we only provide specieses.
 		else 
 		{
+			if (localDjangoDB) return; // we only want to fetch the higher taxon within we search once. We handle the double fetch below.
+			
 			querySubmit = querySubmit.slice(0,1).toUpperCase()+querySubmit.slice(1).toLowerCase();
 			fetch('https://api.gbif.org/v1/species/match?verbose=true&name='+querySubmit)
 			.then(response => response.json())
@@ -44,11 +46,16 @@ export default function search(querySubmit, rankSubmit, localDjangoDB)
 				if (incoming.matchType === "NONE")
 				{
 					console.log('taxa ' +querySubmit+' does not exist');
+					foundAnything(undefined, true);
+					foundAnything(false);
+					foundAnything(false);
 					return;
 				}
 				else
 				{
-					fetchThis = (localDjangoDB) ? '/life/species/search?higherTaxonKey='+incoming.usageKey+'&limit=1000' : 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED&isExtinct=false';
+					fetchThis = '/life/species/search?higherTaxonKey='+incoming.usageKey+'&limit=1000';
+					checkResponse(fetchThis, querySubmit, 'every '+rankSubmit+' within');
+					fetchThis = 'https://api.gbif.org/v1/species/search?higherTaxonKey='+incoming.usageKey+'&rank='+rankSubmit+'&limit=1000&status=ACCEPTED&isExtinct=false';
 					checkResponse(fetchThis, querySubmit, 'every '+rankSubmit+' within');
 				}
 			});
@@ -80,7 +87,7 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 		if (rankSubmit === 'keyID' && incoming.key === undefined)
 		{
 			console.log('Key not found. Returning!');
-			foundAnything(false)
+			if (!withinSearchActivated) foundAnything(false)
 			return;
 		}
 		if (rankSubmit !== 'keyID')
@@ -88,7 +95,7 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 			if (incoming === undefined)
 			{
 				console.log('Nothing fetched. Returning!');
-				foundAnything(false)
+				if (!withinSearchActivated) foundAnything(false)
 				return;
 			}
 			else if (incoming.results.length === 0)
@@ -97,7 +104,7 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 				{
 					//create('nothingFetched', querySubmit);
 					console.log('No results delivered. Returning!');
-					foundAnything(false)
+					if (!withinSearchActivated) foundAnything(false)
 					return;
 				}
 				else if (rankSubmit === 'highestRank' && goThroughRanks < 7)
@@ -112,6 +119,8 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 			// Why implementing "auto-search canonical name first every time" didn't work: I wanted to automate that whatever name the user queries, it will first query for a canonical name as there can always be one canonical name (across all ranks); if it wouldn't find something it would instantly go on doing a vernacular name fetch. The implementation was solid, and for many cases it worked (making strict string comparisons to avoid names in which e.g. 'lemur' appeared, disregarding capitals), but not for every:
 			// The test case that broke it: searching for the scientific name 'lemur' will yield the GENUS 'Lemur', which contains the famous (and only) SPECIES 'ring-tailed lemur'. But in fact there're 14 more genera (plural GENUS) of lemur, with 8 FAMILIES and around a 100 SPECIES. Among the 15 genera just happened to be one with the sole scientific name 'Lemur' ...because it found a scientific name for lemur, with the implementation you couldn't do any other query. And there would be a second find: an insect called "Lemur Hübner" (scientific name) or just 'Lemur' (canonical name). Thus the "scientific name" condition had to be a selectable option after all.
 		}
+		
+		foundAnything(true)
 		if (rankSubmit === 'keyID') create([incoming], querySubmit, rankSubmit); // when searching for a key ID, it'll not send an array with objects, but the species object directly. So for the create function it gets put in an array.
 		else create(incoming.results, querySubmit, rankSubmit);
 	})
