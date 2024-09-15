@@ -1,5 +1,5 @@
 import {create} from './create.js';
-import {withinSearchActivated} from './startup.js';
+import {withinSearchActivated, foundAnything} from './startup.js';
 
 var goThroughRanks = 0;
 
@@ -80,21 +80,24 @@ function checkResponse(fetchThis, querySubmit, rankSubmit)
 		if (rankSubmit === 'keyID' && incoming.key === undefined)
 		{
 			console.log('Key not found. Returning!');
+			foundAnything(false)
 			return;
 		}
 		if (rankSubmit !== 'keyID')
 		{
 			if (incoming === undefined)
 			{
-				return;
 				console.log('Nothing fetched. Returning!');
+				foundAnything(false)
+				return;
 			}
 			else if (incoming.results.length === 0)
 			{
 				if (rankSubmit !== 'highestRank')
 				{
-					//create('nothingFetched',querySubmit);
+					//create('nothingFetched', querySubmit);
 					console.log('No results delivered. Returning!');
+					foundAnything(false)
 					return;
 				}
 				else if (rankSubmit === 'highestRank' && goThroughRanks < 7)

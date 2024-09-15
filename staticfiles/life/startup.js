@@ -193,6 +193,20 @@ withinSearch.onclick = ()=>
 	}
 }
 
+var serversResponded = []
+function foundAnything(anything)
+{
+	serversResponded.push(anything)
+	if (serversResponded.length == 2)
+	{
+		if (serversResponded[0] === false && serversResponded[1] === false)
+		{
+			inputSearch.animate({backgroundColor:[ '#4C9590', '#ff444e', '#ff444e','#ff444e', '#ff444e', '#4C9590']}, 750);
+		}
+		serversResponded = [];
+	}
+}
+
 function limitOptions(limit)
 {
 	if (limit) for (const option of rankCondition.options)
@@ -373,6 +387,6 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 //search('Psittaciformes', 'species');
 //search('Paradisaeidae', 'species');
 
-export {searchSection, inputSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, closeNewSpeciesOccurrence};
+export {searchSection, inputSearch, resultOverview, filterArea, allRankFilters, withinSearchActivated, closeNewSpeciesOccurrence, foundAnything};
 
 // To have global cross-module variables, declaring with window.aVariable = 'value' is a solution, as is self.aVariable and globalThis.aVariable, all of which make the same object global. Putting them in Object.prototype.toString.call() will give [Object Window] for each of the three. This would be true: globalThis === self && self === window (because if you're in the outermost scope, you are in the window-object, thus self === window). Important: globalThis is the standard meanwhile, the only one that will work in all kinds of environments from browsers to Node.js and more.

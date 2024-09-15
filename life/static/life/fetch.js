@@ -336,7 +336,7 @@ export default function fetchEverything(GBIFResult, y)
 	})
 	
 	// IMAGES
-	if (y > 2) // makes certain that kingdom, phylum and class don't fetch media. The images are not of use for this app. The images for kingdom 'animalia' e.g. are a lot, and sometimes very specific (like dinosaur bones being dug out...) and to think that every time someone clicks on animalia this would show up, esp since this kingdom will be part of every animal query.
+	if (y > 2) // makes certain that kingdom, phylum and class don't fetch media. The images are not of use for this app. The images for kingdom 'animalia' e.g. are a lot, and sometimes very specific (like dinosaur bones being dug out...) and to think that every time someone clicks on animalia this would show up. This kingdom will be part of every animal query.
 	{
 		fetch((localDjangoDB) ? '/life/species/'+keyID+'/media' : 'https://api.gbif.org/v1/species/'+keyID+'/media')
 		.then(response => response.json())
