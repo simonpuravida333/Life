@@ -351,6 +351,7 @@ function createSummary(nothingFetched, querySubmit)
 		const info = g();
 		info.style['pointer-events'] = 'none';
 		statBlock.classList.add('baseBlock', 'summery');
+		if (isMobile) statBlock.classList.add('unselectable'); // to make hold-tap-to-delete possible, otherwise smartphone will mark the text
 		statBlock.append(info);
 		resultOverview.style.display = 'flex';
 		resultOverview.append(statBlock);

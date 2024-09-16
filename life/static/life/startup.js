@@ -36,7 +36,7 @@ window.addEventListener('keydown', (event)=>
 	const arrowDown = 40;
 		
 	// SEARCH ELEMENT
-	if (key === enterKey && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
+	if ((key === enterKey || event.key == 'Enter') && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
 	{
 		doubleSearch(inputSearch.value.trim(), rankCondition.value)
 		inputSearch.value="";
