@@ -333,11 +333,11 @@ if (isMobile)
 {
     inputSearch.addEventListener('keydown', (event) =>
     {
+    	event.preventDefault(); // Prevent the default action
 	    if (event.key === 'Enter' && inputSearch.value.trim() !== "")
 	    {
 	        doubleSearch(inputSearch.value.trim(), rankCondition.value);
 	        inputSearch.value = "";
-	        event.preventDefault(); // Prevent the default action
 	    }
 	});
 }
