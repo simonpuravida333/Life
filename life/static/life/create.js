@@ -388,6 +388,7 @@ function createSummary(nothingFetched, querySubmit)
 		else corrected = group.searchParameter;
 		info.innerHTML = "<i><strong>"+group.GBIFResults.length+"</i></strong> results for <i><strong>"+group.name+"</i></strong><br>(<i><strong>"+corrected.toUpperCase()+"</strong></i> search)";
 		statBlock.classList.add('baseBlock', 'summery');
+		if (isMobile) statBlock.classList.add('unselectable'); 
 		statBlock.append(info);
 		
 		let moment = 0;
