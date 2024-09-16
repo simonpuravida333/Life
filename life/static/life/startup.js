@@ -331,7 +331,7 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 
 if (isMobile)
 {
-    inputSearch.addEventListener('keydown', (event) =>
+    inputSearch.addEventListener('keyup', (event) =>
     {
         if (event.key === 'Enter' || event.keyCode === 13)
         {
