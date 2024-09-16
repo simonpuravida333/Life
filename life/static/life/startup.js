@@ -28,54 +28,6 @@ function adjustZoom()
 }
 if (isMobile) window.addEventListener('resize', adjustZoom); // when tilting smartphone
 
-if (isMobile)
-{
-    inputSearch.addEventListener('keydown', (event) =>
-    {
-	    if (event.key === 'Enter' && inputSearch.value.trim() !== "")
-	    {
-	        doubleSearch(inputSearch.value.trim(), rankCondition.value);
-	        inputSearch.value = "";
-	        event.preventDefault(); // Prevent the default action
-	    }
-	});
-}
-else
-{
-	window.addEventListener('keydown', (event)=>
-	{
-		let key = event.keyCode || event.which;
-		const enterKey = 13;
-		const arrowUp = 38;
-		const arrowDown = 40;
-			
-		// SEARCH ELEMENT
-		if ((key === enterKey || event.key == 'Enter') && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
-		{
-			doubleSearch(inputSearch.value.trim(), rankCondition.value)
-			inputSearch.value="";
-		}
-		if (key === arrowDown && rankCondition.value === 'species')
-		{
-			setTimeout(()=> {rankCondition.value = 'any'},	10);
-		}
-		if (key === arrowUp && rankCondition.value === 'any')
-		{
-			setTimeout(()=> {rankCondition.value = 'species'},	10);
-		}
-		if (key === arrowDown && rankCondition.value === 'allRanks')
-		{
-			setTimeout(()=> {rankCondition.value = 'canonicalName'; rankCondition.style['width'] = '240px';}, 10);
-		}
-		if (key === arrowUp && rankCondition.value === 'canonicalName')
-		{
-			setTimeout(()=> {rankCondition.value = 'allRanks'; rankCondition.style['width'] = '160px';}, 10);
-		}
-	});
-}
-
-
-
 // SEARCH SECTION
 const searchSection = g();
 const inputSearch = g('in');
@@ -375,6 +327,52 @@ function openNewSpeciesOccurrence(space) // new species OR new occurrence
 		field.style.color = 'white';
 	}
 	if (inputFields.length > 0) for (const x in ranks) fieldLabels[x].style.color = '#2BAF60'; 
+}
+
+if (isMobile)
+{
+    inputSearch.addEventListener('keydown', (event) =>
+    {
+	    if (event.key === 'Enter' && inputSearch.value.trim() !== "")
+	    {
+	        doubleSearch(inputSearch.value.trim(), rankCondition.value);
+	        inputSearch.value = "";
+	        event.preventDefault(); // Prevent the default action
+	    }
+	});
+}
+else
+{
+	window.addEventListener('keydown', (event)=>
+	{
+		let key = event.keyCode || event.which;
+		const enterKey = 13;
+		const arrowUp = 38;
+		const arrowDown = 40;
+			
+		// SEARCH ELEMENT
+		if ((key === enterKey || event.key == 'Enter') && inputSearch.value.trim() !== "" && (inputSearch === document.activeElement || rankCondition === document.activeElement))
+		{
+			doubleSearch(inputSearch.value.trim(), rankCondition.value)
+			inputSearch.value="";
+		}
+		if (key === arrowDown && rankCondition.value === 'species')
+		{
+			setTimeout(()=> {rankCondition.value = 'any'},	10);
+		}
+		if (key === arrowUp && rankCondition.value === 'any')
+		{
+			setTimeout(()=> {rankCondition.value = 'species'},	10);
+		}
+		if (key === arrowDown && rankCondition.value === 'allRanks')
+		{
+			setTimeout(()=> {rankCondition.value = 'canonicalName'; rankCondition.style['width'] = '240px';}, 10);
+		}
+		if (key === arrowUp && rankCondition.value === 'canonicalName')
+		{
+			setTimeout(()=> {rankCondition.value = 'allRanks'; rankCondition.style['width'] = '160px';}, 10);
+		}
+	});
 }
 
 // DEBUG //
