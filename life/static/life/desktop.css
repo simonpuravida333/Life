@@ -1,35 +1,29 @@
 body
 {
 	min-width: 700px;
+	
+	/* firefox: */
+	scrollbar-width: thin; 
+    scrollbar-color: #666666 #ffffff; /* Color of the scrollbar thumb and track */
 }
 
 ::-webkit-scrollbar {
-  width: 18px;
+  width: 12px;
 }
 
 /* Track */ 
 ::-webkit-scrollbar-track {
-  background: mediumaquamarine;
+  background: white;
   outline: none;
-
+	border-radius: 3px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: white;
-  border-radius: 9px;
+  background: #666666;
+  border-radius: 3px;
 }
 
-/* Handle on hover *//*
-::-webkit-scrollbar-thumb:hover {
-  background: #bbbbbb;
-  cursor: pointer;
-}*/
-/*
-::-webkit-scrollbar-track:hover {
-	background: mediumaquamarine;
-}
-*/
 ::-webkit-resizer
 {
 	background-color: white;
