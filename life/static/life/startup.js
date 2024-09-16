@@ -343,6 +343,12 @@ if (isMobile)
             }
         }
     });
+    rankCondition.addEventListener('keydown', (event) =>
+    {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            event.preventDefault(); // Prevent the default action of moving focus
+        }
+    });
 }
 else
 {
