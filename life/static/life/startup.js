@@ -338,7 +338,7 @@ if (isMobile)
             event.preventDefault(); // Prevent the default action
             if (inputSearch.value.trim() !== "")
             {
-                doubleSearch();
+                doubleSearch(inputSearch.value.trim(), rankCondition.value)
                 inputSearch.value = "";
             }
         }
